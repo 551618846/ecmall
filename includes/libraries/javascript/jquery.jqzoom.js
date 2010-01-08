@@ -31,6 +31,15 @@
 
             $(this).hover(function(){
 
+            // remove parents obj within 'relative'
+            var parents = $(this).parents();
+            parents.each(function(){
+                if($(this).css('position') == 'relative'){
+                    $(this).css('position', 'static');
+                    $(this).attr('ectype', 'jqzoom_relative');
+                }
+            });
+
             var imageLeft = this.offsetLeft;
             var imageRight = this.offsetRight;
             var imageTop =  $(this).get(0).offsetTop;
@@ -160,6 +169,14 @@
 
                     });
             },function(){
+
+               // assign for parents obj within 'relative'
+                var parents = $(this).parents();
+                parents.each(function(){
+                    if($(this).attr('ectype') == 'jqzoom_relative'){
+                        $(this).css('position', 'relative');
+                    }
+                });
 
                $(this).children("img").attr("alt",noalt);
                $(document.body).unbind("mousemove");

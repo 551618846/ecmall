@@ -23,7 +23,7 @@ return array(
     'user_empty' => '指定会员发送，会员名不能为空且一行一个会员名',
     'sgrade_empty' => '指定店铺等级发送，必须选择店铺等级',
     'amount_only_number' => '批量发送数量仅能为数字',
-    'title_empty' => '短消息标题不能为空',
+    'title_empty' => '标题不能为空',
     'content_empty' => '短消息内容不能为空', 
     'no_user' => '没有填写或者选择会员',
     'send_email' => '发邮件', 

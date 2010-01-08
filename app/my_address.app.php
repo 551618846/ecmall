@@ -102,10 +102,6 @@ class My_addressApp extends MemberbaseApp
                 return;
             }
             $this->pop_warning('ok', APP.'_'.ACT);
-            $this->show_message('add_address_successed',
-                'back_list',    'index.php?app=my_address',
-                'continue_add', 'index.php?app=my_address&amp;act=add'
-                );
         }
     }
     function edit()
@@ -113,8 +109,7 @@ class My_addressApp extends MemberbaseApp
         $addr_id = empty($_GET['addr_id']) ? 0 : intval($_GET['addr_id']);
         if (!$addr_id)
         {
-            $this->pop_warning('no_such_address');
-
+            echo Lang::get("no_such_address");
             return;
         }
         if (!IS_POST)
@@ -123,7 +118,7 @@ class My_addressApp extends MemberbaseApp
             $find_data     = $model_address->find("addr_id = {$addr_id} AND user_id=" . $this->visitor->get('user_id'));
             if (empty($find_data))
             {
-                $this->show_warning('no_such_address');
+                echo Lang::get('no_such_address');
 
                 return;
             }
@@ -175,9 +170,6 @@ class My_addressApp extends MemberbaseApp
                 return;
             }
             $this->pop_warning('ok', APP.'_'.ACT);
-            $this->show_message('edit_address_successed',
-                'back_list',        'index.php?app=my_address',
-                'edit_again',    'index.php?app=my_address&amp;act=edit&amp;addr_id=' . $addr_id);
         }
     }
     function drop()

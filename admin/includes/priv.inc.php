@@ -61,7 +61,7 @@ $menu_data = array
         'db'           => 'db|all',//数据库
         'groupbuy'     => 'groupbuy|all',//团购
         'consulting'   => 'consulting|all',//咨询
-        'share_link'   => 'goods_share|all',//分享管理
+        'share_link'   => 'share|all',//分享管理
 
     ),
 

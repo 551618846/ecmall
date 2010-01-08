@@ -57,6 +57,12 @@ class NoticeApp extends BackendApp
                     $this->show_warning('no_content');
                     exit;
                 }
+                if (trim($_POST['send_mode'] == 2) && empty($_POST['title']))
+                {
+                    $this->show_warning('title_empty');
+                    exit;
+                }
+                $title = trim($_POST['send_mode']) == 2 ? trim($_POST['title']) : '';
                 $content = trim($_POST['send_mode']) == 1 ? trim($_POST['content1']) : trim($_POST['content']);
                 $result = array();
                 $count = 0;
@@ -123,7 +129,7 @@ class NoticeApp extends BackendApp
                 }
                 $amount = empty($_POST['amount']) ? 20 : intval(trim($_POST['amount']));
                 $parts = ceil($count/$amount);
-                $this->write_session(array('type' => trim($_POST['send_mode']), 'to_users' => $users, 'count' => $count, 'amount' => $amount, 'parts' => $parts,'content' => $content));
+                $this->write_session(array('type' => trim($_POST['send_mode']), 'to_users' => $users, 'count' => $count, 'amount' => $amount, 'parts' => $parts,'title' => $title, 'content' => $content));
                 $this->send();
             }
       }
@@ -159,7 +165,7 @@ class NoticeApp extends BackendApp
                          break;
                   case EMAIL:
                          $content = $_SESSION['notice_param']['content'];
-                         $title = $content;
+                         $title = $_SESSION['notice_param']['title'];
                          $qid = array();
                          $qid = $this->_mailto($to_users, $title, $content);
                          $this->_sendmail($qid); 

@@ -209,7 +209,6 @@ class My_goodsApp extends StoreadminbaseApp
 
              $ids = explode(',', $id);
              $ids = $this->_goods_mod->get_filtered_ids($ids); // 过滤掉非本店goods_id
-
              // edit goods
              $data = array();
              if ($_POST['cate_id'] > 0)
@@ -222,6 +221,7 @@ class My_goodsApp extends StoreadminbaseApp
                  $data['cate_id'] = $_POST['cate_id'];
                  $data['cate_name'] = $_POST['cate_name'];
              }
+             
              if (trim($_POST['brand']))
              {
                  $data['brand'] = trim($_POST['brand']);
@@ -249,12 +249,14 @@ class My_goodsApp extends StoreadminbaseApp
                  }
              }
              $cate_ids = array_unique($cate_ids);
-             foreach ($ids as $goods_id)
+             if (!empty($cate_ids))
              {
-                 $this->_goods_mod->unlinkRelation('belongs_to_gcategory', $goods_id);
-                 $this->_goods_mod->createRelation('belongs_to_gcategory', $goods_id, $cate_ids);
+                 foreach ($ids as $goods_id)
+                 {
+                     $this->_goods_mod->unlinkRelation('belongs_to_gcategory', $goods_id);
+                     $this->_goods_mod->createRelation('belongs_to_gcategory', $goods_id, $cate_ids);
+                 }
              }
-
              // edit goods_spec
              $sql = "";
              if ($_POST['price_change'])
@@ -740,6 +742,11 @@ class My_goodsApp extends StoreadminbaseApp
            if($this->_spec_mod->edit("goods_id = $id", $data['specs']))
            {
                $result = $this->_spec_mod->get("goods_id = $id");
+               //修改商品表中默认的字段的价格
+               if ($column == 'price')
+               {
+                    $this->_goods_mod->edit($id, $data['specs']);
+               }
                $this->json_result($result[$column]);
            }
 

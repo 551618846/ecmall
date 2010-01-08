@@ -142,7 +142,7 @@ class Buyer_orderApp extends MemberbaseApp
             {
                 $_errors = $model_order->get_error();
                 $error = current($_errors);
-                $this->json_error(Lang::get($error['msg']));
+                $this->pop_warning(Lang::get($error['msg']));
 
                 return;
             }
@@ -214,7 +214,7 @@ class Buyer_orderApp extends MemberbaseApp
             {
                 $_errors = $model_order->get_error();
                 $error = current($_errors);
-                $this->json_error(Lang::get($error['msg']));
+                $this->pop_warning(Lang::get($error['msg']));
 
                 return;
             }

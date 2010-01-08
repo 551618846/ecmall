@@ -100,10 +100,6 @@ class My_shippingApp extends StoreadminbaseApp
                 return;
             }
             $this->pop_warning('ok', 'my_shipping_add');
-            $this->show_message('add_shipping_successed',
-                'back_list',    'index.php?app=my_shipping',
-                'continue_add', 'index.php?app=my_shipping&amp;act=add'
-            );
         }
     }
 
@@ -118,7 +114,7 @@ class My_shippingApp extends StoreadminbaseApp
         $shipping_id = isset($_GET['shipping_id']) ? intval($_GET['shipping_id']) : 0;
         if (!$shipping_id)
         {
-            $this->show_warning('no_such_shipping');
+            echo Lang::get('no_such_shipping');
 
             return;
         }
@@ -128,7 +124,7 @@ class My_shippingApp extends StoreadminbaseApp
         $shipping = $model_shipping->get("store_id=" . $this->visitor->get('manage_store') . " AND shipping_id={$shipping_id}");
         if (!$shipping)
         {
-            $this->show_warning('no_such_shipping');
+            echo Lang::get('no_such_shipping');
 
             return;
         }
@@ -179,9 +175,6 @@ class My_shippingApp extends StoreadminbaseApp
                 return;
             }
             $this->pop_warning('ok', 'my_shipping_edit');
-            $this->show_message('edit_shipping_successed',
-                'back_list',        'index.php?app=my_shipping',
-                'edit_again',    'index.php?app=my_shipping&amp;act=edit&amp;shipping_id=' . $shipping_id);
         }
     }
 

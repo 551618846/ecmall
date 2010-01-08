@@ -130,7 +130,7 @@ class My_partnerApp extends StoreadminbaseApp
         $partner_id = empty($_GET['partner_id']) ? 0 : intval($_GET['partner_id']);
         if (!$partner_id)
         {
-            $this->pop_warning('no_such_partner');
+            echo Lang::get('no_such_partner');
 
             return;
         }
@@ -140,7 +140,7 @@ class My_partnerApp extends StoreadminbaseApp
             $find_data     = $model_partner->find("partner_id = {$partner_id} AND store_id=" . $this->visitor->get('manage_store'));
             if (empty($find_data))
             {
-                $this->pop_warning('no_such_partner');
+                echo Lang::get('no_such_partner');
 
                 return;
             }

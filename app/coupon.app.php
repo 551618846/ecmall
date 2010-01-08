@@ -123,7 +123,7 @@ class CouponApp extends StoreadminbaseApp
         $coupon_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         if (empty($coupon_id))
         {
-            $this->show_warning("no_coupon");
+            echo Lang::get("no_coupon");
         }
         if (!IS_POST)
         {
@@ -149,7 +149,7 @@ class CouponApp extends StoreadminbaseApp
             }
             if ($min_amount < 0)
             {
-                $this->show_warning("min_amount_gt_zero");
+                $this->pop_warning("min_amount_gt_zero");
                 exit;
             }
             $start_time = gmstr2time(trim($_POST['start_time']));
@@ -222,7 +222,7 @@ class CouponApp extends StoreadminbaseApp
         $coupon_id = isset($_GET['id']) ? trim($_GET['id']) : '';
         if (empty($coupon_id))
         {
-            $this->show_warning('no_coupon');
+            echo Lang::get('no_coupon');
             exit;
         }
         if (!IS_POST)
@@ -257,7 +257,7 @@ class CouponApp extends StoreadminbaseApp
         $coupon_id = isset($_GET['id']) ? trim($_GET['id']) : '';
         if (empty($coupon_id))
         {
-            $this->pop_warning('no_coupon');
+            echo Lang::get('no_coupon');
             exit;
         }
         if (!IS_POST)

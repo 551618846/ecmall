@@ -159,7 +159,7 @@ class My_categoryApp extends StoreadminbaseApp
         }
         return ;
     }
-
+    
     function edit()
     {
         $id = empty($_GET['id']) ? 0 : intval($_GET['id']);
@@ -169,7 +169,7 @@ class My_categoryApp extends StoreadminbaseApp
             $gcategory = $this->_gcategory_mod->get_info($id);
             if (!$gcategory)
             {
-                $this->show_warning('gcategory_empty');
+                echo Lang::get('gcategory_empty');
                 return;
             }
             $this->assign('gcategory', $gcategory);
@@ -201,7 +201,7 @@ class My_categoryApp extends StoreadminbaseApp
             /* 检查名称是否已存在 */
             if (!$this->_gcategory_mod->unique(trim($data['cate_name']), $data['parent_id'], $id))
             {
-                $this->show_warning('name_exist');
+                $this->pop_warning('name_exist');
                 return;
             }
 
@@ -209,7 +209,7 @@ class My_categoryApp extends StoreadminbaseApp
             $rows = $this->_gcategory_mod->edit($id, $data);
             if ($this->_gcategory_mod->has_error())
             {
-                $this->show_warning($this->_gcategory_mod->get_error());
+                $this->pop_warning($this->_gcategory_mod->get_error());
                 return;
             }
 

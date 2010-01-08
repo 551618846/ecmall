@@ -27,7 +27,9 @@ function recount_order_amount(){
 </ul>
 <div class="eject_con">
     <form  method="post" target="seller_order" action="index.php?app=seller_order&act=adjust_fee&order_id={$order.order_id}&ajax">
-    <div class="content_line">{$lang.buyer_name}:&nbsp;&nbsp;{$order.buyer_name|escape}<br />{$lang.order_sn}&nbsp;&nbsp;:<strong class="color8">{$order.order_sn}</strong></div>
+    <div class="content_line">
+    <div id="warning"></div>
+    {$lang.buyer_name}:&nbsp;&nbsp;{$order.buyer_name|escape}<br />{$lang.order_sn}&nbsp;&nbsp;:<strong class="color8">{$order.order_sn}</strong></div>
     <div class="content_line">
         <ul class="foll_in">
             <li>

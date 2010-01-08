@@ -82,7 +82,7 @@ class My_qaApp extends StoreadminbaseApp
             ));
             if ($my_qa_data['reply_content'] != '')
             {
-                $this->show_warning('already_replied');
+                echo Lang::get('already_replied');
                 return;
             }
                     /* 当前位置 */
@@ -109,12 +109,12 @@ class My_qaApp extends StoreadminbaseApp
             $content = (isset($_POST['content']) && $_POST['content'] != '') ? trim($_POST['content']) : '';
             if ($act != 'reply' || $ques_id =='')
             {
-                $this->show_warning('Hacking Attempt');
+                $this->pop_warning('Hacking Attempt');
                 return;
             }
             if ($content == '')
             {
-                $this->show_warning('content_not_null');
+                $this->pop_warning('content_not_null');
                 return;
             }
 
@@ -148,7 +148,7 @@ class My_qaApp extends StoreadminbaseApp
         $ques_id = (isset($_GET['ques_id']) && $_GET['ques_id'] !='') ? intval($_GET['ques_id']) : 0;
         if (empty($ques_id))
         {
-            $this->pop_warning('no_data');
+            echo Lang::get('no_data');
         }
         if (!IS_POST)
         {
@@ -171,7 +171,7 @@ class My_qaApp extends StoreadminbaseApp
             $content = (isset($_POST['content']) && $_POST['content'] != '') ? trim($_POST['content']) : '';
             if (empty($content))
             {
-                $this->show_warning('content_not_null');
+                $this->pop_warning('content_not_null');
                 return;
             }
 

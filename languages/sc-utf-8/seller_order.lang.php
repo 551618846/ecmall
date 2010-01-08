@@ -50,7 +50,8 @@ return array(
     'consignee_address' => '收货地址',
     'system'    => '系统',
     'preference' => '优惠打折',
-    'groupbuy' => '团购'
+    'groupbuy' => '团购',
+    'invalid_fee' => '无效的费用',
 );
 
 ?>

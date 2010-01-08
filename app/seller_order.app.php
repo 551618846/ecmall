@@ -148,7 +148,7 @@ class Seller_orderApp extends StoreadminbaseApp
             {
                 $_errors = $model_order->get_error();
                 $error = current($_errors);
-                $this->json_error(Lang::get($error['msg']));
+                $this->pop_warning(Lang::get($error['msg']));
 
                 return;
             }
@@ -214,7 +214,7 @@ class Seller_orderApp extends StoreadminbaseApp
             {
                 $_errors = $model_order->get_error();
                 $error = current($_errors);
-                $this->json_error(Lang::get($error['msg']));
+                $this->pop_warning(Lang::get($error['msg']));
 
                 return;
             }
@@ -284,7 +284,7 @@ class Seller_orderApp extends StoreadminbaseApp
             if ($order_amount <= 0)
             {
                 /* 若商品总价＋配送费用扣队折扣小于等于0，则不是一个有效的数据 */
-                $this->json_error('invalid_fee');
+                $this->pop_warning('invalid_fee');
 
                 return;
             }
@@ -306,7 +306,7 @@ class Seller_orderApp extends StoreadminbaseApp
             {
                 $_errors = $model_order->get_error();
                 $error = current($_errors);
-                $this->json_error(Lang::get($error['msg']));
+                $this->pop_warning(Lang::get($error['msg']));
 
                 return;
             }
@@ -362,7 +362,7 @@ class Seller_orderApp extends StoreadminbaseApp
         {
             if (!$_POST['invoice_no'])
             {
-                $this->json_error('invoice_no_empty');
+                $this->pop_warning('invoice_no_empty');
 
                 return;
             }
@@ -379,7 +379,7 @@ class Seller_orderApp extends StoreadminbaseApp
             {
                 $_errors = $model_order->get_error();
                 $error = current($_errors);
-                $this->json_error(Lang::get($error['msg']));
+                $this->pop_warning(Lang::get($error['msg']));
 
                 return;
             }
@@ -542,7 +542,7 @@ class Seller_orderApp extends StoreadminbaseApp
             {
                 $_errors = $model_order->get_error();
                 $error = current($_errors);
-                $this->json_error(Lang::get($error['msg']));
+                $this->pop_warning(Lang::get($error['msg']));
 
                 return;
             }

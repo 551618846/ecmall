@@ -149,7 +149,7 @@ class My_navigationApp extends StoreadminbaseApp
             $model_article =& m('article');
             if (!($article_id = $model_article->add($data)))
             {
-                $this->show_warning($model_article->get_error());
+                $this->pop_warning($model_article->get_error());
 
                 return;
             }
@@ -171,7 +171,7 @@ class My_navigationApp extends StoreadminbaseApp
         $nav_id = empty($_GET['nav_id']) ? 0 : intval($_GET['nav_id']);
         if (!$nav_id)
         {
-            $this->pop_warning('no_such_navigation');
+            echo Lang::get('no_such_navigation');
 
             return;
         }
@@ -181,7 +181,7 @@ class My_navigationApp extends StoreadminbaseApp
             $find_data     = $model_article->find("article_id = {$nav_id} AND store_id=" . $this->visitor->get('manage_store'));
             if (empty($find_data))
             {
-                $this->pop_warning('no_such_navigation');
+                echo Lang::get('no_such_navigation');
 
                 return;
             }

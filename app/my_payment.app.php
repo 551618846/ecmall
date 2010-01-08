@@ -75,7 +75,7 @@ class My_paymentApp extends StoreadminbaseApp
         $code = isset($_GET['code']) ? trim($_GET['code']) : 0;
         if (!$code)
         {
-            $this->show_warning('no_such_payment');
+            echo Lang::get('no_such_payment');
 
             return;
         }
@@ -83,14 +83,14 @@ class My_paymentApp extends StoreadminbaseApp
         $payment       = $model_payment->get_builtin_info($code);
         if (!$payment)
         {
-            $this->show_warning('no_such_payment');
+            echo Lang::get('no_such_payment');
 
             return;
         }
         $payment_info = $model_payment->get("store_id=" . $this->visitor->get('manage_store') . " AND payment_code='{$code}'");
         if (!empty($payment_info))
         {
-            $this->show_warning('already_installed');
+            echo Lang::get('already_installed');
 
             return;
         }
@@ -136,8 +136,6 @@ class My_paymentApp extends StoreadminbaseApp
                 return;
             }
             $this->pop_warning('ok', 'my_payment_install');
-            $this->show_message('install_payment_successed',
-                'back_list', 'index.php?app=my_payment');
         }
     }
 
@@ -146,7 +144,7 @@ class My_paymentApp extends StoreadminbaseApp
         $payment_id =   isset($_GET['payment_id']) ? intval($_GET['payment_id']) : 0;
         if (!$payment_id)
         {
-            $this->show_warning('no_such_payment');
+            echo Lang::get('no_such_payment');
 
             return;
         }
@@ -154,14 +152,14 @@ class My_paymentApp extends StoreadminbaseApp
         $payment_info  = $model_payment->get("store_id = " . $this->visitor->get('manage_store') . " AND payment_id={$payment_id}");
         if (!$payment_info)
         {
-            $this->show_warning('no_such_payment');
+            echo Lang::get('no_such_payment');
 
             return;
         }
         $payment = $model_payment->get_builtin_info($payment_info['payment_code']);
         if (!$payment)
         {
-            $this->show_warning('no_such_payment');
+            echo Lang::get('no_such_payment');
 
             return;
         }
