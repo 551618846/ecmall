@@ -9,7 +9,7 @@
  * 这不是一个自由软件！您只能在不用于商业目的的前提下对程序代码进行修改和使用；
  * 不允许对程序代码以任何形式任何目的的再发布。
  * ============================================================================
- * $Id: message.base.php 10365 2009-12-22 07:36:08Z chengweidong $
+ * $Id: message.base.php 12100 2010-09-28 05:48:17Z huibiaoli $
  */
 if (!defined('IN_ECM'))
 {
@@ -315,7 +315,7 @@ class Message extends MessageBase
             {
                 $this->redirect = str_replace('&amp;', '&', $this->redirect); //$this->redirect 是给js使用的,不能包含&amp;
             }
-            $this->assign('page_title', Lang::get('ecmall_sysmsg') . '-- Powered by ECMall');
+            $this->_config_seo('title', Lang::get('ecmall_sysmsg') . '-- Powered by ECMall');
             $this->assign('message',    $this->message);
             $this->assign('links',      $this->links);
             $this->assign('icon',       $this->icon);

@@ -5,6 +5,10 @@ $(function(){
     $('.ad_cycle li').each(function(){
         $(this).click(function(){
             slideHere($(this));
+        }).mouseover(function(){
+            stopHere($(this));
+        }).mouseout(function(){
+            startScroll();
         });
     });
 });
@@ -34,6 +38,10 @@ function slideHere(imgObj){
             .parent().attr('href', imgObj.attr('target_link'))
             .attr('target', '_blank');
    }
+}
+function stopHere(imgObj){
+    slideHere(imgObj);
+    stopScroll();
 }
 </script>
 <div class="ad_cycle">

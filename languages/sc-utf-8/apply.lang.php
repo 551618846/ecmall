@@ -56,6 +56,7 @@ return array(
     'title_step1' => '申请开店第一步',
     'title_step2' => '申请开店第二步',
     'editor_multimedia' => '编辑器多媒体功能',
-    'groupbuy' => '团购活动'
+    'groupbuy' => '团购活动',
+    'view' => '查看'
 );
 ?>

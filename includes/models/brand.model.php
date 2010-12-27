@@ -19,17 +19,6 @@ class BrandModel extends BaseModel
             'filter'    => 'intval',
         )
     );
-    var $_relation  = array(
-        // 品牌和推荐类型是多对多的关系
-        'be_recommend' => array(
-            'model'         => 'recommend',
-            'type'          => HAS_AND_BELONGS_TO_MANY,
-            'middle_table'  => 'recommended_item',
-            'foreign_key'   => 'item_id',
-            'reverse'       => 'recommend_brand',
-            //'ext_limit'    => array('type' => 'brand'),//限制type列为商品品牌
-        ),
-    );
 
     /**
      *    删除商品品牌

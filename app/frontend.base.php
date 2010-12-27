@@ -32,6 +32,11 @@ class FrontendApp extends ECBaseApp
         $this->_view->template_dir  = ROOT_PATH . '/themes';
         $this->_view->compile_dir   = ROOT_PATH . '/temp/compiled/mall';
         $this->_view->res_base      = SITE_URL . '/themes';
+        $this->_config_seo(array(
+            'title' => Conf::get('site_title'),
+            'description' => Conf::get('site_description'),
+            'keywords' => Conf::get('site_keywords')
+        ));
     }
     function display($tpl)
     {
@@ -72,6 +77,12 @@ class FrontendApp extends ECBaseApp
                     $ret_url = SITE_URL . '/index.php';
                 }
             }
+            /* 防止登陆成功后跳转到登陆、退出的页面 */
+            $ret_url = strtolower($ret_url);            
+            if (str_replace(array('act=login', 'act=logout',), '', $ret_url) != $ret_url)
+            {
+                $ret_url = SITE_URL . '/index.php';
+            }
 
             if (Conf::get('captcha_status.login'))
             {
@@ -80,7 +91,7 @@ class FrontendApp extends ECBaseApp
             $this->import_resource(array('script' => 'jquery.plugins/jquery.validate.js'));
             $this->assign('ret_url', rawurlencode($ret_url));
             $this->_curlocal(LANG::get('user_login'));
-            $this->assign('page_title', Lang::get('user_login') . ' - ' . Conf::get('site_title'));
+            $this->_config_seo('title', Lang::get('user_login') . ' - ' . Conf::get('site_title'));
             $this->display('login.html');
             /* 同步退出外部系统 */
             if (!empty($_GET['synlogout']))
@@ -139,13 +150,18 @@ class FrontendApp extends ECBaseApp
                 echo "<script type='text/javascript'>window.parent.location.href='".$url."';</script>";
             }
             echo "<script type='text/javascript'>window.parent.js_success('" . $dialog_id ."');</script>";
-            exit;
         }
         else
         {
             header("Content-Type:text/html;charset=".CHARSET);
-            echo "<script type='text/javascript'>window.parent.js_fail('" . Lang::get($msg) . "');</script>";
-            exit;
+            $msg = is_array($msg) ? $msg : array(array('msg' => $msg));
+            $errors = '';
+            foreach ($msg as $k => $v)
+            {
+                $error = $v[obj] ? Lang::get($v[msg]) . " [" . Lang::get($v[obj]) . "]" : Lang::get($v[msg]);
+                $errors .= $errors ? "<br />" . $error : $error;
+            }
+            echo "<script type='text/javascript'>window.parent.js_fail('" . $errors . "');</script>";
         }
     }
 
@@ -173,7 +189,7 @@ class FrontendApp extends ECBaseApp
         $my_store = empty($user_info['store_id']) ? 0 : $user_info['store_id'];
 
         /* 保证基础数据整洁 */
-        unset($user_info['store_id']);
+        //unset($user_info['store_id']);
 
         /* 分派身份 */
         $this->visitor->assign($user_info);
@@ -777,6 +793,17 @@ class StoreadminbaseApp extends MemberbaseApp
                 return;
             }
         }
+        $referer = $_SERVER['HTTP_REFERER'];
+        if (strpos($referer, 'act=login') === false)
+        {
+            $ret_url = $_SERVER['HTTP_REFERER'];
+            $ret_text = 'go_back';
+        }
+        else
+        {
+            $ret_url = SITE_URL . '/index.php';
+            $ret_text = 'back_index';
+        }
 
         /* 检查是否是店铺管理员 */
         if (!$this->visitor->get('manage_store'))
@@ -785,7 +812,7 @@ class StoreadminbaseApp extends MemberbaseApp
             $this->show_warning(
                 'not_storeadmin',
                 'apply_now', 'index.php?app=apply',
-                'go_back'
+                $ret_text, $ret_url
             );
 
             return;
@@ -795,7 +822,7 @@ class StoreadminbaseApp extends MemberbaseApp
         $privileges = $this->_get_privileges();
         if (!$this->visitor->i_can('do_action', $privileges))
         {
-            $this->show_warning('no_permission');
+            $this->show_warning('no_permission', $ret_text, $ret_url);
 
             return;
         }
@@ -804,13 +831,13 @@ class StoreadminbaseApp extends MemberbaseApp
         $state = $this->visitor->get('state');
         if ($state == 0)
         {
-            $this->show_warning('apply_not_agree');
+            $this->show_warning('apply_not_agree', $ret_text, $ret_url);
 
             return;
         }
         elseif ($state == 2)
         {
-            $this->show_warning('store_is_closed');
+            $this->show_warning('store_is_closed', $ret_text, $ret_url);
 
             return;
         }
@@ -818,7 +845,7 @@ class StoreadminbaseApp extends MemberbaseApp
         /* 检查附加功能 */
         if (!$this->_check_add_functions())
         {
-            $this->show_warning('not_support_function');
+            $this->show_warning('not_support_function', $ret_text, $ret_url);
             return;
         }
 
@@ -841,6 +868,19 @@ class StoreadminbaseApp extends MemberbaseApp
                 return $admin_store['privs'];
             }
         }
+    }
+    
+    /* 获取当前店铺所使用的主题 */
+    function _get_theme()
+    {
+        $model_store =& m('store');
+        $store_info  = $model_store->get($this->visitor->get('manage_store'));
+        $theme = !empty($store_info['theme']) ? $store_info['theme'] : 'default|default';
+        list($curr_template_name, $curr_style_name) = explode('|', $theme);
+        return array(
+            'template_name' => $curr_template_name,
+            'style_name'    => $curr_style_name,
+        );
     }
 
     function _check_add_functions()
@@ -930,8 +970,17 @@ class StorebaseApp extends FrontendApp
             $goods_mod =& m('goods');
             $store['goods_count'] = $goods_mod->get_count_of_store($this->_store_id);
             $store['store_gcates']= $this->_get_store_gcategory();
-            $store['sgrade'] = $this->_get_store_grade();
-
+            $store['sgrade'] = $this->_get_store_grade('grade_name');
+            $functions = $this->_get_store_grade('functions');
+            $store['functions'] = array();
+            if ($functions)
+            {
+                $functions = explode(',', $functions);
+                foreach ($functions as $k => $v)
+                {
+                    $store['functions'][$v] = $v;
+                }
+            }
             $cache_server->set($key, $store, 1800);
         }
 
@@ -977,12 +1026,12 @@ class StorebaseApp extends FrontendApp
     }
     /*  取的店铺等级   */
 
-    function _get_store_grade()
+    function _get_store_grade($field)
     {
         $store_info = $store_info = $this->_get_store_info();
         $sgrade_mod =& m('sgrade');
         $result = $sgrade_mod->get_info($store_info['sgrade']);
-        return $result['grade_name'];
+        return $result[$field];
     }
     /* 取得店铺分类 */
     function _get_store_gcategory()

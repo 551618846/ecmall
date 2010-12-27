@@ -370,8 +370,9 @@ class StoreApp extends BackendApp
                 $this->_mailto($old_info['email'], $subject, $content);
             }
 
+            $ret_page = isset($_GET['ret_page']) ? intval($_GET['ret_page']) : 1;
             $this->show_message('edit_ok',
-                'back_list',    'index.php?app=store',
+                'back_list',    'index.php?app=store&page=' . $ret_page,
                 'edit_again',   'index.php?app=store&amp;act=edit&amp;id=' . $id
             );
         }
@@ -387,7 +388,8 @@ class StoreApp extends BackendApp
        if (in_array($column ,array('recommended','sort_order')))
        {
            $data[$column] = $value;
-           if($this->_store_mod->edit($id, $data))
+           $this->_store_mod->edit($id, $data);
+           if(!$this->_store_mod->has_error())
            {
                echo ecm_json_encode(true);
            }
@@ -482,6 +484,7 @@ class StoreApp extends BackendApp
         }
         else
         {
+            $ret_page = isset($_GET['ret_page']) ? intval($_GET['ret_page']) : 1;
             /* 批准 */
             if (isset($_POST['agree']))
             {
@@ -504,7 +507,7 @@ class StoreApp extends BackendApp
                 $this->_hook('after_opening', array('user_id' => $id));
                 $this->show_message('agree_ok',
                     'edit_the_store', 'index.php?app=store&amp;act=edit&amp;id=' . $id,
-                    'back_list', 'index.php?app=store'
+                    'back_list', 'index.php?app=store&wait_verify=1&page=' . $ret_page
                 );
             }
             /* 拒绝 */
@@ -524,7 +527,7 @@ class StoreApp extends BackendApp
                 $this->_drop_store_image($id); // 注意这里要先删除图片，再删除店铺，因为删除图片时要查店铺信息
                 $this->_store_mod->drop($id);
                 $this->show_message('reject_ok',
-                    'back_list', 'index.php?app=store'
+                    'back_list', 'index.php?app=store&wait_verify=1&page=' . $ret_page
                 );
             }
             else
@@ -597,9 +600,9 @@ class StoreApp extends BackendApp
             }
 
             $this->_store_mod->edit($ids, $data);
-
+            $ret_page = isset($_GET['ret_page']) ? intval($_GET['ret_page']) : 1;
             $this->show_message('edit_ok',
-                'back_list', 'index.php?app=store');
+                'back_list', 'index.php?app=store&page=' . $ret_page);
         }
     }
 

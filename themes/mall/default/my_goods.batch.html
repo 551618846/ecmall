@@ -6,9 +6,37 @@
 <script type="text/javascript">
 //<!CDATA[
 $(function(){
-    // multi-select mall_gcategory
-    gcategoryInit("gcategory");
     // add store_gcategory
+    gcategoryInit("gcategory");
+    // validate
+    $('#batch_form').validate({
+        errorPlacement: function(error, element){
+            $(element).parent().next('.new_add').hide();
+            $(element).after(error);
+        },
+        success       : function(label){
+            label.addClass('validate_right').text('OK!');
+        },
+        onkeyup : false,
+        rules : {
+            price      : {
+                number     : true,
+                min : 0
+            },
+            stock      : {
+                digits    : true
+            }
+        },
+        messages : {
+            price       : {
+                number     : '{$lang.number_only}',
+                min : '{$lang.price_ge_0}'
+            },
+            stock       : {
+                digits  : '{$lang.number_only}'
+            }
+        }
+    });
 });
 //]]>
 </script>
@@ -19,7 +47,7 @@ $(function(){
   <div id="right"> {include file=member.submenu.html}
     <div class="wrap">
       <div class="public">
-        <form method="POST" enctype="multipart/form-data">
+        <form id="batch_form" method="POST" enctype="multipart/form-data">
           <div class="information_index">
             <div class="add_wrap">
               <div class="assort">
@@ -87,6 +115,7 @@ $(function(){
                   <select name="price_change">{html_options options=$lang.change_array}</select>
                   <input name="price" type="text" class="text" />
                 </p>
+                <p class="new_add"><span>{$lang.note_for_input}</span></p>
               </div>
               <div class="assort">
                 <p class="txt">{$lang.stock}: </p>
@@ -94,6 +123,7 @@ $(function(){
                   <select name="stock_change">{html_options options=$lang.change_array}</select>
                   <input name="stock" type="text" class="text" />
                 </p>
+                <p class="new_add"><span>{$lang.note_for_input}</span></p>
               </div>
             </div>
           </div>

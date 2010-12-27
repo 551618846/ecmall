@@ -189,6 +189,7 @@ class BaseApp extends Object
         }
 
         $data = array();
+        setlocale (LC_ALL, array ('zh_CN.gbk', 'zh_CN.gb2312', 'zh_CN.gb18030')); // 解决linux系统fgetcsv解析GBK文件时可能产生乱码的bug
         $handle = fopen($filename, "r");
         while (($row = fgetcsv($handle, 100000, $delimiter)) !== FALSE) {
             if ($need_convert)

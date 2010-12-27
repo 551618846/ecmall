@@ -50,7 +50,7 @@ class My_shippingApp extends StoreadminbaseApp
         /* 当前所处子菜单 */
         $this->_curmenu('shipping_list');
 
-        $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('my_shipping'));
+        $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('my_shipping'));
         header("Content-Type:text/html;charset=" . CHARSET);
         $this->display('my_shipping.index.html');
     }
@@ -95,8 +95,7 @@ class My_shippingApp extends StoreadminbaseApp
             if (!($shipping_id = $model_shipping->add($data)))
             {
                 //$this->show_warning($model_shipping->get_error());
-                $msg = $model_shipping->get_error();
-                $this->pop_warning($msg['msg']);
+                $this->pop_warning($model_shipping->get_error());
                 return;
             }
             $this->pop_warning('ok', 'my_shipping_add');

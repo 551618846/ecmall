@@ -31,5 +31,6 @@ return array(
         '</table>',
     'no_records' => '您还没有添加分类',
     'editable' => '可编辑',
+    'csv_simple' => 'CSV样例下载'
 );
 ?>

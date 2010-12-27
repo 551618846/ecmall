@@ -84,7 +84,7 @@ class Buyer_groupbuyApp extends MemberbaseApp
              'finished' => Lang::get('group_finished'),
              'canceled' => Lang::get('group_canceled'))
         );
-        $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('my_groupbuy'));
+        $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('my_groupbuy'));
         $this->display('buyer_groupbuy.index.html');
     }
 

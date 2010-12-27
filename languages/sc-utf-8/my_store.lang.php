@@ -29,5 +29,7 @@ return array(
     'contact_info' => '填写后将显示在店铺信息栏里，可留空',
     'msn_info' => '激活后将显示在店铺信息栏里',
     'uploadedfile' => '上传图片',
+    'note_for_store_name' => '请控制在20个字以内',
+    'name_exist' => '店铺名称已经存在，请换一个'
 );
 ?>

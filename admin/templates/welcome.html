@@ -7,7 +7,7 @@ $(function(){
         $.each(data,function(i){
             message += '<li>' + data[i] + '</li>';
         });
-        $('#notice').html(message);
+        $('#news').html(message);
     }
 );
 });
@@ -39,7 +39,7 @@ alert(dangerous_apps);
 <!--{/if}-->
 <dt>{$lang.ecmall_news}</dt>
 <dd>
-    <ul id="notice" style="height:16px;">
+    <ul id="news">
     </ul>
 </dd>
 <!--{if $remind_info}-->
@@ -76,7 +76,7 @@ alert(dangerous_apps);
             <th>{$lang.user_qty}:</th>
             <td class="td">{$stats.user_qty}</td>
             <th>{$lang.store_qty}:</th>
-            <td class="td">{$stats.store_qty}</td>
+            <td class="td">{$stats.store_qty}/{$stats.apply_qty}</td>
         </tr>
         <tr>
             <th>{$lang.goods_qty}:</th>

@@ -12,7 +12,7 @@
                         <th class="width1"><input id="all" type="checkbox" class="checkall" /></th>
                         <th class="align1" colspan="3">
                             <label for="all"><span class="all">{$lang.checkall}</span></label>
-                            <a href="#" class="delete" ectype="batchbutton" uri="index.php?app=my_qa&amp;act=drop" name="id" presubmit="confirm('{$lang.drop_confirm}')">{$lang.drop}</a>
+                            <a href="javascript:void(0);" class="delete" ectype="batchbutton" uri="index.php?app=my_qa&amp;act=drop" name="id" presubmit="confirm('{$lang.drop_confirm}')">{$lang.drop}</a>
                         </th>
                     </tr>
                     <!--{/if}-->
@@ -26,9 +26,9 @@
                             <span class="table_user"><!--{if $my_qa_list.user_name neq ''}-->{$my_qa_list.user_name|escape}<!--{else}-->{$lang.guest}<!--{/if}--></span></td>
                         <td style="width:130px">
                             <a href="javascript:drop_confirm('{$lang.drop_confirm}', 'index.php?app=my_qa&amp;act=drop&id={$my_qa_list.ques_id}');" class="delete">{$lang.drop}</a>&nbsp;&nbsp;
-                            <!--{if $my_qa_list.reply_content eq ''}--><a href="#" class="add1_ico" ectype="dialog" dialog_id="my_qa_reply" dialog_title="{$lang.reply_question}" dialog_width="400" uri="index.php?app=my_qa&amp;act=reply&amp;ques_id={$my_qa_list.ques_id}">{$lang.reply}</a>
+                            <!--{if $my_qa_list.reply_content eq ''}--><a href="javascript:void(0);" class="add1_ico reply" ectype="dialog" dialog_id="my_qa_reply" dialog_title="{$lang.reply_question}" dialog_width="400" uri="index.php?app=my_qa&amp;act=reply&amp;ques_id={$my_qa_list.ques_id}">{$lang.reply}</a>
                             <!--{else}-->
-                             <a href="#" class="add1_ico" ectype="dialog" dialog_id="my_qa_edit_reply" dialog_title="{$lang.edit_reply}" dialog_width="400" uri="index.php?app=my_qa&amp;act=edit_reply&amp;ques_id={$my_qa_list.ques_id}">{$lang.edit_reply}</a>                           
+                             <a href="javascript:void(0);" class="add1_ico reply" ectype="dialog" dialog_id="my_qa_edit_reply" dialog_title="{$lang.edit_reply}" dialog_width="400" uri="index.php?app=my_qa&amp;act=edit_reply&amp;ques_id={$my_qa_list.ques_id}">{$lang.edit_reply}</a>
                             <!--{/if}-->
                         </td>
                     </tr>
@@ -67,7 +67,7 @@
                         <th colspan="3">
                             <p class="position1">
                                 <label for="all2"><span class="all">{$lang.checkall}</span></label>
-                                <a href="###" class="delete" ectype="batchbutton" uri="index.php?app=my_qa&amp;act=drop" name="id" presubmit="confirm('{$lang.drop_confirm}')">{$lang.drop}</a>
+                                <a href="javascript:void(0);" class="delete" ectype="batchbutton" uri="index.php?app=my_qa&amp;act=drop" name="id" presubmit="confirm('{$lang.drop_confirm}')">{$lang.drop}</a>
                             </p>
                             <p class="position2">
                                 {include file=member.page.bottom.html}

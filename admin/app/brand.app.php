@@ -261,7 +261,8 @@ class BrandApp extends BackendApp
                    return ;
                }
            }
-           if($this->_brand_mod->edit($id, $data))
+           $this->_brand_mod->edit($id, $data);
+           if(!$this->_brand_mod->has_error())
            {
                echo ecm_json_encode(true);
            }
@@ -278,12 +279,13 @@ class BrandApp extends BackendApp
         $brand_ids = isset($_GET['id']) ? trim($_GET['id']) : '';
         if (!$brand_ids)
         {
-            $this->show_warning('no_such_navigation');
+            $this->show_warning('no_such_brand');
 
             return;
         }
         $brand_ids=explode(',',$brand_ids);
-        if (!$this->_brand_mod->drop($brand_ids))    //删除
+        $this->_brand_mod->drop($brand_ids);
+        if ($this->_brand_mod->has_error())    //删除
         {
             $this->show_warning($this->_brand_mod->get_error());
 

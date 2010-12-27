@@ -9,7 +9,7 @@ $(function(){
             return;
         }
         if($('#region_' + region_id).length == 0){
-            $('#current_cod_regions').append($('<label id="region' + region_id + '"><input type="checkbox" checked="true" name="cod_regions[' + region_id + ']" id="region_' + region_id + '" value="' + region_name + '" />&nbsp;' + region_name + '<a href="#" class="delete" onclick="del_region('+region_id+')">{$lang.drop}</a></label>'));
+            $('#current_cod_regions').append($('<label id="region' + region_id + '"><input type="checkbox" checked="true" name="cod_regions[' + region_id + ']" id="region_' + region_id + '" value="' + region_name + '" />&nbsp;' + region_name + '<a href="javascript:void(0);" class="delete" onclick="del_region('+region_id+')">{$lang.drop}</a></label>'));
         }
    });
    $('#shipping_form').validate({

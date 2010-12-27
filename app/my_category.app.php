@@ -50,7 +50,7 @@ class My_categoryApp extends StoreadminbaseApp
                          LANG::get('gcategory_list'));
         $this->_curitem('my_category');
         $this->_curmenu('gcategory_manage');
-        $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('my_category'));
+        $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('my_category'));
 //        $this->import_resource(array(
 //            'script' => 'jqtreetable.js,inline_edit.js',
 //            'style'  => 'res:jqtreetable.css')
@@ -95,7 +95,7 @@ class My_categoryApp extends StoreadminbaseApp
                              LANG::get('gcategory_add'));
             $this->_curitem('my_category');
             $this->_curmenu('gcategory_manage');
-            $this->assign('page_title', Lang::get('member_center') . Lang::get('my_category'));
+            $this->_config_seo('title', Lang::get('member_center') . Lang::get('my_category'));
 
             $pid = empty($_GET['pid']) ? 0 : intval($_GET['pid']);
             $gcategory = array('parent_id' => $pid, 'sort_order' => 255, 'if_show' => 1);
@@ -128,9 +128,7 @@ class My_categoryApp extends StoreadminbaseApp
             $cate_id = $this->_gcategory_mod->add($data);
             if (!$cate_id)
             {
-                $rs = $this->_gcategory_mod->get_error();
-                $msg = current($rs);
-                $this->pop_warning($msg['msg']);
+                $this->pop_warning($this->_gcategory_mod->get_error());
                 return;
             }
 
@@ -159,7 +157,7 @@ class My_categoryApp extends StoreadminbaseApp
         }
         return ;
     }
-    
+
     function edit()
     {
         $id = empty($_GET['id']) ? 0 : intval($_GET['id']);
@@ -182,7 +180,7 @@ class My_categoryApp extends StoreadminbaseApp
                              LANG::get('gcategory_edit'));
             $this->_curitem('my_category');
             $this->_curmenu('edit_category');
-            $this->assign('page_title', Lang::get('member_center') . Lang::get('my_category'));
+            $this->_config_seo('title', Lang::get('member_center') . Lang::get('my_category'));
             $this->import_resource(array(
                 'script' => 'jquery.plugins/jquery.validate.js'
             ));
@@ -236,15 +234,22 @@ class My_categoryApp extends StoreadminbaseApp
                        return ;
                    }
                }
-               if($this->_gcategory_mod->edit($id, $data))
+               $this->_gcategory_mod->edit($id, $data);
+               if(!$this->_gcategory_mod->has_error())
                {
                    $result = $this->_gcategory_mod->get_info($id);
                    $this->json_result($result[$column]);
+               }
+               else
+               {
+                   $this->json_error($this->_gcategory_mod->get_error());
+                   return;
                }
            }
            else
            {
                $this->json_error('unallow edit');
+               return;
            }
            return ;
        }
@@ -285,7 +290,7 @@ class My_categoryApp extends StoreadminbaseApp
                                  LANG::get('export'));
                 $this->_curitem('gcategory_manage');
                 $this->_curmenu('export');
-                $this->assign('page_title', Lang::get('member_center') . Lang::get('my_category'));
+                $this->_config_seo('title', Lang::get('member_center') . Lang::get('my_category'));
                 header("Content-Type:text/html;charset=" . CHARSET);
                 $this->display('common.export.html');
 
@@ -305,6 +310,30 @@ class My_categoryApp extends StoreadminbaseApp
         $this->export_to_csv($tree->getCSVData(), 'gcategory', $to_charset);
     }
 
+    function csv_sample()
+    {
+        $to_charset = isset($_GET['charset']) ? trim($_GET['charset']) : '';
+        if (!in_array($to_charset, array('utf-8', 'gbk', 'big5')))
+        {
+            $to_charset = 'utf-8';
+        }
+        $cates = array(
+            array('韩版女装'),
+            array('', '外套'),
+            array('', '长裙'),
+            array('', '女裤'),
+            array('包包'),
+            array('', '手提包'),
+            array('', '皮夹钱包'),
+            array('时尚女鞋'),
+            array('', '气质单鞋'),
+            array('', '运动休闲'),
+       );
+
+        $this->export_to_csv($cates, 'gcategory_' . $to_charset, $to_charset);
+
+    }
+
     /* 导入数据 */
     function import()
     {
@@ -318,7 +347,7 @@ class My_categoryApp extends StoreadminbaseApp
                              LANG::get('import'));
             $this->_curitem('my_category');
             $this->_curmenu('import');
-            $this->assign('page_title', Lang::get('member_center') . Lang::get('my_category'));
+            $this->_config_seo('title', Lang::get('member_center') . Lang::get('my_category'));
             header("Content-Type:text/html;charset=" . CHARSET);
             $this->display('common.import.html');
         }
@@ -328,6 +357,11 @@ class My_categoryApp extends StoreadminbaseApp
             if ($file['error'] != UPLOAD_ERR_OK)
             {
                 $this->pop_warning('select_file');
+                return;
+            }
+            if ($file['name'] == basename($file['name'],'.csv'))
+            {
+                $this->pop_warning('not_csv_file');
                 return;
             }
 

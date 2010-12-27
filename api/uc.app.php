@@ -123,15 +123,12 @@ class UcApp extends ApiApp
             return API_RETURN_FORBIDDEN;
         }
 
-        $uids = explode($get['ids']);
-        if (empty($uids))
+        /* 同步删除本地用户 */
+        $this->user_mod->drop('user_id IN (' . $get['ids'] . ')');
+        if ($this->user_mod->has_error())
         {
             return API_RETURN_FAILED;
         }
-
-        /* 同步删除本地用户 */
-        $this->user_mod->drop($uids);
-
         return API_RETURN_SUCCEED;
     }
 

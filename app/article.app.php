@@ -60,7 +60,7 @@ class ArticleApp extends MallbaseApp
 
         // 页面标题
         $category = $this->_acategory_mod->get_info($cate_id);
-        $this->assign('page_title', $category['cate_name'] . ' - ' . Conf::get('site_title'));
+        $this->_config_seo('title', $category['cate_name'] . ' - ' . Conf::get('site_title'));
 
         $this->assign('articles', $articles);
         $this->assign('new_articles', $new_articles);
@@ -126,7 +126,7 @@ class ArticleApp extends MallbaseApp
         $this->assign('new_articles', $new_articles);
         $this->assign('acategories', $acategories);
 
-        $this->assign('page_title', $article['title'] . ' - ' . Conf::get('site_title'));
+        $this->_config_seo('title', $article['title'] . ' - ' . Conf::get('site_title'));
         $this->display('article.view.html');
     }
 
@@ -162,7 +162,7 @@ class ArticleApp extends MallbaseApp
         $this->assign('new_articles', $new_articles);
         $this->assign('article', $article);
 
-        $this->assign('page_title', $article['title'] . ' - ' . Conf::get('site_title'));
+        $this->_config_seo('title', $article['title'] . ' - ' . Conf::get('site_title'));
         $this->display('article.view.html');
 
     }

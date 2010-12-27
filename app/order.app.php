@@ -58,7 +58,7 @@ class OrderApp extends ShoppingbaseApp
             $this->_curlocal(
                 LANG::get('create_order')
             );
-            $this->assign('page_title', Lang::get('confirm_order') . ' - ' . Conf::get('site_title'));
+            $this->_config_seo('title', Lang::get('confirm_order') . ' - ' . Conf::get('site_title'));
             $this->assign('goods_info', $goods_info);
             $this->assign($form['data']);
             $this->display($form['template']);

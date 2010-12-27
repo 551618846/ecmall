@@ -23,7 +23,7 @@ class GroupbuyApp extends StorebaseApp
 
     function index()
     {
-        $id = empty($_GET['id']) ? 0 : $_GET['id'];
+        $id = empty($_GET['id']) ? 0 : intval($_GET['id']);
         if (!$id)
         {
             $this->show_warning('no_such_groupbuy');
@@ -72,7 +72,7 @@ class GroupbuyApp extends StorebaseApp
                 $group['state'] = GROUP_CANCELED; // 取消团购
 
                 /* 通知买家和站长 */
-                $content = get_msg('tobuyer_group_auto_cancel_notify', array('cancel_days' => GROUP_CANCEL_INTERVAL,'url' => url("app=groupbuy&id=$id")));
+                $content = get_msg('tobuyer_group_auto_cancel_notify', array('cancel_days' => GROUP_CANCEL_INTERVAL,'url' => SITE_URL . '/' . url("app=groupbuy&id=$id")));
                 $this->_groupbuy_mod->sys_notice(
                     $id,
                     array('admin','buyer'),
@@ -139,7 +139,7 @@ class GroupbuyApp extends StorebaseApp
             $this->assign('page_info',  $data['page_info']);
             $this->assign('qa_info',    $data['qa_info']);
             /* 页面标题 */
-            $this->assign('page_title', $group['group_name'] . ' - ' .Lang::get('groupbuy') . ' - ' . Conf::get('site_title'));
+            $this->_config_seo('title', $group['group_name'] . ' - ' .Lang::get('groupbuy') . ' - ' . Conf::get('site_title'));
             $this->_import_resource();
             $this->assign('store', $store);
             $this->assign('goods', $goods);

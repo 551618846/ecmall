@@ -6,6 +6,7 @@ class ApplyApp extends MallbaseApp
 
     function index()
     {
+        $step = isset($_GET['step']) ? intval($_GET['step']) : 1;
         /* 判断是否开启了店铺申请 */
         if (!Conf::get('store_allow'))
         {
@@ -22,7 +23,7 @@ class ApplyApp extends MallbaseApp
 
         /* 已申请过或已有店铺不能再申请 */
         $store_mod =& m('store');
-        $store = $store_mod->get_info($this->visitor->get('user_id'));
+        $store = $store_mod->get($this->visitor->get('user_id'));
         if ($store)
         {
             if ($store['state'])
@@ -32,12 +33,15 @@ class ApplyApp extends MallbaseApp
             }
             else
             {
-                $this->show_warning('user_has_application');
-                return;
+                if ($step != 2)
+                {
+                    $this->show_warning('user_has_application');
+                    return;
+                }                
             }
         }
         $sgrade_mod =& m('sgrade');
-        $step = isset($_GET['step']) ? intval($_GET['step']) : 1;
+        
         switch ($step)
         {
             case 1:
@@ -70,7 +74,7 @@ class ApplyApp extends MallbaseApp
                 $this->assign('domain', ENABLED_SUBDOMAIN);
                 $this->assign('sgrades', $sgrades);
 
-                $this->assign('page_title', Lang::get('title_step1') . ' - ' . Conf::get('site_title'));
+                $this->_config_seo('title', Lang::get('title_step1') . ' - ' . Conf::get('site_title'));
                 $this->display('apply.step1.html');
                 break;
             case 2:
@@ -93,7 +97,14 @@ class ApplyApp extends MallbaseApp
                     /* 导入jQuery的表单验证插件 */
                     $this->import_resource(array('script' => 'mlselection.js,jquery.plugins/jquery.validate.js'));
 
-                    $this->assign('page_title', Lang::get('title_step2') . ' - ' . Conf::get('site_title'));
+                    $this->_config_seo('title', Lang::get('title_step2') . ' - ' . Conf::get('site_title'));
+                    $this->assign('store', $store);
+                    $scategory = $store_mod->getRelatedData('has_scategory', $this->visitor->get('user_id'));
+                    if ($scategory)
+                    {
+                        $scategory = current($scategory);
+                    }
+                    $this->assign('scategory', $scategory);
                     $this->display('apply.step2.html');
                 }
                 else
@@ -123,15 +134,29 @@ class ApplyApp extends MallbaseApp
 
                         return;
                     }
-                    if ($store_mod->add(array_merge($data, $image)) === false)
+                    
+                    /* 判断是否已经申请过 */
+                    $state = $this->visitor->get('state');
+                    if ($state != '' && $state == STORE_APPLYING)
+                    {
+                        $store_mod->edit($store_id, array_merge($data, $image));
+                    }
+                    else
+                    {
+                        $store_mod->add(array_merge($data, $image));
+                    }
+                    
+                    if ($store_mod->has_error())
                     {
                         $this->show_warning($store_mod->get_error());
                         return;
                     }
+                    
 
                     $cate_id = intval($_POST['cate_id']);
+                    $store_mod->unlinkRelation('has_scategory', $store_id);
                     if ($cate_id > 0)
-                    {
+                    {                        
                         $store_mod->createRelation('has_scategory', $store_id, $cate_id);
                     }
 
@@ -163,9 +188,10 @@ class ApplyApp extends MallbaseApp
     function check_name()
     {
         $store_name = empty($_GET['store_name']) ? '' : trim($_GET['store_name']);
+        $store_id = empty($_GET['store_id']) ? 0 : intval($_GET['store_id']);
 
         $store_mod =& m('store');
-        if (!$store_mod->unique($store_name))
+        if (!$store_mod->unique($store_name, $store_id))
         {
             echo ecm_json_encode(false);
             return;

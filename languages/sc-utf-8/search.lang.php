@@ -1,7 +1,7 @@
 <?php
 
 return array(
-    'searched_goods' => '搜索结果',
+    'searched_goods' => '搜索商品',
     'display_mode' => '显示',
     'display_by_list' => '以列表显示',
     'display_by_item' => '以方格显示',
@@ -57,7 +57,8 @@ return array(
     'recom_groupbuy_lefttime' => '剩余:%d天%h小时',
     'groupbuy' => '团购活动',
     'no_groupbuy' => '没有找到相关团购活动',
-    'views' => '人气'
+    'views' => '人气',
+    'no_such_category' => '很抱歉!该分类不存在'
 );
 
 ?>

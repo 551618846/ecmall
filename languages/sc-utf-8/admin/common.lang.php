@@ -194,6 +194,7 @@ return array(
     'renrenwang' => '人人网',
     'kaixinwang' => '开心网',
     'share_link' => '分享链接',
+    'not_csv_file' => '您选择的文件不是CSV格式'
 );
 
 ?>

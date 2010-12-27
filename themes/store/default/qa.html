@@ -31,16 +31,18 @@ $(function(){
             <dd>{$qainfo.question_content|escape|nl2br}</dd>
             <p>
                 <span class="name"><!-- {if $qainfo.user_name} -->{$qainfo.user_name}<!--{else}-->{$lang.guest}<!-- {/if} -->
-                <br />
-                {$qainfo.time_post|date:complete}</span>
+                </span>
             </p>
+            <dd>
+                <p>{$qainfo.time_post|date:complete}</p>
+            </dd>
         </dl>
         <!-- {if $qainfo.reply_content} -->
         <dl class="revert_to">
             <dt>{$lang.store_reply}: </dt>
             <dd>{$qainfo.reply_content|escape|nl2br}</dd>
             <p>
-                <span class="name">{$qainfo.time_reply|date:complete}</span>
+                <span class="date">{$qainfo.time_reply|date:complete}</span>
             </p>
         </dl>
         <!-- {/if} -->

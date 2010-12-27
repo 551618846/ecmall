@@ -40,7 +40,7 @@ class MessageApp extends MemberbaseApp
             'style' =>  'jquery.ui/themes/ui-lightness/jquery.ui.css',
         ));
         $this->assign('messages', $this->_list_message('newpm', $this->visitor->get('user_id')));
-        $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('newpm'));
+        $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('newpm'));
         $this->display('message.box.html');
     }
 
@@ -83,7 +83,7 @@ class MessageApp extends MemberbaseApp
         $messages = $this->_list_message('privatepm', $this->visitor->get('user_id'));
         
         $this->assign('messages', $messages);
-        $this->assign('page_title', Lang::get('user_center') . ' - ' . Lang::get('privatepm'));
+        $this->_config_seo('title', Lang::get('user_center') . ' - ' . Lang::get('privatepm'));
         $this->display('message.box.html');
     }
     
@@ -118,7 +118,7 @@ class MessageApp extends MemberbaseApp
         /* 当前用户中心菜单 */
         $this->_curitem('message');
         $this->assign('messages', $this->_list_message('systempm', $this->visitor->get('user_id')));
-        $this->assign('page_title', Lang::get('user_center') . ' - ' . Lang::get('systempm'));
+        $this->_config_seo('title', Lang::get('user_center') . ' - ' . Lang::get('systempm'));
         $this->display('message.box.html');
     }
     
@@ -153,7 +153,7 @@ class MessageApp extends MemberbaseApp
         /* 当前用户中心菜单 */
         $this->_curitem('message');
         $this->assign('messages', $this->_list_message('announcepm', $this->visitor->get('user_id')));
-        $this->assign('page_title', Lang::get('user_center') . ' - ' . Lang::get('announcepm'));
+        $this->_config_seo('title', Lang::get('user_center') . ' - ' . Lang::get('announcepm'));
         $this->display('message.box.html');
     }
     /**
@@ -198,7 +198,7 @@ class MessageApp extends MemberbaseApp
             $this->import_resource(array(
                 'script' => 'jquery.plugins/jquery.validate.js',
             ));
-            $this->assign('page_title', Lang::get('user_center') . ' - ' . Lang::get('send_message'));
+            $this->_config_seo('title', Lang::get('user_center') . ' - ' . Lang::get('send_message'));
             $this->display('message.send.html');
         }
         else
@@ -317,7 +317,7 @@ class MessageApp extends MemberbaseApp
             }
             $this->assign('message', $message['topic']);
             $this->assign('replies', $message['replies']);
-            $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('view_message'));
+            $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('view_message'));
             $this->assign('box', $box);
             /* 当前位置 */
             $this->_curlocal(LANG::get('member_center'),   'index.php?app=member',

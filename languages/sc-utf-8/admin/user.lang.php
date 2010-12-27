@@ -42,9 +42,10 @@ return array(
     'is_admin' => '已是管理员',
     'cannot_drop_admin' =>'该会员是管理员,不能删除',
     'drop_admin' =>'查看管理员',
-    'user_length_limit' => '用户名的长度应在3-25个字符之间',
+    'user_length_limit' => '用户名的长度应在3-15个字符之间',
     'email_error'   => '电子邮箱错误',
     'email_not_empty' => '电子邮箱不能为空',
     'password_length_error' => '密码长度错误，应在6到20位之间',
+    'drop_confirm' => '你确定要删除它吗？该操作不会删除ucenter及其他整合应用中的用户'
 );
 ?>

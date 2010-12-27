@@ -2,15 +2,15 @@
 <script language="javascript">
 $(function(){
     $("img[backup_name]").click(function(){
-        if($(this).attr('expanded')==true){
+        if($(this).attr('expanded')=="true"){
             $(this).attr('src', 'templates/style/images/treetable/tv-expandable.gif');
             $("tr[parent='"+$(this).attr('backup_name')+"']").hide();
-            $(this).attr('expanded', false);
+            $(this).attr('expanded', "false");
         }
         else{
             $(this).attr('src', 'templates/style/images/treetable/tv-collapsable.gif');
             $("tr[parent='"+$(this).attr('backup_name')+"']").show();
-            $(this).attr('expanded', true);
+            $(this).attr('expanded', "true");
         }
     });
 });

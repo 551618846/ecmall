@@ -28,7 +28,7 @@ $(function()
                         <th class="width1"><input id="all" type="checkbox" class="checkall" /></th>
                         <th class="align1" colspan="4">
                            <label for="all"> <span class="all">{$lang.checkall}</span> </label>
-                            <a href="#" class="delete" ectype="batchbutton" uri="index.php?app=my_category&act=drop" name="id" presubmit="confirm('{$lang.drop_confirm}')">{$lang.drop}</a>
+                            <a href="javascript:void(0);" class="delete" ectype="batchbutton" uri="index.php?app=my_category&act=drop" name="id" presubmit="confirm('{$lang.drop_confirm}')">{$lang.drop}</a>
                         </th>
                     </tr>
                     <tr class="gray" ectype="table_header">
@@ -52,9 +52,9 @@ $(function()
                         </td>
                     <td class="padding5">
                         <!-- {if $gcategory.layer lt 2} -->
-                         <a href="#" ectype="dialog" dialog_width="480" dialog_title="{$lang.add_child}" dialog_id="my_category_add" uri="index.php?app=my_category&amp;act=add&amp;pid={$gcategory.cate_id}" class="add1_ico">{$lang.add_child}</a>
+                         <a href="javascript:void(0);" ectype="dialog" dialog_width="480" dialog_title="{$lang.add_child}" dialog_id="my_category_add" uri="index.php?app=my_category&amp;act=add&amp;pid={$gcategory.cate_id}" class="add1_ico">{$lang.add_child}</a>
                         <!-- {/if} -->
-                        <a href="#" ectype="dialog" dialog_width="480" dialog_title="{$lang.edit}" dialog_id="my_category_edit" uri="index.php?app=my_category&amp;act=edit&amp;id={$gcategory.cate_id}" class="edit1">{$lang.edit}</a>  <a href="javascript:drop_confirm('{$lang.drop_confirm}', 'index.php?app=my_category&amp;act=drop&id={$gcategory.cate_id}');" class="delete">{$lang.drop}</a>
+                        <a href="javascript:void(0);" ectype="dialog" dialog_width="480" dialog_title="{$lang.edit}" dialog_id="my_category_edit" uri="index.php?app=my_category&amp;act=edit&amp;id={$gcategory.cate_id}" class="edit1">{$lang.edit}</a>  <a href="javascript:drop_confirm('{$lang.drop_confirm}', 'index.php?app=my_category&amp;act=drop&id={$gcategory.cate_id}');" class="delete">{$lang.drop}</a>
 
                         </td>
                 </tr>
@@ -73,7 +73,7 @@ $(function()
                 <tr>
                     <th><input id="all2" type="checkbox" class="checkall" /></td>
                     <th colspan="4"><p class="position1"><label for="all2"><span class="all">{$lang.checkall}</span></label>
-                     <a href="###" ectype="batchbutton" class="delete" uri="index.php?app=my_category&act=drop" name="id" presubmit="confirm('{$lang.drop_confirm}')">{$lang.drop}</a></p></td>
+                     <a href="javascript:void(0);" ectype="batchbutton" class="delete" uri="index.php?app=my_category&act=drop" name="id" presubmit="confirm('{$lang.drop_confirm}')">{$lang.drop}</a></p></td>
                 </tr>
                 <!-- {/if} -->
                 </table>

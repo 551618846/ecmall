@@ -29,7 +29,9 @@ class StoreApp extends StorebaseApp
         /* 当前位置 */
         $this->_curlocal(LANG::get('all_stores'), 'index.php?app=search&amp;act=store', $store['store_name']);
 
-        $this->assign('page_title', $store['store_name'] . ' - ' . Conf::get('site_title'));
+        $this->_config_seo('title', $store['store_name'] . ' - ' . Conf::get('site_title'));
+        /* 配置seo信息 */
+        $this->_config_seo($this->_get_seo_info($store));
         $this->display('store.index.html');
     }
 
@@ -55,7 +57,7 @@ class StoreApp extends StorebaseApp
             LANG::get('goods_list')
         );
 
-        $this->assign('page_title', Lang::get('goods_list') . ' - ' . $store['store_name']);
+        $this->_config_seo('title', Lang::get('goods_list') . ' - ' . $store['store_name']);
         $this->display('store.search.html');
     }
 
@@ -141,7 +143,7 @@ class StoreApp extends StorebaseApp
 
         $this->assign('groupbuy_list', $groupbuy_list);
         $this->assign('search_name', $search_name);
-        $this->assign('page_title', $search_name[0]['text'] . ' - ' . $store['store_name']);
+        $this->_config_seo('title', $search_name[0]['text'] . ' - ' . $store['store_name']);
         $this->display('store.groupbuy.html');
     }
 
@@ -172,7 +174,7 @@ class StoreApp extends StorebaseApp
             $article['title']
         );
 
-        $this->assign('page_title', $article['title'] . ' - ' . $store['store_name']);
+        $this->_config_seo('title', $article['title'] . ' - ' . $store['store_name']);
         $this->display('store.article.html');
     }
 
@@ -267,7 +269,7 @@ class StoreApp extends StorebaseApp
             LANG::get('credit_evaluation')
         );
 
-        $this->assign('page_title', Lang::get('credit_evaluation') . ' - ' . $store['store_name']);
+        $this->_config_seo('title', Lang::get('credit_evaluation') . ' - ' . $store['store_name']);
         $this->display('store.credit.html');
     }
 
@@ -412,6 +414,20 @@ class StoreApp extends StorebaseApp
     {
         $article_mod =& m('article');
         return $article_mod->get_info($id);
+    }
+    
+    function _get_seo_info($data)
+    {
+        $seo_info = $keywords = array();
+        $seo_info['title'] = $data['store_name'] . ' - ' . Conf::get('site_title');        
+        $keywords = array(
+            str_replace("\t", ' ', $data['region_name']),
+            $data['store_name'],
+        );
+        //$seo_info['keywords'] = implode(',', array_merge($keywords, $data['tags']));
+        $seo_info['keywords'] = implode(',', $keywords);
+        $seo_info['description'] = sub_str(strip_tags($data['description']), 10, true);
+        return $seo_info;
     }
 }
 

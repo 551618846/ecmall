@@ -2,6 +2,15 @@
 <script type="text/javascript">
 $(function(){
     var t = new EditableTable($('#my_goods'));
+    $('#truncate').click(function(){
+        var goods_ids = '{$goods_ids}';
+        if(goods_ids && confirm('{sprintf lang=truncate_confirm var1=page_info.item_count}')){
+            $('#my_goods_form').append('<input type="hidden" name="act" value="truncate" />');
+            $('#my_goods_form').append('<input type="hidden" name="goods_ids" value="' + goods_ids + '" />');
+            $('#my_goods_form').submit();
+            return false;
+        }
+    });
 });
 </script>
 <style>
@@ -25,12 +34,13 @@ $(function(){
                         <th class="width1"><input type="checkbox" id="all" class="checkall"/></th>
                         <th class="align1" colspan="2">
                             <span class="all"><label for="all">{$lang.checkall}</label></span>
-                            <a href="#" class="edit" ectype="batchbutton" uri="index.php?app=my_goods&act=batch_edit" name="id">{$lang.edit}</a>
-                            <a href="#" class="delete" ectype="batchbutton" uri="index.php?app=my_goods&act=drop" name="id" presubmit="confirm('{$lang.drop_confirm}')">{$lang.drop}</a>
+                            <a href="javascript:void(0);" class="edit" ectype="batchbutton" uri="index.php?app=my_goods&act=batch_edit" name="id">{$lang.edit}</a>
+                            <a href="javascript:void(0);" class="delete" ectype="batchbutton" uri="index.php?app=my_goods&act=drop" name="id" presubmit="confirm('{$lang.drop_confirm}')">{$lang.drop}</a>
                         </th>
                         <th colspan="8">
                             <div class="select_div">
-                            <form method="get">
+                            <form id="my_goods_form" method="get">
+                            <a id="truncate" class="detlink" style="float:right" href="javascript:;">{$lang.truncate}</a>
                             <!--{if $filtered}-->
                             <a class="detlink" style="float:right" href="{url app=my_goods}">{$lang.cancel_query}</a>
                             <!--{/if}-->
@@ -88,15 +98,15 @@ $(function(){
                     <!--{/foreach}-->
                     <!--{if $goods_list}-->
                     <tr class="line_bold line_bold_bottom">
-                        <td colspan="11">¡¡</td>
+                        <td colspan="11"> </td>
                     </tr>
                     <tr>
                         <th><input type="checkbox" id="all2" class="checkall"/></th>
                         <th colspan="10">
                             <p class="position1">
                                 <span class="all"><label for="all2">{$lang.checkall}</label></span>
-                                <a href="#" class="edit" ectype="batchbutton" uri="index.php?app=my_goods&amp;act=batch_edit" name="id">{$lang.edit}</a>
-                                <a href="#" class="delete" uri="index.php?app=my_goods&act=drop" name="id" presubmit="confirm('{$lang.drop_confirm}')" ectype="batchbutton">{$lang.drop}</a>
+                                <a href="javascript:void(0);" class="edit" ectype="batchbutton" uri="index.php?app=my_goods&amp;act=batch_edit&ret_page={$page_info.curr_page}" name="id">{$lang.edit}</a>
+                                <a href="javascript:void(0);" class="delete" uri="index.php?app=my_goods&act=drop" name="id" presubmit="confirm('{$lang.drop_confirm}')" ectype="batchbutton">{$lang.drop}</a>
                             </p>
                             <p class="position2">
                                 {include file=member.page.bottom.html}

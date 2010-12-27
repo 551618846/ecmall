@@ -108,13 +108,19 @@ class MemberApp extends MemberbaseApp
             $this->assign('sgrade', $sgrade);
 
         }
+
+        /* 待审核提醒 */
+        if ($user['state'] != '' && $user['state'] == STORE_APPLYING)
+        {
+            $this->assign('applying', 1);
+        }
         /* 当前位置 */
         $this->_curlocal(LANG::get('member_center'),    url('app=member'),
                          LANG::get('overview'));
 
         /* 当前用户中心菜单 */
         $this->_curitem('overview');
-        $this->assign('page_title', Lang::get('member_center'));
+        $this->_config_seo('title', Lang::get('member_center'));
         $this->display('member.index.html');
     }
 
@@ -151,7 +157,7 @@ class MemberApp extends MemberbaseApp
             }
             $this->assign('ret_url', rawurlencode($ret_url));
             $this->_curlocal(LANG::get('user_register'));
-            $this->assign('page_title', Lang::get('user_register') . ' - ' . Conf::get('site_title'));
+            $this->_config_seo('title', Lang::get('user_register') . ' - ' . Conf::get('site_title'));
 
             if (Conf::get('captcha_status.register'))
             {
@@ -219,10 +225,13 @@ class MemberApp extends MemberbaseApp
             $this->_hook('after_register', array('user_id' => $user_id));
             //登录
             $this->_do_login($user_id);
+            
+            /* 同步登陆外部系统 */
+            $synlogin = $ms->user->synlogin($user_id);
 
             #TODO 可能还会发送欢迎邮件
 
-            $this->show_message('register_successed',
+            $this->show_message(Lang::get('register_successed') . $synlogin,
                 'back_before_register', rawurldecode($_POST['ret_url']),
                 'enter_member_center', 'index.php?app=member',
                 'apply_store', 'index.php?app=apply'
@@ -283,7 +292,7 @@ class MemberApp extends MemberbaseApp
                 'script' => 'jquery.plugins/jquery.validate.js',
             ));
             $this->assign('edit_avatar', $edit_avatar);
-            $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('my_profile'));
+            $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('my_profile'));
             $this->display('member.profile.html');
         }
         else
@@ -340,7 +349,7 @@ class MemberApp extends MemberbaseApp
             $this->import_resource(array(
                 'script' => 'jquery.plugins/jquery.validate.js',
             ));
-            $this->assign('page_title', Lang::get('user_center') . ' - ' . Lang::get('edit_password'));
+            $this->_config_seo('title', Lang::get('user_center') . ' - ' . Lang::get('edit_password'));
             $this->display('member.password.html');
         }
         else
@@ -407,7 +416,7 @@ class MemberApp extends MemberbaseApp
             $this->import_resource(array(
                 'script' => 'jquery.plugins/jquery.validate.js',
             ));
-            $this->assign('page_title', Lang::get('user_center') . ' - ' . Lang::get('edit_email'));
+            $this->_config_seo('title', Lang::get('user_center') . ' - ' . Lang::get('edit_email'));
             $this->display('member.email.html');
         }
         else
@@ -467,7 +476,7 @@ class MemberApp extends MemberbaseApp
 
             /* 当前所处子菜单 */
             $this->_curmenu('feed_settings');
-            $this->assign('page_title', Lang::get('user_center') . ' - ' . Lang::get('feed_settings'));
+            $this->_config_seo('title', Lang::get('user_center') . ' - ' . Lang::get('feed_settings'));
 
             $user_feed_config = $this->visitor->get('feed_config');
             $default_feed_config = Conf::get('default_feed_config');

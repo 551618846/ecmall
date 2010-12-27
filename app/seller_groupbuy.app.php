@@ -96,7 +96,7 @@ class Seller_groupbuyApp extends StoreadminbaseApp
              'finished' => Lang::get('group_finished'),
              'canceled' => Lang::get('group_canceled'))
         );
-        $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('groupbuy_manage'));
+        $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('groupbuy_manage'));
         $this->display('seller_groupbuy.index.html');
     }
 
@@ -123,7 +123,7 @@ class Seller_groupbuyApp extends StoreadminbaseApp
             $this->_curmenu('add_groupbuy');
             $this->assign('group', array('max_per_user' => 0, 'end_time' => gmtime() + 7 * 24 * 3600));
             $this->assign('store_id', $this->_store_id);
-            $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('add_groupbuy'));
+            $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('add_groupbuy'));
             $this->_import_resource();
             $this->display('seller_groupbuy.form.html');
         }
@@ -200,7 +200,7 @@ class Seller_groupbuyApp extends StoreadminbaseApp
             }
             $this->assign('group', $group);
             $this->assign('goods', $goods);
-            $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('edit_groupbuy'));
+            $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('edit_groupbuy'));
             $this->_import_resource();
             $this->display('seller_groupbuy.form.html');
         }
@@ -334,7 +334,7 @@ class Seller_groupbuyApp extends StoreadminbaseApp
                 'fields'     => 'group_desc',
             ));
             $this->assign('group', $group);
-            $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('desc_groupbuy'));
+            $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('desc_groupbuy'));
             $this->display('seller_groupbuy.desc.html');
         }
         else
@@ -387,7 +387,7 @@ class Seller_groupbuyApp extends StoreadminbaseApp
 
 
             $this->assign('group', $group);
-            $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('desc_groupbuy'));
+            $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('desc_groupbuy'));
             $this->display('seller_groupbuy.cancel.html');
         }
         else
@@ -398,7 +398,7 @@ class Seller_groupbuyApp extends StoreadminbaseApp
 
                 return;
             }
-            $content = get_msg('tobuyer_groupbuy_cancel_notify', array('reason' => $_POST['reason'], 'url' => url("app=groupbuy&id=$id")));
+            $content = get_msg('tobuyer_groupbuy_cancel_notify', array('reason' => $_POST['reason'], 'url' => SITE_URL . '/' . url("app=groupbuy&id=$id")));
             $this->_groupbuy_mod->sys_notice(
                 $id,
                 array('admin','buyer'),

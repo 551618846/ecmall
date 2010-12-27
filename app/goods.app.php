@@ -222,7 +222,7 @@ class GoodsApp extends StorebaseApp
                 $this->show_warning('goods_not_exist');
                 return false;
             }
-            $goods['tags'] = explode(',', trim($goods['tags'], ','));
+            $goods['tags'] = $goods['tags'] ? explode(',', trim($goods['tags'], ',')) : array();
 
             $data['goods'] = $goods;
 
@@ -284,8 +284,8 @@ class GoodsApp extends StorebaseApp
         /* 当前位置 */
         $this->_curlocal($data['cur_local']);
 
-        /* 页面标题 */
-        $this->assign('page_title', $goods['goods_name'] . ' - ' . Conf::get('site_title'));
+        /* 配置seo信息 */
+        $this->_config_seo($this->_get_seo_info($data['goods']));
 
         /* 商品分享 */
         $this->assign('share', $data['share']);
@@ -485,6 +485,20 @@ class GoodsApp extends StorebaseApp
                 $share['link']);
         }
         return $shares;
+    }
+    
+    function _get_seo_info($data)
+    {
+        $seo_info = $keywords = array();
+        $seo_info['title'] = $data['goods_name'] . ' - ' . Conf::get('site_title');        
+        $keywords = array(
+            $data['brand'],
+            $data['goods_name'],
+            $data['cate_name']
+        );
+        $seo_info['keywords'] = implode(',', array_merge($keywords, $data['tags']));        
+        $seo_info['description'] = sub_str(strip_tags($data['description']), 10, true);
+        return $seo_info;
     }
 }
 

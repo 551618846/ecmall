@@ -22,6 +22,11 @@ class SearchApp extends MallbaseApp
             header('Location: index.php?app=category');
             exit;
         }
+        if (isset($param['cate_id']) && $param['layer'] === false)
+        {
+            $this->show_warning('no_such_category');
+            return;
+        }
 
         /* 筛选条件 */
         $this->assign('filters', $this->_get_filter($param));
@@ -85,8 +90,9 @@ class SearchApp extends MallbaseApp
         /* 当前位置 */
         $cate_id = isset($param['cate_id']) ? $param['cate_id'] : 0;
         $this->_curlocal($this->_get_goods_curlocal($cate_id));
-
-        $this->assign('page_title', Conf::get('site_title'));
+        
+        /* 配置seo信息 */
+        $this->_config_seo($this->_get_seo_info('goods', $cate_id));
         $this->display('search.goods.html');
     }
 
@@ -181,7 +187,8 @@ class SearchApp extends MallbaseApp
         $this->assign('cate_id', $cate_id);
         $this->assign('scategorys', $scategorys);
         $this->assign('page_info', $page);
-        $this->assign('page_title', Conf::get('site_title'));
+        /* 配置seo信息 */
+        $this->_config_seo($this->_get_seo_info('store', $cate_id));
         $this->display('search.store.html');
     }
 
@@ -255,7 +262,7 @@ class SearchApp extends MallbaseApp
         $this->assign('orders', $orders);
         // 当前位置
         $this->_curlocal(array(array('text' => Lang::get('groupbuy'))));
-        $this->assign('page_title', Lang::get('groupbuy') . ' - ' . Conf::get('site_title'));
+        $this->_config_seo('title', Lang::get('groupbuy') . ' - ' . Conf::get('site_title'));
         $page['item_count'] = $groupbuy_mod->getCount();   //获取统计数据
         $this->_format_page($page);
         $this->assign('nav_groupbuy', 1); // 标识当前页面是团购列表，用于设置导航状态
@@ -374,55 +381,59 @@ class SearchApp extends MallbaseApp
      */
     function _get_query_param()
     {
-        $res = array();
-
-        // keyword
-        $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
-        if ($keyword != '')
+        static $res = null;
+        if ($res === null)
         {
-            //$keyword = preg_split("/[\s," . Lang::get('comma') . Lang::get('whitespace') . "]+/", $keyword);
-            $tmp = str_replace(array(Lang::get('comma'),Lang::get('whitespace'),' '),',', $keyword);
-            $keyword = explode(',',$tmp);
-            sort($keyword);
-            $res['keyword'] = $keyword;
-        }
-
-        // cate_id
-        if (isset($_GET['cate_id']) && intval($_GET['cate_id']) > 0)
-        {
-            $res['cate_id'] = $cate_id = intval($_GET['cate_id']);
-            $gcategory_mod  =& bm('gcategory');
-            $res['layer']   = $gcategory_mod->get_layer($cate_id, true);
-        }
-
-        // brand
-        if (isset($_GET['brand']))
-        {
-            $brand = trim($_GET['brand']);
-            $res['brand'] = $brand;
-        }
-
-        // region_id
-        if (isset($_GET['region_id']) && intval($_GET['region_id']) > 0)
-        {
-            $res['region_id'] = intval($_GET['region_id']);
-        }
-
-        // price
-        if (isset($_GET['price']))
-        {
-            $arr = explode('-', $_GET['price']);
-            $min = abs(floatval($arr[0]));
-            $max = abs(floatval($arr[1]));
-            if ($min * $max > 0 && $min > $max)
+            $res = array();
+    
+            // keyword
+            $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
+            if ($keyword != '')
             {
-                list($min, $max) = array($max, $min);
+                //$keyword = preg_split("/[\s," . Lang::get('comma') . Lang::get('whitespace') . "]+/", $keyword);
+                $tmp = str_replace(array(Lang::get('comma'),Lang::get('whitespace'),' '),',', $keyword);
+                $keyword = explode(',',$tmp);
+                sort($keyword);
+                $res['keyword'] = $keyword;
             }
-
-            $res['price'] = array(
-                'min' => $min,
-                'max' => $max
-            );
+    
+            // cate_id
+            if (isset($_GET['cate_id']) && intval($_GET['cate_id']) > 0)
+            {
+                $res['cate_id'] = $cate_id = intval($_GET['cate_id']);
+                $gcategory_mod  =& bm('gcategory');
+                $res['layer']   = $gcategory_mod->get_layer($cate_id, true);
+            }
+    
+            // brand
+            if (isset($_GET['brand']))
+            {
+                $brand = trim($_GET['brand']);
+                $res['brand'] = $brand;
+            }
+    
+            // region_id
+            if (isset($_GET['region_id']) && intval($_GET['region_id']) > 0)
+            {
+                $res['region_id'] = intval($_GET['region_id']);
+            }
+    
+            // price
+            if (isset($_GET['price']))
+            {
+                $arr = explode('-', $_GET['price']);
+                $min = abs(floatval($arr[0]));
+                $max = abs(floatval($arr[1]));
+                if ($min * $max > 0 && $min > $max)
+                {
+                    list($min, $max) = array($max, $min);
+                }
+    
+                $res['price'] = array(
+                    'min' => $min,
+                    'max' => $max
+                );
+            }
         }
 
         return $res;
@@ -433,40 +444,45 @@ class SearchApp extends MallbaseApp
      */
     function _get_filter($param)
     {
-        $filters = array();
-        if (isset($param['keyword']))
+        static $filters = null;
+        if ($filters === null)
         {
-            $keyword = join(' ', $param['keyword']);
-            $filters['keyword'] = array('key' => 'keyword', 'name' => LANG::get('keyword'), 'value' => $keyword);
-        }
-        isset($param['brand']) && $filters['brand'] = array('key' => 'brand', 'name' => LANG::get('brand'), 'value' => $param['brand']);
-        if (isset($param['region_id']))
-        {
-            // todo 从地区缓存中取
-            $region_mod =& m('region');
-            $row = $region_mod->get(array(
-                'conditions' => $param['region_id'],
-                'fields' => 'region_name'
-            ));
-            $filters['region_id'] = array('key' => 'region_id', 'name' => LANG::get('region'), 'value' => $row['region_name']);
-        }
-        if (isset($param['price']))
-        {
-            $min = $param['price']['min'];
-            $max = $param['price']['max'];
-            if ($min <= 0)
+            $filters = array();
+            if (isset($param['keyword']))
             {
-                $filters['price'] = array('key' => 'price', 'name' => LANG::get('price'), 'value' => LANG::get('le') . ' ' . price_format($max));
+                $keyword = join(' ', $param['keyword']);
+                $filters['keyword'] = array('key' => 'keyword', 'name' => LANG::get('keyword'), 'value' => $keyword);
             }
-            elseif ($max <= 0)
+            isset($param['brand']) && $filters['brand'] = array('key' => 'brand', 'name' => LANG::get('brand'), 'value' => $param['brand']);
+            if (isset($param['region_id']))
             {
-                $filters['price'] = array('key' => 'price', 'name' => LANG::get('price'), 'value' => LANG::get('ge') . ' ' . price_format($min));
+                // todo 从地区缓存中取
+                $region_mod =& m('region');
+                $row = $region_mod->get(array(
+                    'conditions' => $param['region_id'],
+                    'fields' => 'region_name'
+                ));
+                $filters['region_id'] = array('key' => 'region_id', 'name' => LANG::get('region'), 'value' => $row['region_name']);
             }
-            else
+            if (isset($param['price']))
             {
-                $filters['price'] = array('key' => 'price', 'name' => LANG::get('price'), 'value' => price_format($min) . ' - ' . price_format($max));
+                $min = $param['price']['min'];
+                $max = $param['price']['max'];
+                if ($min <= 0)
+                {
+                    $filters['price'] = array('key' => 'price', 'name' => LANG::get('price'), 'value' => LANG::get('le') . ' ' . price_format($max));
+                }
+                elseif ($max <= 0)
+                {
+                    $filters['price'] = array('key' => 'price', 'name' => LANG::get('price'), 'value' => LANG::get('ge') . ' ' . price_format($min));
+                }
+                else
+                {
+                    $filters['price'] = array('key' => 'price', 'name' => LANG::get('price'), 'value' => price_format($min) . ' - ' . price_format($max));
+                }
             }
         }
+            
 
         return $filters;
     }
@@ -584,8 +600,25 @@ class SearchApp extends MallbaseApp
 
                 /* 按品牌统计 */
                 $sql = "SELECT g.brand, COUNT(*) AS count FROM {$table} WHERE" . $conditions . " AND g.brand > '' GROUP BY g.brand ORDER BY count DESC";
-                $data['by_brand'] = $goods_mod->getAll($sql);
-
+                $by_brands = $goods_mod->db->getAllWithIndex($sql, 'brand');
+                
+                /* 滤去未通过商城审核的品牌 */
+                if ($by_brands)
+                {
+                    $m_brand = &m('brand');
+                    $brand_conditions = db_create_in(addslashes_deep(array_keys($by_brands)), 'brand_name');
+                    $brands_verified = $m_brand->getCol("SELECT brand_name FROM {$m_brand->table} WHERE " . $brand_conditions . ' AND if_show=1');
+                    foreach ($by_brands as $k => $v)
+                    {
+                        if (!in_array($k, $brands_verified))
+                        {
+                            unset($by_brands[$k]);
+                        }
+                    }
+                }
+                $data['by_brand'] = $by_brands;
+                
+                
                 /* 按地区统计 */
                 $sql = "SELECT s.region_id, s.region_name, COUNT(*) AS count FROM {$table} WHERE" . $conditions . " AND s.region_id > 0 GROUP BY s.region_id ORDER BY count DESC";
                 $data['by_region'] = $goods_mod->getAll($sql);
@@ -706,6 +739,53 @@ class SearchApp extends MallbaseApp
             'views desc'        => Lang::get('views_desc'),
             'add_time desc'     => Lang::get('add_time_desc'),
         );
+    }
+    
+    function _get_seo_info($type, $cate_id)
+    {
+        $seo_info = array(
+            'title'       => '',
+            'keywords'    => '',
+            'description' => ''
+        );
+        $parents = array(); // 所有父级分类包括本身
+        switch ($type)
+        {
+            case 'goods':                
+                if ($cate_id)
+                {
+                    $gcategory_mod =& bm('gcategory');
+                    $parents = $gcategory_mod->get_ancestor($cate_id, true);
+                    $parents = array_reverse($parents);
+                }
+                $filters = $this->_get_filter($this->_get_query_param());
+                foreach ($filters as $k => $v)
+                {
+                    $seo_info['keywords'] .= $v['value']  . ',';
+                }
+                break;
+            case 'store':
+                if ($cate_id)
+                {
+                    $scategory_mod =& m('scategory');
+                    $scategory_mod->get_parents($parents, $cate_id);
+                    $parents = array_reverse($parents);
+                }
+        }
+        
+        foreach ($parents as $key => $cate)
+        {
+            $seo_info['title'] .= $cate['cate_name'] . ' - ';
+            $seo_info['keywords'] .= $cate['cate_name']  . ',';
+            if ($cate_id == $cate['cate_id'])
+            {
+                $seo_info['description'] = $cate['cate_name'] . ' ';
+            }
+        }
+        $seo_info['title'] .= Lang::get('searched_'. $type) . ' - ' .Conf::get('site_title');
+        $seo_info['keywords'] .= Conf::get('site_title');
+        $seo_info['description'] .= Conf::get('site_title');
+        return $seo_info;
     }
 }
 

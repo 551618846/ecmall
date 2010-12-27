@@ -162,6 +162,35 @@ class BackendApp extends ECBaseApp
         $this->_view->res_base      = site_url() . '/templates';
         $this->_view->lib_base      = dirname(site_url()) . '/includes/libraries/javascript';
     }
+    
+    /**
+     *   获取商城当前模板名称
+     */
+    function _get_template_name()
+    {
+        $template_name = Conf::get('template_name');
+        if (!$template_name)
+        {
+            $template_name = 'default';
+        }
+
+        return $template_name;
+    }
+
+    /**
+     *    获取商城当前风格名称
+     */
+    function _get_style_name()
+    {
+        $style_name = Conf::get('style_name');
+        if (!$style_name)
+        {
+            $style_name = 'default';
+        }
+
+        return $style_name;
+    }
+    
     function _init_visitor()
     {
         $this->visitor =& env('visitor', new AdminVisitor());

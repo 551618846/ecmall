@@ -9,7 +9,7 @@
  * 这不是一个自由软件！您只能在不用于商业目的的前提下对程序代码进行修改和使用；
  * 不允许对程序代码以任何形式任何目的的再发布。
  * ============================================================================
- * $Id: session.lib.php 8193 2009-06-16 03:31:08Z garbin $
+ * $Id: session.lib.php 12119 2010-10-11 10:19:33Z huibiaoli $
  */
 
 if (!defined('IN_ECM'))
@@ -36,6 +36,7 @@ class SessionProcessor
     var $_ip   = '';
 
     var $_related_tables = array();
+    var $gmtime = 0;
 
     /**
      * 构造函数
@@ -73,6 +74,7 @@ class SessionProcessor
                                     array (& $this, "_sess_destroy"),
                                     array (& $this, "_sess_gc")
                                 );
+        $this->gmtime = gmtime();
         $this->max_life_time = 1440;
         $this->session_cookie_path = COOKIE_PATH;
         $this->session_cookie_domain = COOKIE_DOMAIN;
@@ -129,9 +131,9 @@ class SessionProcessor
         if (!$this->session_id)
         {
             $this->gen_session_id();
-
-            setcookie($this->session_name, $this->session_id . $this->gen_session_key($this->session_id), 0,
-                $this->session_cookie_path, $this->session_cookie_domain, $this->session_cookie_secure);
+            session_id($this->session_id . $this->gen_session_key($this->session_id));
+            /*setcookie($this->session_name, $this->session_id . $this->gen_session_key($this->session_id), 0,
+                $this->session_cookie_path, $this->session_cookie_domain, $this->session_cookie_secure);*/
         }
 
     }
@@ -231,11 +233,10 @@ class SessionProcessor
      */
     function _sess_gc($maxlifetime)
     {
-        $time = time();
         /* 删除过期session所存放在Cart表里的信息 */
         $expired_session = $this->db->getCol("SELECT s.sesskey ".
                                              "FROM `ecm_sessions` s ".
-                                             "WHERE s.expiry < {$time}");
+                                             "WHERE s.expiry < {$this->gmtime}");
         if (!empty($this->_related_tables))
         {
             foreach ($this->_related_tables as $_t)
@@ -244,8 +245,8 @@ class SessionProcessor
                 $this->db->query("DELETE FROM {$_t['name']} WHERE {$_t['ext_limit']}{$_t['ref_key']} " . db_create_in($expired_session));
             }
         }
-        $this->db->query('DELETE FROM ' . $this->session_table . ' WHERE expiry < ' . $time);
-        $this->db->query('DELETE FROM ' . $this->session_data_table . ' WHERE expiry < ' . $time);
+        $this->db->query('DELETE FROM ' . $this->session_table . ' WHERE expiry < ' . $this->gmtime);
+        $this->db->query('DELETE FROM ' . $this->session_data_table . ' WHERE expiry < ' . $this->gmtime);
 
         return true;
     }
@@ -357,7 +358,7 @@ class SessionProcessor
      */
     function get_users_count()
     {
-        $num = $this->db->getOne('SELECT count(*) FROM ' . $this->session_table . ' WHERE expiry >=' .time());
+        $num = $this->db->getOne('SELECT count(*) FROM ' . $this->session_table . ' WHERE expiry >=' .$this->gmtime);
 
         return $num > 0 ? $num : 1;
     }
@@ -387,7 +388,7 @@ class SessionProcessor
      */
     function get_expiry()
     {
-        return time() + $this->max_life_time;
+        return $this->gmtime + $this->max_life_time;
     }
 
     /**
@@ -398,6 +399,8 @@ class SessionProcessor
      */
     function my_session_start()
     {
+            session_name($this->session_name); // 自定义session_name
+            session_set_cookie_params(0, $this->session_cookie_path, $this->session_cookie_domain, $this->session_cookie_secure);
         return session_start();
     }
 }

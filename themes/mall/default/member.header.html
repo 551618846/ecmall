@@ -5,7 +5,8 @@
 <!-- Use IE7 mode -->
 <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7 charset={$charset}" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
-<title>{$page_title|escape}</title>
+{$page_seo}
+
 <meta name="author" content="ecmall.shopex.cn" />
 <meta name="copyright" content="ShopEx Inc. All Rights Reserved" />
 <link href="{res file=css/user.css}" rel="stylesheet" type="text/css" />
@@ -81,9 +82,15 @@ function openSubmenu(h1){
             <ul id="float_layer">
                 <div id="adorn1"></div>
                 <div id="adorn2"></div>
+                <!--{if $visitor.store_id}-->
+                <li><a href="{url app=my_goods}">{$lang.my_goods}</a></li>
+                <li><a href="{url app=seller_order}">{$lang.order_manage}</a></li>
+                <li><a href="{url app=my_qa}">{$lang.my_qa}</a></li>
+                <!--{else}-->
                 <li><a href="{url app=buyer_order}">{$lang.my_order}</a></li>
                 <li><a href="{url app=buyer_groupbuy}">{$lang.my_groupbuy}</a></li>
                 <li><a href="{url app=my_question}">{$lang.my_question}</a></li>
+                <!--{/if}-->
             </ul>
         </span>
         <span>|</span>

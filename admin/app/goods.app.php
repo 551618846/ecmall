@@ -124,9 +124,9 @@ class GoodsApp extends BackendApp
             $ids = explode(',', $id);
             $recom_mod =& bm('recommend', array('_store_id' => 0));
             $recom_mod->createRelation('recommend_goods', $recom_id, $ids);
-
+            $ret_page = isset($_GET['ret_page']) ? intval($_GET['ret_page']) : 1;
             $this->show_message('recommend_ok',
-                'back_list', 'index.php?app=goods',
+                'back_list', 'index.php?app=goods&page=' . $ret_page,
                 'view_recommended_goods', 'index.php?app=recommend&amp;act=view_goods&amp;id=' . $recom_id);
         }
     }
@@ -176,9 +176,9 @@ class GoodsApp extends BackendApp
             }
 
             $this->_goods_mod->edit($ids, $data);
-
+            $ret_page = isset($_GET['ret_page']) ? intval($_GET['ret_page']) : 1;
             $this->show_message('edit_ok',
-                'back_list', 'index.php?app=goods');
+                'back_list', 'index.php?app=goods&page=' . $ret_page);
         }
     }
 
@@ -193,7 +193,8 @@ class GoodsApp extends BackendApp
        if (in_array($column ,array('goods_name', 'brand', 'closed')))
        {
            $data[$column] = $value;
-           if($this->_goods_mod->edit($id, $data))
+           $this->_goods_mod->edit($id, $data);
+           if(!$this->_goods_mod->has_error())
            {
                echo ecm_json_encode(true);
            }
@@ -239,9 +240,9 @@ class GoodsApp extends BackendApp
             // drop
             $this->_goods_mod->drop_data($ids);
             $this->_goods_mod->drop($ids);
-
+            $ret_page = isset($_GET['ret_page']) ? intval($_GET['ret_page']) : 1;
             $this->show_message('drop_ok',
-                'back_list', 'index.php?app=goods');
+                'back_list', 'index.php?app=goods&page=' . $ret_page);
         }
     }
 }

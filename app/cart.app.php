@@ -21,7 +21,7 @@ class CartApp extends MallbaseApp
         $this->_curlocal(
             LANG::get('cart')
         );
-        $this->assign('page_title', Lang::get('confirm_goods') . ' - ' . Conf::get('site_title'));
+        $this->_config_seo('title', Lang::get('confirm_goods') . ' - ' . Conf::get('site_title'));
 
         if (empty($carts))
         {

@@ -9,7 +9,7 @@
  * 这不是一个自由软件！您只能在不用于商业目的的前提下对程序代码进行修改和使用；
  * 不允许对程序代码以任何形式任何目的的再发布。
  * ============================================================================
- * $Id: default.app.php 8425 2009-07-02 06:48:23Z garbin $
+ * $Id: default.app.php 12059 2010-09-19 05:40:21Z huibiaoli $
  */
 
 class DefaultApp extends InstallerApp
@@ -161,7 +161,7 @@ class DefaultApp extends InstallerApp
             return false;
         }
         extract($_POST);
-        if (!eregi('^http(s?)://', $site_url))
+        if (!preg_match("/^http(s?):\/\//i", $site_url))
         {
             $this->_doing = $this->_done;
             $this->assign('site_url_error', true);

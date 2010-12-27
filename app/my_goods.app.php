@@ -4,20 +4,6 @@ define('THUMB_WIDTH', 300);
 define('THUMB_HEIGHT', 300);
 define('THUMB_QUALITY', 85);
 
-/* 淘宝助理CSV字段编号 */
-define('FIELD_NUM',            41); // 字段总数
-define('FIELD_GOODS_NAME',      0); // 商品名称
-define('FIELD_PRICE',              7); // 商品价格
-define('FIELD_STOCK',              9); // 库存
-define('FIELD_IF_SHOW',        20); // 是否上架
-define('FIELD_RECOMMENDED', 21); // 推荐
-define('FIELD_ADD_TIME',       22); // 发布时间
-define('FIELD_DESCRIPTION', 24); // 商品描述
-define('FIELD_LAST_UPDATE', 31); // 更新时间
-define('FIELD_GOODS_IMAGE', 35); // 商品图片
-define('FIELD_GOODS_ATTR',  26); // 商品属性
-define('FIELD_SALE_ATTR',      36); // 销售属性（规格）
-define('FIELD_CID',                   1); // 商品类目cid
 /* 品牌申请状态 */
 define('BRAND_PASSED', 1);
 define('BRAND_REFUSE', 0);
@@ -56,72 +42,12 @@ class My_goodsApp extends StoreadminbaseApp
         /* 取得店铺商品分类 */
         $this->assign('sgcategories', $this->_get_sgcategory_options());
 
-        /* 搜索条件 */
-        $conditions = "1 = 1";
-        if (trim($_GET['keyword']))
-        {
-            $str = "LIKE '%" . trim($_GET['keyword']) . "%'";
-            $conditions .= " AND (goods_name {$str} OR brand {$str} OR cate_name {$str})";
-        }
-        if ($_GET['character'])
-        {
-            switch ($_GET['character'])
-            {
-                case 'show':
-                    $conditions .= " AND if_show = 1";
-                    break;
-                case 'hide':
-                    $conditions .= " AND if_show = 0";
-                    break;
-                case 'closed':
-                    $conditions .= " AND closed = 1";
-                    break;
-                case 'recommended':
-                    $conditions .= " AND g.recommended = 1";
-                    break;
-            }
-        }
-        if (intval($_GET['sgcate_id']) > 0)
-        {
-            $cate_mod =& bm('gcategory', array('_store_id' => $this->_store_id));
-            $cate_ids = $cate_mod->get_descendant_ids(intval($_GET['sgcate_id']));
-        }
-        else
-        {
-            $cate_ids = 0;
-        }
-
-        // 标识有没有过滤条件
-        if ($conditions != '1 = 1' || !empty($_GET['sgcate_id']))
-        {
-            $this->assign('filtered', 1);
-        }
-
-        //更新排序
-        if (isset($_GET['sort']) && isset($_GET['order']))
-        {
-            $sort  = strtolower(trim($_GET['sort']));
-            $order = strtolower(trim($_GET['order']));
-            if (!in_array($order,array('asc','desc')))
-            {
-                $sort  = 'goods_id';
-                $order = 'desc';
-            }
-        }
-        else
-        {
-            $sort  = 'goods_id';
-            $order = 'desc';
-        }
-
-        /* 取得商品列表 */
+        $conditions = $this->_get_conditions();
         $page = $this->_get_page();
-        $goods_list = $this->_goods_mod->get_list(array(
-            'conditions' => $conditions,
-            'count' => true,
-            'order' => "$sort $order",
-            'limit' => $page['limit'],
-        ), $cate_ids);
+        $page_nolimit = array();
+        $goods_list = $this->_get_goods($conditions, $page);
+        $all_goods = $this->_get_goods($conditions, $page_nolimit);      
+        
         foreach ($goods_list as $key => $goods)
         {
             $goods_list[$key]['cate_name'] = $this->_goods_mod->format_cate_name($goods['cate_name']);
@@ -162,9 +88,120 @@ class My_goodsApp extends StoreadminbaseApp
         $this->_curitem('my_goods');
         $this->_curmenu('goods_list');
         //$this->import_resource(array('script' => 'utils.js'));
-        $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('my_goods'));
-
+        $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('my_goods'));
+        $this->assign('goods_ids', implode(',', array_keys($all_goods)));
         $this->display('my_goods.index.html');
+    }
+    
+    function truncate()
+    {
+        $id = isset($_GET['goods_ids']) ? trim($_GET['goods_ids']) : '';
+        if (!$id)
+        {
+            $this->show_warning('no_goods_to_drop');
+            return;
+        }
+
+        $ids = explode(',', $id);
+        $this->_goods_mod->drop_data($ids);
+        $rows = $this->_goods_mod->drop($ids);
+        if ($this->_goods_mod->has_error())
+        {
+            $this->show_warning($this->_goods_mod->get_error());
+            return;
+        }
+
+        $this->show_message(sprintf(Lang::get('truncate_ok'), $rows),
+            'back_list', 'index.php?app=my_goods'
+        );
+    }
+    
+    function _get_goods($conditions, &$page)
+    {
+        if (intval($_GET['sgcate_id']) > 0)
+        {
+            $cate_mod =& bm('gcategory', array('_store_id' => $this->_store_id));
+            $cate_ids = $cate_mod->get_descendant_ids(intval($_GET['sgcate_id']));
+        }
+        else
+        {
+            $cate_ids = 0;
+        }
+
+        // 标识有没有过滤条件
+        if ($conditions != '1 = 1' || !empty($_GET['sgcate_id']))
+        {
+            $this->assign('filtered', 1);
+        }
+
+        //更新排序
+        if (isset($_GET['sort']) && isset($_GET['order']))
+        {
+            $sort  = strtolower(trim($_GET['sort']));
+            $order = strtolower(trim($_GET['order']));
+            if (!in_array($order,array('asc','desc')))
+            {
+                $sort  = 'goods_id';
+                $order = 'desc';
+            }
+        }
+        else
+        {
+            $sort  = 'goods_id';
+            $order = 'desc';
+        }
+        
+        if ($page)
+        {
+            $limit = $page['limit'];
+            $count = true;
+        }
+        else
+        {
+            $limit = '';
+            $count = false;
+        }
+
+        /* 取得商品列表 */
+        
+        $goods_list = $this->_goods_mod->get_list(array(
+            'conditions' => $conditions,
+            'count' => $count,
+            'order' => "$sort $order",
+            'limit' => $limit,
+        ), $cate_ids);
+        return $goods_list;
+    }
+    
+    function _get_conditions()
+    {
+        /* 搜索条件 */
+        $conditions = "1 = 1";
+        if (trim($_GET['keyword']))
+        {
+            $str = "LIKE '%" . trim($_GET['keyword']) . "%'";
+            $conditions .= " AND (goods_name {$str} OR brand {$str} OR cate_name {$str})";
+        }
+        if ($_GET['character'])
+        {
+            switch ($_GET['character'])
+            {
+                case 'show':
+                    $conditions .= " AND if_show = 1";
+                    break;
+                case 'hide':
+                    $conditions .= " AND if_show = 0";
+                    break;
+                case 'closed':
+                    $conditions .= " AND closed = 1";
+                    break;
+                case 'recommended':
+                    $conditions .= " AND g.recommended = 1";
+                    break;
+            }
+        }
+        
+        return $conditions;
     }
 
     function batch_edit()
@@ -181,7 +218,7 @@ class My_goodsApp extends StoreadminbaseApp
                               LANG::get('goods_add'));
              $this->_curitem('my_goods');
              $this->_curmenu('batch_edit');
-             $this->assign('page_title', Lang::get('member_center') . Lang::get('my_goods'));
+             $this->_config_seo('title', Lang::get('member_center') . Lang::get('my_goods'));
 
              $this->headtag('<script type="text/javascript" src="{lib file=mlselection.js}"></script>');
              $this->import_resource(array(
@@ -192,6 +229,10 @@ class My_goodsApp extends StoreadminbaseApp
                      ),
                      array(
                          'path' => 'my_goods.js',
+                         'attr' => 'charset="utf-8"',
+                     ),
+                     array(
+                         'path' => 'jquery.plugins/jquery.validate.js',
                          'attr' => 'charset="utf-8"',
                      ),
                  ),
@@ -261,16 +302,18 @@ class My_goodsApp extends StoreadminbaseApp
              $sql = "";
              if ($_POST['price_change'])
              {
+                 $delta_price = $this->_filter_price($_POST['price']); // 价格变化量
                  switch ($_POST['price_change'])
                  {
                      case 'change_to':
-                         $sql .= "price = '" . floatval($_POST['price']) . "'";
+                         $sql .= "price = '" . $delta_price . "'";
                          break;
                      case 'inc_by':
-                         $sql .= "price = price + '" . floatval($_POST['price']) . "'";
+                         $sql .= "price = price + '" . $delta_price . "'";
                          break;
                      case 'dec_by':
-                         $sql .= "price = price - '" . floatval($_POST['price']) . "'";
+                         
+                         $sql .= "price = IF((price - '" . $delta_price . "') <0 , 0, price - '" . $delta_price . "')";
                          break;
                  }
              }
@@ -283,16 +326,17 @@ class My_goodsApp extends StoreadminbaseApp
              $sql = "";
              if ($_POST['stock_change'])
              {
+                 $delta_stock = intval($_POST['stock']); // 库存变化量
                  switch ($_POST['stock_change'])
                  {
                      case 'change_to':
-                         $sql .= "stock = '" . floatval($_POST['stock']) . "'";
+                         $sql .= "stock = '" . $delta_stock . "'";
                          break;
                      case 'inc_by':
-                         $sql .= "stock = stock + '" . floatval($_POST['stock']) . "'";
+                         $sql .= "stock = stock + '" . $delta_stock . "'";
                          break;
                      case 'dec_by':
-                         $sql .= "stock = stock - '" . floatval($_POST['stock']) . "'";
+                         $sql .= "stock = IF((stock - '" . $delta_stock . "') <0 , 0, stock - '" . $delta_stock . "')";
                          break;
                  }
              }
@@ -301,8 +345,9 @@ class My_goodsApp extends StoreadminbaseApp
                  $this->_spec_mod->edit("goods_id" . db_create_in($ids), $sql);
              }
 
+             $ret_page = isset($_GET['ret_page']) ? intval($_GET['ret_page']) : 1;
              $this->show_message('edit_ok',
-                 'back_list', 'index.php?app=my_goods');
+                 'back_list', 'index.php?app=my_goods&page=' . $ret_page);
         }
     }
 
@@ -424,7 +469,7 @@ class My_goodsApp extends StoreadminbaseApp
                               LANG::get('goods_add'));
              $this->_curitem('my_goods');
              $this->_curmenu('goods_add');
-             $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('goods_add'));
+             $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('goods_add'));
 
              /* 商品图片批量上传器 */
              $this->assign('images_upload', $this->_build_upload(array(
@@ -476,8 +521,14 @@ class My_goodsApp extends StoreadminbaseApp
                  ),
                  'style' =>  'jquery.ui/themes/ui-lightness/jquery.ui.css',
              ));
+             
              /* 所见即所得编辑器 */
-             $this->assign('build_editor', $this->_build_editor(array('name' => 'description')));
+             extract($this->_get_theme());
+             $this->assign('build_editor', $this->_build_editor(array(
+                 'name' => 'description',
+                 'content_css' => SITE_URL . "/themes/store/{$template_name}/styles/{$style_name}" . '/shop.css', // for preview
+             )));
+             
              $this->display('my_goods.form.html');
         }
         else
@@ -584,7 +635,7 @@ class My_goodsApp extends StoreadminbaseApp
                              LANG::get('goods_list'));
             $this->_curitem('my_goods');
             $this->_curmenu('edit_goods');
-            $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('edit_goods'));
+            $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('edit_goods'));
 
             $this->import_resource(array(
                 'script' => array(
@@ -638,7 +689,12 @@ class My_goodsApp extends StoreadminbaseApp
             )));
 
             /* 所见即所得编辑器 */
-            $this->assign('build_editor', $this->_build_editor(array('name' => 'description')));
+            extract($this->_get_theme());
+            $this->assign('build_editor', $this->_build_editor(array(
+                'name' => 'description',
+                'content_css' => SITE_URL . "/themes/store/{$template_name}/styles/{$style_name}" . '/shop.css', // for preview
+            )));
+             
             $this->display('my_goods.form.html');
         }
         else
@@ -710,11 +766,11 @@ class My_goodsApp extends StoreadminbaseApp
         }
         foreach ($spec['price'] as $key => $val)
         {
-            $data[$key]['price'] = $val;
+            $data[$key]['price'] = $this->_filter_price($val);
         }
         foreach ($spec['stock'] as $key => $val)
         {
-            $data[$key]['stock'] = $val;
+            $data[$key]['stock'] = intval($val);
         }
         return $data;
    }
@@ -730,16 +786,33 @@ class My_goodsApp extends StoreadminbaseApp
        if (in_array($column ,array('goods_name','description', 'cate_id', 'cate_name', 'brand', 'spec_qty','if_show','closed','recommended')))
        {
            $data['goods'][$column] = $value;
-           if($this->_goods_mod->edit($id, $data['goods']))
+           $this->_goods_mod->edit($id, $data['goods']);
+           if(!$this->_goods_mod->has_error())
            {
                $result = $this->_goods_mod->get_info($id);
                $this->json_result($result[$column]);
+               return;
+           }
+           else
+           {
+               $this->json_error($this->_goods_mod->get_error());
+               return;
            }
        }
        elseif (in_array($column, array('price', 'stock', 'sku')))
        {
+           if ($column == 'price')
+           {
+               $value = $this->_filter_price($value);
+           }
+           elseif ($column == 'stock')
+           {
+               $value = intval($value);
+           }
+       
            $data['specs'][$column] = $value;
-           if($this->_spec_mod->edit("goods_id = $id", $data['specs']))
+           $this->_spec_mod->edit("goods_id = $id", $data['specs']);
+           if(!$this->_spec_mod->has_error())
            {
                $result = $this->_spec_mod->get("goods_id = $id");
                //修改商品表中默认的字段的价格
@@ -748,6 +821,12 @@ class My_goodsApp extends StoreadminbaseApp
                     $this->_goods_mod->edit($id, $data['specs']);
                }
                $this->json_result($result[$column]);
+               return;
+           }
+           else
+           {
+               $this->json_error($this->_spec_mod->get_error());
+               return;
            }
 
        }
@@ -833,7 +912,7 @@ class My_goodsApp extends StoreadminbaseApp
         }
         if (!IS_POST)
         {
-            $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('import_taobao'));
+            $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('import_taobao'));
             $this->_curlocal(LANG::get('member_center'), 'index.php?app=member',
                              LANG::get('my_goods'), 'index.php?app=my_goods',
                              LANG::get('import_taobao'));
@@ -902,6 +981,11 @@ class My_goodsApp extends StoreadminbaseApp
             //$csv_string = addslashes($csv_string); // 必须在转码后进行引号转义
 
             $records = $this->_parse_taobao_csv($csv_string);
+            if ($this->has_error())
+            {
+                $this->show_warning($this->get_error());
+                return;
+            }
             if (CHARSET =='big5')
             {
                 $records = ecm_iconv_deep('utf-8', 'gbk', $records);//dump($chs);
@@ -914,7 +998,7 @@ class My_goodsApp extends StoreadminbaseApp
             foreach ($records as $record)
             {
                 // 如果商品名称为空则跳过
-                if (!trim($record[FIELD_GOODS_NAME]) || $find_goods)
+                if (!trim($record['goods_name']) || $find_goods)
                 {
                     continue;
                 }
@@ -945,18 +1029,18 @@ class My_goodsApp extends StoreadminbaseApp
                     }
                     else
                     {
-                        if ($record[FIELD_GOODS_IMAGE])
+                        if ($record['goods_image'])
                         {
-                               $num_image++;
+                               $num_image += $record['image_count'];
                         }
                         $remain--;
                     }
                 }
                 else
                 {
-                    if ($record[FIELD_GOODS_IMAGE]) // 店铺等级无商品数量限制
+                    if ($record['goods_image']) // 店铺等级无商品数量限制
                     {
-                        $num_image++;
+                        $num_image += $record['image_count'];
                     }
                 }
 
@@ -966,14 +1050,14 @@ class My_goodsApp extends StoreadminbaseApp
                     'cate_id'             => $_POST['cate_id'],
                     'cate_name'        => $_POST['cate_name'],
                     'spec_qty'            => 0,
-                    'goods_name'       => $record[FIELD_GOODS_NAME],
+                    'goods_name'       => $record['goods_name'],
                     'store_id'            => $this->_store_id,
-                    'description'      => $record[FIELD_DESCRIPTION],
-                    'if_show'             => $record[FIELD_IF_SHOW],
-                    'add_time'            => $record[FIELD_ADD_TIME],
-                    'last_update'      => $record[FIELD_LAST_UPDATE],
-                    'recommended'      => $record[FIELD_RECOMMENDED],
-                    'default_image' => $record[FIELD_GOODS_IMAGE],
+                    'description'      => $record['description'],
+                    'if_show'             => $record['if_show'],
+                    'add_time'            => gmtime(),
+                    'last_update'      => gmtime(),
+                    'recommended'      => $record['recommended'],
+                    'default_image' => $record['goods_image'],
                     'closed'              => 0,
                 );
                 $goods_id = $this->_goods_mod->add($goods);
@@ -993,9 +1077,9 @@ class My_goodsApp extends StoreadminbaseApp
 
                 $spec_qty = 0;
 
-                if ($record[FIELD_SALE_ATTR]) // 有规格
+                if ($record['sale_attr']) // 有规格
                 {
-                    $spec_info = $this->_parse_tabao_prop($record[FIELD_CID], $record[FIELD_SALE_ATTR] ,$goods_id); //dump($spec_info);
+                    $spec_info = $this->_parse_tabao_prop($record['cid'], $record['sale_attr'], $record['sale_attr_alias'] ,$goods_id); //dump($spec_info);
                     //dump($spec_info);
                     if (isset($spec_info['msg']))
                     {
@@ -1014,8 +1098,8 @@ class My_goodsApp extends StoreadminbaseApp
                         $spec_data = array();
                         $spec_data[0] = array(
                                'goods_id' => $goods_id,
-                               'price'    => floatval($record[FIELD_PRICE]),
-                               'stock'    => intval($record[FIELD_STOCK]),
+                               'price'    => $this->_filter_price($record['price']),
+                               'stock'    => intval($record['stock']),
                         );
                         $spec_name =array();
                     }
@@ -1024,8 +1108,8 @@ class My_goodsApp extends StoreadminbaseApp
                 {
                     $spec_data[0] = array(
                         'goods_id' => $goods_id,
-                        'price'       => floatval($record[FIELD_PRICE]),
-                        'stock'       => intval($record[FIELD_STOCK]),
+                        'price'       => $this->_filter_price($record['price']),
+                        'stock'       => intval($record['stock']),
                     );
                     $spec_name =array();
                 }
@@ -1068,13 +1152,57 @@ class My_goodsApp extends StoreadminbaseApp
 
         }
     }
+    
+    /* 需要导入的字段在CSV中显示的名称 */
+    function _taobao_fields()
+    {
+        return array(
+            'goods_name'  => '宝贝名称',
+            'cid'         => '宝贝类目',
+            'price'       => '宝贝价格',
+            'stock'       => '宝贝数量',
+            'if_show'     => '放入仓库',
+            'recommended' => '橱窗推荐',
+            'description' => '宝贝描述',
+            'goods_image' => '新图片',
+            'sale_attr'   => '销售属性组合',
+            'sale_attr_alias' => '销售属性别名'
+        );
+    }
+    
+    /* 每个字段所在CSV中的列序号，从0开始算 */
+    function _taobao_fields_cols($title_arr, $import_fields)
+    {
+        $fields_cols = array();
+        foreach ($import_fields as $k => $field)
+        {
+            $pos = array_search($field, $title_arr);
+            if ($pos !== false)
+            {
+                $fields_cols[$k] = $pos;
+            }
+        }
+        return $fields_cols;
+    }
 
     /* 解析淘宝助理CSV数据 */
     function _parse_taobao_csv($csv_string)
     {
-        // 32空格 34双引号  9制表符  10/n  13/r
+        /* 定义CSV文件中几个标识性的字符的ascii码值 */
+        define('ORD_SPACE', 32); // 空格
+        define('ORD_QUOTE', 34); // 双引号
+        define('ORD_TAB',    9); // 制表符
+        define('ORD_N',     10); // 换行\n
+        define('ORD_R',     13); // 换行\r
+        
+        /* 字段信息 */
+        $import_fields = $this->_taobao_fields(); // 需要导入的字段在CSV中显示的名称
+        $fields_cols = array(); // 每个字段所在CSV中的列序号，从0开始算
+        $csv_col_num = 0; // csv文件总列数
+        
         $pos = 0; // 当前的字符偏移量
         $status = 0; // 0标题未开始 1标题已开始
+        $title_pos = 0; // 标题开始位置
         $records = array(); // 记录集
         $field = 0; // 字段号
         $start_pos = 0; // 字段开始位置
@@ -1087,88 +1215,110 @@ class My_goodsApp extends StoreadminbaseApp
             $next2 = ord($csv_string[$pos + 2]);
             $next3 = ord($csv_string[$pos + 3]);
 
-            $status == 0 && !in_array($t, array(32, 9, 10, 13)) && $status = 1;
+            if ($status == 0 && !in_array($t, array(ORD_SPACE, ORD_TAB, ORD_N, ORD_R)))
+            {
+                $status = 1;
+                $title_pos = $pos;
+            }
             if ($status == 1)
             {
-                if ($field_status == 0 && $t== 10 && $next == 34) // \n+引号
+                if ($field_status == 0 && $t== ORD_N)
                 {
-                    $field_status = 1; // 字段未开始时 引号字段开始
-                    $start_pos = $pos = $pos + 2;
-                    continue;
-                }
-                if ($field_status == 0 && $t == 10 && $next != 34) // \n+无引号
-                {
-                    $field_status = 2; // 字段未开始时 无引号字段开始
-                    $start_pos = $pos = $pos + 1;
+                    static $flag = null;
+                    if ($flag === null)
+                    {
+                        $title_str = substr($csv_string, $title_pos, $pos - $title_pos);
+                        $title_arr = explode("\t", trim($title_str));
+                        $fields_cols = $this->_taobao_fields_cols($title_arr, $import_fields);
+                        if (count($fields_cols) != count($import_fields))
+                        {
+                            $this->_error('csv_fields_error'); // 欲导入的字段列数跟实际CSV文件中列数不符
+                            return false;
+                        }
+                        $csv_col_num = count($title_arr); // csv总列数
+                        $flag = 1;
+                    }
+                    
+                    if ($next == ORD_QUOTE)
+                    {
+                        $field_status = 1; // 引号数据单元开始
+                        $start_pos = $pos = $pos + 2; // 数据单元开始位置(相对\n偏移+2)
+                    }
+                    else
+                    {
+                        $field_status = 2; // 无引号数据单元开始
+                        $start_pos = $pos = $pos + 1; // 数据单元开始位置(相对\n偏移+1)
+                    }
                     continue;
                 }
 
-                if($field_status == 1 && $t == 34 && in_array($next, array(10, 13, 9))) // 引号+换行 或 引号+\t
+                if($field_status == 1 && $t == ORD_QUOTE && in_array($next, array(ORD_N, ORD_R, ORD_TAB))) // 引号+换行 或 引号+\t
                 {
                     $records[$line][$field] = addslashes(substr($csv_string, $start_pos, $pos - $start_pos));
                     $field++;
-                    if ($field == FIELD_NUM)
+                    if ($field == $csv_col_num)
                     {
                         $line++;
                         $field = 0;
                         $field_status = 0;
                         continue;
                     }
-                    if (($next == 10 && $next2 == 34) || ($next == 9 && $next2 == 34) || ($next == 13 && $next2 == 34))
+                    if (($next == ORD_N && $next2 == ORD_QUOTE) || ($next == ORD_TAB && $next2 == ORD_QUOTE) || ($next == ORD_R && $next2 == ORD_QUOTE))
                     {
                         $field_status = 1;
                         $start_pos = $pos = $pos + 3;
                         continue;
                     }
-                    if (($next == 10 && $next2 != 34) || ($next == 9 && $next2 != 34) || ($next == 13 && $next2 != 34))
+                    if (($next == ORD_N && $next2 != ORD_QUOTE) || ($next == ORD_TAB && $next2 != ORD_QUOTE) || ($next == ORD_R && $next2 != ORD_QUOTE))
                     {
                         $field_status = 2;
                         $start_pos = $pos = $pos + 2;
                         continue;
                     }
-                    if ($next == 13 && $next2 == 10 && $next3 == 34)
+                    if ($next == ORD_R && $next2 == ORD_N && $next3 == ORD_QUOTE)
                     {
                         $field_status = 1;
                         $start_pos = $pos = $pos + 4;
                         continue;
                     }
-                    if ($next == 13 && $next2 == 10 && $next3 != 34)
+                    if ($next == ORD_R && $next2 == ORD_N && $next3 != ORD_QUOTE)
                     {
                         $field_status = 2;
                         $start_pos = $pos = $pos + 3;
                         continue;
                     }
                 }
-                if($field_status == 2 && in_array($t, array(10, 13, 9))) // 换行 或 \t
+                
+                if($field_status == 2 && in_array($t, array(ORD_N, ORD_R, ORD_TAB))) // 换行 或 \t
                 {
                     $records[$line][$field] = addslashes(substr($csv_string, $start_pos, $pos - $start_pos));
                     $field++;
-                    if ($field == FIELD_NUM)
+                    if ($field == $csv_col_num)
                     {
                         $line++;
                         $field = 0;
                         $field_status = 0;
                         continue;
                     }
-                    if (($t == 10 && $next == 34) || ($t == 9 && $next == 34) || ($t == 13 && $next == 34))
+                    if (($t == ORD_N && $next == ORD_QUOTE) || ($t == ORD_TAB && $next == ORD_QUOTE) || ($t == ORD_R && $next == ORD_QUOTE))
                     {
                         $field_status = 1;
                         $start_pos = $pos = $pos + 2;
                         continue;
                     }
-                    if (($t == 10 && $next != 34) || ($t == 9 && $next != 34) || ($t == 13 && $next != 34))
+                    if (($t == ORD_N && $next != ORD_QUOTE) || ($t == ORD_TAB && $next != ORD_QUOTE) || ($t == ORD_R && $next != ORD_QUOTE))
                     {
                         $field_status = 2;
                         $start_pos = $pos = $pos + 1;
                         continue;
                     }
-                    if ($t == 13 && $next == 10 && $next2 == 34)
+                    if ($t == ORD_R && $next == ORD_N && $next2 == ORD_QUOTE)
                     {
                         $field_status = 1;
                         $start_pos = $pos = $pos + 3;
                         continue;
                     }
-                    if ($t == 13 && $next == 10 && $next2 != 34)
+                    if ($t == ORD_R && $next == ORD_N && $next2 != ORD_QUOTE)
                     {
                         $field_status = 2;
                         $start_pos = $pos = $pos + 2;
@@ -1193,6 +1343,7 @@ class My_goodsApp extends StoreadminbaseApp
                 $pos++;
             }
         }
+        $return = array();
         foreach ($records as $key => $record)
         {
             foreach ($record as $k => $col)
@@ -1201,37 +1352,33 @@ class My_goodsApp extends StoreadminbaseApp
                 /* 对字段数据进行分别处理 */
                 switch ($k)
                 {
-                    case FIELD_ADD_TIME :             $record[$k] = ($col== '1980-01-01 00:00:00' || $col== '') ? gmtime() : gmstr2time($col); break;
-                    case FIELD_LAST_UPDATE :       $record[$k] = ($col== '1980-01-01 00:00:00' || $col== '') ? $record[FIELD_ADD_TIME] : gmstr2time($col); break;
-                    case FIELD_DESCRIPTION :       $record[$k] = str_replace(array("\\\"\\\"", "\"\""), array("\\\"", "\""), $col); break;
-                    case FIELD_GOODS_IMAGE :       $record[$k] = substr($col, 0 , strpos($col, ':')); break;
-                    case FIELD_IF_SHOW :              $record[$k] = $col == 1 ? 0 : 1; break;
-                    case FIELD_GOODS_NAME :        $record[$k] = $col; break;
-                    case FIELD_STOCK :                   $record[$k] = $col; break;
-                    case FIELD_PRICE :                   $record[$k] = $col; break;
-                    case FIELD_RECOMMENDED :       $record[$k] = $col; break;
-                    case FIELD_GOODS_ATTR :        $record[$k] = $col; break;
-                    case FIELD_SALE_ATTR :            $record[$k] = $col; break;
-                    case FIELD_CID :            $record[$k] = $col; break;
-                    default:                                      unset($record[$k]);
+                    case $fields_cols['description'] :  $return[$key]['description'] = str_replace(array("\\\"\\\"", "\"\""), array("\\\"", "\""), $col); break;
+                    case $fields_cols['goods_image'] :  $result = $this->_parse_taobao_image($col); $return[$key]['goods_image'] = $result['data']; $return[$key]['image_count'] = $result['count'];break;
+                    case $fields_cols['if_show'] :      $return[$key]['if_show'] = $col == 1 ? 0 : 1; break;
+                    case $fields_cols['goods_name'] :   $return[$key]['goods_name'] = $col; break;
+                    case $fields_cols['stock'] :        $return[$key]['stock'] = $col; break;
+                    case $fields_cols['price']:         $return[$key]['price'] = $col; break;
+                    case $fields_cols['recommended'] :  $return[$key]['recommended'] = $col; break;
+                    case $fields_cols['sale_attr'] :    $return[$key]['sale_attr'] = $col; break;
+                    case $fields_cols['sale_attr_alias'] :    $return[$key]['sale_attr_alias'] = $col; break;
+                    case $fields_cols['cid'] :          $return[$key]['cid'] = $col; break;
                 }
             }
-            $records[$key] = $record;
         }
-        return $records;
+        return $return;
     }
 
     /* 解析淘宝的销售属性 返回ECMall规格 */
-    function _parse_tabao_prop($cid, $pvs, $goods_id)
+    function _parse_tabao_prop($cid, $sale_attr, $sale_attr_alias, $goods_id)
     {
         $i = 0; // 规格数量
         $spec_kind = 0; // 规格种类数
         $spec_price_stock = array(); // 价格和库存
-        $arr_temp = explode(';', $pvs);
+        $sale_attr = preg_replace("/:[^:]*-[^:]*:/U", '::' , $sale_attr); // 屏蔽商家编码干扰
+        $sale_attr = explode(';', $sale_attr);//dump($sale_attr);
         $pvs = ''; // 淘宝销售属性编码
-
         /* 分离库存价格与属性编码 */
-        foreach ($arr_temp as $k => $v)
+        foreach ($sale_attr as $k => $v)
         {
             $pos_2 = strpos($v, '::');
             if ($pos_2>0)
@@ -1256,16 +1403,16 @@ class My_goodsApp extends StoreadminbaseApp
         {
             $spec_kind = substr_count($pvs, ';') / count($spec_price_stock);
         }
-
         /* 根据编码解析销售属性 */
         import('taobaoprop.lib');
-        $TaobaoProp = new TaobaoProp($cid, $pvs);
+        $TaobaoProp = new TaobaoProp($cid, $pvs, '12009827', '8c02e9f524f66199e100e27fdfdb9bbd');
         $prop = $TaobaoProp->get_prop();
-
         if (!$prop || $TaobaoProp->has_error())
         {
             return array();
         }
+        
+        /* 编码转换 */
         if (CHARSET == 'big5')
         {
             $prop = ecm_iconv_deep('utf-8', 'gbk', $prop);
@@ -1274,6 +1421,28 @@ class My_goodsApp extends StoreadminbaseApp
         else
         {
             $prop = ecm_iconv_deep('utf-8', CHARSET, $prop);
+        }
+        
+        /* 销售属性别名 */
+        if ($sale_attr_alias)
+        {
+            $sale_attr_alias = explode(';', $sale_attr_alias);
+            foreach ($sale_attr_alias as $_k => $_v)
+            {
+                $pos_delimiter = strrpos($_v, ':');
+                $pv = substr($_v, 0, $pos_delimiter);
+                $alias_name = substr($_v, $pos_delimiter + 1);
+                $sale_attr_alias[$pv] = $alias_name;
+                unset($sale_attr_alias[$_k]);
+            }
+            foreach ($prop as $key => $value)
+            {
+                $pv = $value['pid'] . ':' . $value['vid'];
+                if (isset($sale_attr_alias[$pv]))
+                {
+                    $prop[$key]['name_alias'] = $sale_attr_alias[$pv];
+                }
+            }
         }
 
         /* 组合成ECMall规格 */
@@ -1284,23 +1453,62 @@ class My_goodsApp extends StoreadminbaseApp
             $spec['item'][$_k]['goods_id'] = $goods_id;
             if ($spec_kind == 2)
             {
-                $spec['item'][$_k]['spec_1'] = $prop['prop_value'][2 * $_k]['name'];
-                $spec['item'][$_k]['spec_2'] = $prop['prop_value'][2 * $_k + 1]['name'];
+                $spec['item'][$_k]['spec_1'] = $prop[2 * $_k]['name_alias'];
+                $spec['item'][$_k]['spec_2'] = $prop[2 * $_k + 1]['name_alias'];
                 $spec['spec_name'] = array(
-                    'spec_name_1' => $prop['prop_value'][0]['prop_name'],
-                    'spec_name_2' => $prop['prop_value'][1]['prop_name'],
+                    'spec_name_1' => $prop[0]['prop_name'],
+                    'spec_name_2' => $prop[1]['prop_name'],
                 );
             }
             else if ($spec_kind = 1)
             {
-                $spec['item'][$_k]['spec_1'] = $prop['prop_value'][$_k]['name'];
+                $spec['item'][$_k]['spec_1'] = $prop[$_k]['name_alias'];
                 $spec['spec_name'] = array(
-                    'spec_name_1' => $prop['prop_value'][0]['prop_name'],
+                    'spec_name_1' => $prop[0]['prop_name'],
                 );
+            }
+            if ($_v['stock'] == 0)
+            {
+                unset($spec['item'][$_k]);
             }
         }
         $spec['spec_kind'] = $spec_kind;
         return addslashes_deep($spec); // 因经过转码，必须要重新转义
+    }
+    
+    function _parse_taobao_image($col)
+    {
+        /* 初始化返回值返回值 */
+        $data = ''; // 以分号分隔的图片数据
+        $count = 0; // 图片张数
+        
+        /* 组织成数组 */
+        $temp_attr = $col ? explode(';', trim($col, ';')) : array();
+        
+        /* 遍历去掉多余符号 超过255字节部分的图片去掉 */
+        $len = 0;
+        foreach ($temp_attr as $k => $v)
+        {
+            $image = substr($v, 0, strpos($v, ':'));
+            if (($pos = strpos($image, '.')) !==false)
+            {
+                $image = substr($image, 0, $pos); //图片文件名是5ee3678fe8815fd09c67fcbb1e1d5ebc.jpg.tbi这种情况
+            }
+            if (strlen($image) + $len + 1 > 255)
+            {
+                break; // 超过字段字符数
+            }
+            else
+            {
+                /* 去重、统计图片 */
+                if ($image && strpos($data, $image) === false) 
+                {
+                    $data .=  $image . ';';
+                    $count++;
+                }
+            }
+        }
+        return array('count' => $count, 'data' => $data);
     }
 
     function drop_image()
@@ -1709,7 +1917,7 @@ class My_goodsApp extends StoreadminbaseApp
         {
             case 0: // 没有规格
                 $specs[intval($_POST['spec_id'])] = array(
-                    'price' => floatval($_POST['price']),
+                    'price' => $this->_filter_price($_POST['price']),
                     'stock' => intval($_POST['stock']),
                     'sku'      => trim($_POST['sku']),
                     'spec_id'  => trim($_POST['spec_id']),
@@ -1729,7 +1937,7 @@ class My_goodsApp extends StoreadminbaseApp
                             $specs[$key] = array(
                                 'spec_id' => $spec_id,
                                 'spec_1' => $spec_1,
-                                'price'  => floatval($_POST['price'][$key]),
+                                'price'  => $this->_filter_price($_POST['price'][$key]),
                                 'stock'  => intval($_POST['stock'][$key]),
                                 'sku'       => trim($_POST['sku'][$key]),
                             );
@@ -1738,7 +1946,7 @@ class My_goodsApp extends StoreadminbaseApp
                         {
                             $specs[$key] = array(
                                 'spec_1' => $spec_1,
-                                'price'  => floatval($_POST['price'][$key]),
+                                'price'  => $this->_filter_price($_POST['price'][$key]),
                                 'stock'  => intval($_POST['stock'][$key]),
                                 'sku'       => trim($_POST['sku'][$key]),
                             );
@@ -1762,7 +1970,7 @@ class My_goodsApp extends StoreadminbaseApp
                                 'spec_id'   => $spec_id,
                                 'spec_1'    => $spec_1,
                                 'spec_2'    => $spec_2,
-                                'price'     => floatval($_POST['price'][$key]),
+                                'price'     => $this->_filter_price($_POST['price'][$key]),
                                 'stock'     => intval($_POST['stock'][$key]),
                                 'sku'       => trim($_POST['sku'][$key]),
                             );
@@ -1772,7 +1980,7 @@ class My_goodsApp extends StoreadminbaseApp
                             $specs[$key] = array(
                                 'spec_1'    => $spec_1,
                                 'spec_2'    => $spec_2,
-                                'price'     => floatval($_POST['price'][$key]),
+                                'price'     => $this->_filter_price($_POST['price'][$key]),
                                 'stock'     => intval($_POST['stock'][$key]),
                                 'sku'       => trim($_POST['sku'][$key]),
                             );
@@ -2058,18 +2266,22 @@ class My_goodsApp extends StoreadminbaseApp
 
             if (!$this->_brand_mod->unique($brand_name))
             {
-                $this->pop_warning('name_exist');
+                $this->pop_warning('brand_name_exist');
                 return;
             }
             if (!$brand_id = $this->_brand_mod->add(array('brand_name' => $brand_name, 'store_id' => $this->_store_id, 'if_show' => 0, 'tag' => trim($_POST['tag']))))  //获取brand_id
             {
-                $this->pop_warning(current($this->_brand_mod->get_error()));
+                $this->pop_warning($this->_brand_mod->get_error());
 
                 return;
             }
 
             $logo = $this->_upload_logo($brand_id);
-            $logo && $this->_brand_mod->edit($brand_id, array('brand_logo' => $logo));
+            if ($logo === false)
+            {
+                return;
+            }
+            $this->_brand_mod->edit($brand_id, array('brand_logo' => $logo));
             $this->pop_warning('ok',
                 'my_goods_brand_apply', 'index.php?app=my_goods&act=brand_list');
         }
@@ -2096,14 +2308,18 @@ class My_goodsApp extends StoreadminbaseApp
             $brand_name = trim($_POST['brand_name']);
             if (!$this->_brand_mod->unique($brand_name, $id))
             {
-                $this->pop_warning('name_exist');
+                $this->pop_warning('brand_name_exist');
                 return;
             }
             $data = array();
             if (isset($_FILES['brand_logo']))
             {
                 $logo = $this->_upload_logo($id);
-                $logo && $data['brand_logo'] = $logo;
+                if ($logo === false)
+                {
+                    return;
+                }
+                $data['brand_logo'] = $logo;
             }
             $data['brand_name'] = $brand_name;
             $data['tag'] = trim($_POST['tag']);
@@ -2178,7 +2394,12 @@ class My_goodsApp extends StoreadminbaseApp
         $uploader->addFile($_FILES['brand_logo']);//上传logo
         if (!$uploader->file_info())
         {
-            $this->pop_warning(current($uploader->get_error()));
+            $this->pop_warning($uploader->get_error());
+            if (ACT == 'brand_apply')
+            {
+                $m_brand = &m('brand');
+                $m_brand->drop($brand_id);
+            }            
             return false;
         }
         /* 指定保存位置的根目录 */
@@ -2193,6 +2414,12 @@ class My_goodsApp extends StoreadminbaseApp
         {
             return false;
         }
+    }
+    
+    /* 价格过滤，返回非负浮点数 */
+    function _filter_price($price)
+    {
+        return abs(floatval($price));
     }
 }
 

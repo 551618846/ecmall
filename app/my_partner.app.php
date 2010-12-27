@@ -73,7 +73,7 @@ class My_partnerApp extends StoreadminbaseApp
 
         $this->_format_page($page);
         $this->assign('page_info', $page);          //将分页信息传递给视图，用于形成分页条
-        $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('my_partner'));
+        $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('my_partner'));
         header("Content-Type:text/html;charset=" . CHARSET);
         $this->display('my_partner.index.html');
     }

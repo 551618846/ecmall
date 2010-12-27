@@ -59,7 +59,7 @@ class My_paymentApp extends StoreadminbaseApp
         /* 当前所处子菜单 */
         $this->_curmenu('payment_list');
 
-        $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('my_payment'));
+        $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('my_payment'));
         header("Content-Type:text/html;charset=" . CHARSET);
         $this->display('my_payment.index.html');
     }
@@ -112,7 +112,7 @@ class My_paymentApp extends StoreadminbaseApp
 
             $this->assign('yes_or_no', array(Lang::get('no'), Lang::get('yes')));
             $this->assign('payment', $payment);
-            $this->assign('page_title', Lang::get('member_center') . Lang::get('my_payment'));
+            $this->_config_seo('title', Lang::get('member_center') . Lang::get('my_payment'));
             header("Content-Type:text/html;charset=" . CHARSET);
             $this->display('my_payment.form.html');
         }
@@ -183,7 +183,7 @@ class My_paymentApp extends StoreadminbaseApp
             $this->assign('yes_or_no', array(Lang::get('no'), Lang::get('yes')));
             $this->assign('config', unserialize($payment_info['config']));
             $this->assign('payment', $payment);
-            $this->assign('page_title', Lang::get('member_center') . Lang::get('my_payment'));
+            $this->_config_seo('title', Lang::get('member_center') . Lang::get('my_payment'));
             header("Content-Type:text/html;charset=" . CHARSET);
             $this->display('my_payment.form.html');
         }

@@ -51,7 +51,7 @@ class My_questionApp extends MemberbaseApp
             );
             $this->my_qa_mod->edit($my_qa_data['ques_id'],$update_data);
         }
-        $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('my_question'));
+        $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('my_question'));
         $this->display('my_question.index.html');
     }
     //三级菜单:

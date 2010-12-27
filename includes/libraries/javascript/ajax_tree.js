@@ -52,13 +52,13 @@ $(function()
                            src =  "<img src='templates/style/images/treetable/tv-item.gif' fieldid='"+res[i].cate_id+"'>";
                         }
                         //给每一个取出的数据添加是否显示标志
-                        if(res[i].if_show)
+                        if(res[i].if_show == '1')
                         {
                             if_show = "<img src='templates/style/images/positive_enabled.gif' ectype='inline_edit' fieldname='if_show' fieldid='"+res[i].cate_id+"' fieldvalue='1'/>";
                         }
                         else
                         {
-                            if_show = "<img src='templates/style/images/positive_disabled.gif' ectype='inline_edit' fieldname='if_show' fieldid='"+res[i].cate_id+"' fieldvalue='1'/>";
+                            if_show = "<img src='templates/style/images/positive_disabled.gif' ectype='inline_edit' fieldname='if_show' fieldid='"+res[i].cate_id+"' fieldvalue='0'/>";
                         }
                         //构造每一个tr组成的字符串，标语添加
                         str+="<tr class='row"+id+"'><td class='align_center w30'><input type='checkbox' class='checkitem' value='"+res[i].cate_id+"' /></td>"+
@@ -122,7 +122,7 @@ function secajax(ob)
                         {
                            src =  "<img src='templates/style/images/treetable/tv-expandable.gif' ectype='flex' status='open' fieldid="+res[i].cate_id+
                            " onclick='secajax($(this))'><span class='node_name editable' ectype='inline_edit' fieldname='cate_name' fieldid='"+res[i].cate_id+"' required='1'>"+res[i].cate_name+"</span>";
-                           
+
                         }
                         else
                         {
@@ -133,13 +133,13 @@ function secajax(ob)
                             add_child =  " | <a href='index.php?app=gcategory&amp;act=add&amp;pid="+res[i].cate_id+"'>"+lang.add_child+"</a>";
                         }
                         var itd2 = td2html+src;
-                        if(res[i].if_show)
+                        if(res[i].if_show == '1')
                         {
                             if_show = "<img src='templates/style/images/positive_enabled.gif' ectype='inline_edit' fieldname='if_show' fieldid='"+res[i].cate_id+"' fieldvalue='1'/>";
                         }
                         else
                         {
-                            if_show = "<img src='templates/style/images/positive_disabled.gif' ectype='inline_edit' fieldname='if_show' fieldid='"+res[i].cate_id+"' fieldvalue='1'/>";
+                            if_show = "<img src='templates/style/images/positive_disabled.gif' ectype='inline_edit' fieldname='if_show' fieldid='"+res[i].cate_id+"' fieldvalue='0'/>";
                         }
                         str+="<tr class='"+pid+" row"+id+"'><td class='align_center w30'><input type='checkbox' class='checkitem' value='"+res[i].cate_id+"' /></td>"+
                         "<td class='node' width='50%'>"+itd2+"</td>"+

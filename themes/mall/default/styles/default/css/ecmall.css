@@ -27,7 +27,7 @@
  * -------------------------------------------------------
  */
 
-body { font-size: 12px; font-family: Arial, Helvetica, sans-serif; }
+body { font-size: 12px; font-family: Arial, Helvetica, sans-serif; background: #fff; }
 h1, h2, h3, h4, h5, h6, p, ul, ol, dl, dt, dd, li, body, form, input, button, img, cite, strong, em, table, td, th { padding:0; margin:0; }
 h1, h2, h3, h4, h5, h6 { font-size: 14px; }
 img, table, td, th { border: 0; }
@@ -659,6 +659,8 @@ ul, ol { list-style-type:none; }
 .side_textlist li { height: 25px; line-height: 25px; overflow: hidden; padding-left: 18px; background: url(../images/ico.gif) no-repeat -17px 6px; }
 .side_textlist a { color: #666; text-decoration: none; }
 .side_textlist a:hover { color: red; text-decoration: underline; }
+.side_textlist li input{ width: 44px; border: 1px solid #bbc8d1;}
+.side_textlist li input#search_by_price { width: 40px; height: 18px; line-height: 18px; }
 
 .article_wrap { width: 772px; padding: 3px; border: 1px solid #dcdcdc; background: #f8f8f8; }
 .article_con { padding: 20px; background: #fff; }
@@ -749,7 +751,7 @@ ul, ol { list-style-type:none; }
 .squares .list_pic li { float: left; width: 195px; height: 280px; padding-top: 20px; }
 .squares .list_pic p { width: 160px; height: 160px; margin: 0 auto; background: #eee; }
 .squares .list_pic p img { width: 160px; height: 160px; }
-.squares .list_pic h3 { width: 160px; margin: 0 auto; }
+.squares .list_pic h3 { width: 160px; margin: 0 auto; word-break: break-all; word-wrap: break-word; }
 .squares .list_pic h3 .text_link { display: block; text-align: center; height: 33px; margin-top: 10px; overflow: hidden; line-height: 18px; }
 .squares .list_pic h3 .text_link a { font-size: 12px; font-family: "宋体"; font-weight: normal; text-decoration: none; color: #646464; }
 .squares .list_pic h3 a:hover { color: red; text-decoration: underline; }

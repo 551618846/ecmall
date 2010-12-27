@@ -40,9 +40,9 @@ imgUping.src = upimg;
                         <ul ectype="ul_brand">
                             <!--{foreach from=$brands item=row name=fe_brand}-->
                             <!-- {if $smarty.foreach.fe_brand.iteration le 10} -->
-                            <li><a href="javascript:void(0);" title="{$row.brand}">{$row.brand|escape}</a> ({$row.count})</li>
+                            <li><a href="javascript:void(0);" title="{$row.brand}" id="{$row.brand|escape:url}">{$row.brand|escape}</a> ({$row.count})</li>
                             <!-- {else} -->
-                            <li style="display:none"><a href="javascript:void(0);" title="{$row.brand}">{$row.brand|escape}</a> ({$row.count})</li>
+                            <li style="display:none"><a href="javascript:void(0);" title="{$row.brand}" id="{$row.brand|escape:url}">{$row.brand|escape}</a> ({$row.count})</li>
                             <!-- {/if} -->
                             <!--{/foreach}-->
                         </ul>
@@ -77,9 +77,9 @@ imgUping.src = upimg;
                         <ul ectype="ul_region">
                             <!--{foreach from=$regions item=row name=fe_region}-->
                             <!-- {if $smarty.foreach.fe_region.iteration le 10} -->
-                            <li><a href="javascript:void(0);" title="{$row.region_id}">{$row.region_name|escape}</a> ({$row.count})</li>
+                            <li><a href="javascript:void(0);" id="{$row.region_id}" title="{$row.region_name|escape}">{$row.region_name|escape}</a> ({$row.count})</li>
                             <!-- {else} -->
-                            <li style="display:none"><a href="javascript:void(0);" title="{$row.region_id}">{$row.region_name|escape}</a> ({$row.count})</li>
+                            <li style="display:none"><a href="javascript:void(0);" id="{$row.region_id}" title="{$row.region_name}">{$row.region_name|escape}</a> ({$row.count})</li>
                             <!-- {/if} -->
                             <!--{/foreach}-->
                         </ul>
@@ -125,7 +125,7 @@ imgUping.src = upimg;
                 <div class="contain_list" ectype="dropdown_filter_content" ecvalue="brand" style="display:none">
                     <ul ectype="ul_brand">
                         <!--{foreach from=$brands item=row}-->
-                        <li><a href="javascript:void(0);" title="{$row.brand}">{$row.brand|escape} ({$row.count})</a></li>
+                        <li><a href="javascript:void(0);" title="{$row.brand}" id="{$row.brand|escape:url}">{$row.brand|escape} ({$row.count})</a></li>
                         <!--{/foreach}-->
                     </ul>
                 </div>
@@ -141,7 +141,7 @@ imgUping.src = upimg;
                 <div class="contain_list" ectype="dropdown_filter_content" ecvalue="region" style="display:none">
                     <ul ectype="ul_region">
                         <!--{foreach from=$regions item=row}-->
-                        <li><a href="javascript:void(0);" title="{$row.region_id}">{$row.region_name|escape} ({$row.count})</a></li>
+                        <li><a href="javascript:void(0);" id="{$row.region_id}" title="{$row.region_name|escape}">{$row.region_name|escape} ({$row.count})</a></li>
                         <!--{/foreach}-->
                     </ul>
                 </div>

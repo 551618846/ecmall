@@ -239,7 +239,8 @@ class RecommendApp extends BackendApp
         if (in_array($column ,array('sort_order')))
         {
             $data[$column] = $value;
-            if($this->_recommend_mod->createRelation('recommend_goods', $recom_id, array($goods_id => array('sort_order' => $value))))
+            $this->_recommend_mod->createRelation('recommend_goods', $recom_id, array($goods_id => array('sort_order' => $value)));
+            if(!$this->_recommend_mod->has_error())
             {
                 echo ecm_json_encode(true);
             }

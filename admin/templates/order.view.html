@@ -10,7 +10,7 @@
         <ul>
             <li><b>{$lang.order_sn}:</b>{$order.order_sn}{if $order.extension eq 'groupbuy'}[{$lang.groupbuy}]{/if}&nbsp;&nbsp;&nbsp;<!--{if $order.group_id}-->[<a href="{$site_url}/index.php?app=groupbuy&id={$order.group_id}" target="_blank">{$lang.groupbuy_detail}</a>]<!--{/if}--></li>
             <li><b>{$lang.order_status}:</b> {$order.status|modifier:order_status}</li>
-            <li><b>{$lang.order_amount}:</b> {$order.order_amount|price}</li>
+            <li><b>{$lang.order_amount}:</b> <span class="red_common">{$order.order_amount|price}</span>({$lang.preference}:{$order.discount|price})</li>
         </ul>
         <div class="clear"></div>
     </div>

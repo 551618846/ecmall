@@ -272,11 +272,19 @@ class GcategoryBModel extends GcategoryModel
      * 
      * @param   int     $id     分类id
      * @param   bool    $cached 是否缓存（缓存数据不包括不显示的分类，一般用于前台；非缓存数据包括不显示的分类，一般用于后台）
-     * @return  int     层级
+     * @return  int     层级     当分类不存在或不显示时返回false
      */
     function get_layer($id, $cached = false)
     {
-        return count($this->get_ancestor($id, $cached));
+        $ancestor = $this->get_ancestor($id, $cached);
+        if (empty($ancestor))
+        {
+            return false; //分类不存在或不显示
+        }
+        else
+        {
+            return count($ancestor);
+        }        
     }
     
     /**
@@ -364,7 +372,7 @@ class GcategoryBModel extends GcategoryModel
     function clear_cache()
     {
         $cache_server =& cache_server();
-        $keys = array('goods_category_' . $this->_store_id, 'page_goods_category');
+        $keys = array('goods_category_' . $this->_store_id, 'page_goods_category', 'function_get_store_data_' . $this->_store_id);
         foreach ($keys as $key)
         {
             $cache_server->delete($key);

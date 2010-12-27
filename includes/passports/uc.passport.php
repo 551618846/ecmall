@@ -198,14 +198,14 @@ class UcPassportUser extends BasePassportUser
         }
 
         /* 先到UCenter中删除 */
-        $result = outer_call('uc_user_delete', array($user_id));
+        /*$result = outer_call('uc_user_delete', array($user_id));
         outer_call('uc_user_deleteavatar', array($user_id));
         if (!$result)
         {
             $this->_error('uc_drop_user_failed');
 
             return false;
-        }
+        }*/
 
         /* 再删除本地的 */
         return $this->_local_drop($user_id);
@@ -600,7 +600,7 @@ class UcPassportPM extends BasePassportPM
      */
     function msg_filter($message)
     {
-        return $message;
+        return str_replace('&amp;', '&', $message); // 防止URL中的&被重复转义;
     }
 }
 

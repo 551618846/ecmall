@@ -262,7 +262,14 @@ Dialog.prototype = {
         switch(type){
             case 'ajax':
                 /* 通过Ajax取得HTML，显示到页面上，此过程是异步的 */
-                $.get(options, function(data){
+                $.get(options, {ajax:1}, function(data){
+                    if(data.substr(0,1) == '{' && data.substr(data.length - 1, 1) == '}'){
+                        var JSON = eval('(' + data + ')');
+                        if(!JSON.done){
+                           self.setContents(JSON.msg);
+                           return;
+                        }
+                    }
                     self.setContents(data);
                     /* 使用上次定位重新定位窗口位置 */
                     self.setPosition(self.lastPos);

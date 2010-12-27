@@ -31,7 +31,13 @@ $(function(){
 
     /* 缩小大图片 */
     $('.makesmall').each(function(){
-        makesmall(this, $(this).attr('max_width'), $(this).attr('max_height'));
+        if(this.complete){
+            makesmall(this, $(this).attr('max_width'), $(this).attr('max_height'));
+        }else{
+            $(this).load(function(){
+                makesmall(this, $(this).attr('max_width'), $(this).attr('max_height'));
+            });
+        }
     });
 });
 function drop_confirm(msg, url){

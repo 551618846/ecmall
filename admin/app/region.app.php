@@ -170,7 +170,8 @@ class RegionApp extends BackendApp
        if (in_array($column ,array( 'sort_order')))
        {
            $data[$column] = $value;
-           if($this->_region_mod->edit($id, $data))
+           $this->_region_mod->edit($id, $data);
+           if(!$this->_region_mod->has_error())
            {
                echo ecm_json_encode(true);
            }
@@ -292,6 +293,11 @@ class RegionApp extends BackendApp
             if ($file['error'] != UPLOAD_ERR_OK)
             {
                 $this->show_warning('select_file');
+                return;
+            }
+            if ($file['name'] == basename($file['name'],'.csv'))
+            {
+                $this->show_warning('not_csv_file');
                 return;
             }
 

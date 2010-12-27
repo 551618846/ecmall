@@ -1,7 +1,8 @@
 <style type="text/css">
 .eject_con .adds li h4 { float: left; width: 90px; color: #646665; font-weight: normal; font-size: 12px; line-height: 26px; }
-.grey {color:#666}
-.mt6 {margin-top:6px}
+.grey {color:#666;}
+.mt6 {margin-top:6px;}
+.grey a{color:#9719a0;}
 </style>
 <ul class="tab">
     <li class="active">{$lang.import}</li>
@@ -54,6 +55,16 @@
                 <h3>{$lang.file_format}:</h3>
                 <p class="grey mt6">{$lang.file_format_limit}</p>
             </li>
+            {if $smarty.get.app eq 'my_category'}
+            <li>
+                <h3>{$lang.csv_simple}:</h3>
+                <p class="grey mt6">
+                    <a href="index.php?app=my_category&act=csv_sample&charset=utf-8">utf-8</a>
+                    <a href="index.php?app=my_category&act=csv_sample&charset=gbk">gbk</a>
+                    <a href="index.php?app=my_category&act=csv_sample&charset=big5">big5</a>
+                </p>
+            </li>
+            {/if}
         </ul>
         <div class="submit"><input type="submit" class="btn" value="{$lang.confirm}" /></div>
         </form>

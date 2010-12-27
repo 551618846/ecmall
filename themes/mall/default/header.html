@@ -5,12 +5,11 @@
 <!-- Use IE7 mode -->
 <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7 charset={$charset}" />
 <meta http-equiv="Content-Type" content="text/html; charset={$charset}" />
-<title>{$page_title|escape}</title>
-<meta name="description" content="{$page_description|escape}" />
-<meta name="keywords" content="{$page_keywords|escape}" />
-<meta name="author" content="ecmall.shopex.cn" />
-<meta name="copyright" content="ShopEx Inc. All Rights Reserved" />
+{$page_seo}
 
+<meta name="author" content="ecmall.shopex.cn" />
+<meta name="generator" content="ECMall {$ecmall_version}" />
+<meta name="copyright" content="ShopEx Inc. All Rights Reserved" />
 <link href="{res file=css/ecmall.css}" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="index.php?act=jslang"></script>
 <script type="text/javascript" src="{lib file=jquery.js}" charset="utf-8"></script>
@@ -59,9 +58,15 @@ $(function(){
                 <ul id="float_list">
                     <div class="adorn1"></div>
                     <div class="adorn2"></div>
+                    <!--{if $visitor.store_id}-->
+                    <li><a href="{url app=my_goods}">{$lang.my_goods}</a></li>
+                    <li><a href="{url app=seller_order}">{$lang.order_manage}</a></li>
+                    <li><a href="{url app=my_qa}">{$lang.my_qa}</a></li>
+                    <!--{else}-->
                     <li><a href="{url app=buyer_order}">{$lang.my_order}</a></li>
                     <li><a href="{url app=buyer_groupbuy}">{$lang.my_groupbuy}</a></li>
                     <li><a href="{url app=my_question}">{$lang.my_question}</a></li>
+                    <!--{/if}-->
                 </ul>
             </li>
             <li class="line"><a href="{url app=message&act=newpm}">{$lang.pm}<!--{if $new_message}-->({$new_message})<!--{/if}--></a></li>

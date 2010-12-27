@@ -96,7 +96,7 @@ return array(
     'email_desc' => '请输入一个有效的电子邮箱地址',
     'captcha_desc' => '请输入图片中的文字,点击图片以更换',
     'user_name_required'     => '您必须提供一个用户名',
-    'user_name_limit'        => '用户名必须在3-25个字符之间',
+    'user_name_limit'        => '用户名必须在3-15个字符之间',
     'user_already_taken'     => '您提供的用户名已存在',
     'no_pass'                => '密码不能为空',
     'password_required'     => '您必须提供一个密码',
@@ -141,6 +141,10 @@ return array(
     'feed_settings_successfully' => '个人动态设置成功！',
     'feed_disabled' => 'Feed功能已禁用',
     'feed_settings_desc' => '个人动态信息是指您在本站活动产生的事件信息，比如“您购买了XX商品”，这些信息会被发送到具有个人动态展示的应用中，您的好友将能通过此了解到您的最新动态。请选中以下您想发送的动态的复选框。',
+    'apply_state' => '审核状态',
+    'store_applying' => '您的店铺正在审核中。你可以<a href="index.php?app=apply&step=2&id=%s">查看或修改店铺信息</a>',
+    'edit_store_info' => '编辑店铺信息',
+    'apply_remind' => '开店提醒'
 );
 
 ?>

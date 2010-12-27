@@ -26,7 +26,7 @@ class CategoryApp extends MallbaseApp
         $this->assign('_curlocal',$_curlocal);
         $this->assign('gcategorys', $gcategorys);
 
-        $this->assign('page_title', Lang::get('goods_category') . ' - '. Conf::get('site_title'));
+        $this->_config_seo('title', Lang::get('goods_category') . ' - '. Conf::get('site_title'));
         $this->display('category.goods.html');
     }
 
@@ -57,7 +57,7 @@ class CategoryApp extends MallbaseApp
         $this->assign('recommended_stores', $recommended_stores);
         $this->assign('scategorys', $scategorys);
 
-        $this->assign('page_title', Lang::get('store_category') . ' - '. Conf::get('site_title'));
+        $this->_config_seo('title', Lang::get('store_category') . ' - '. Conf::get('site_title'));
         $this->display('category.store.html');
     }
 

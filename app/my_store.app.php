@@ -48,7 +48,12 @@ class My_storeApp extends StoreadminbaseApp
                 'upload_url' => 'index.php?app=swfupload',
                 'if_multirow' => 1,
             )));
-            $this->assign('build_editor', $this->_build_editor(array('name' => 'description')));
+            
+            extract($this->_get_theme());
+            $this->assign('build_editor', $this->_build_editor(array(
+                'name' => 'description',
+                'content_css' => SITE_URL . "/themes/store/{$template_name}/styles/{$style_name}" . '/shop.css', // for preview
+            )));
 
             $msn_active_url = 'http://settings.messenger.live.com/applications/websignup.aspx?returnurl=' .
                 SITE_URL . '/index.php' . urlencode('?app=my_store&act=update_im_msn') . '&amp;privacyurl=' . SITE_URL . '/index.php' . urlencode('?app=article&act=system&code=msn_privacy');
@@ -72,7 +77,7 @@ class My_storeApp extends StoreadminbaseApp
             $this->assign('files_belong_store', $files_belong_store);
             $this->assign('subdomain_enable', $subdomain_enable);
             $this->assign('domain_length', Conf::get('subdomain_length'));
-            $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('my_store'));
+            $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('my_store'));
             $this->display('my_store.index.html');
         }
         else
@@ -93,6 +98,29 @@ class My_storeApp extends StoreadminbaseApp
             {
                 return;
             }
+            else //删除冗余图标
+            {
+                if($store['store_logo'] != '' && $data['store_logo'] != '')
+                {
+                    $store_logo_old = pathinfo($store['store_logo']);
+                    $store_logo_new = pathinfo($data['store_logo']);
+                    if($store_logo_old['extension'] != $store_logo_new['extension'])
+                    {
+                        unlink($store['store_logo']);
+                    }
+                }
+
+                if($store['store_banner'] != '' && $data['store_banner'] != '')
+                {
+                    $store_banner_old = pathinfo($store['store_banner']);
+                    $store_banner_new = pathinfo($data['store_banner']);
+                    if($store_banner_old['extension'] != $store_banner_new['extension'])
+                    {
+                        unlink($store['store_banner']);
+                    }
+                }
+            }
+            
             $data = array_merge($data, array(
                 'store_name' => $_POST['store_name'],
                 'region_id'  => $_POST['region_id'],

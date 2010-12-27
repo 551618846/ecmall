@@ -80,7 +80,7 @@ class My_navigationApp extends StoreadminbaseApp
 
         $this->assign('filtered', $conditions? 1 : 0); //是否有查询条件
         $this->assign('page_info', $page);          //将分页信息传递给视图，用于形成分页条
-        $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('my_navigation'));
+        $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('my_navigation'));
         header("Content-Type:text/html;charset=" . CHARSET);
         $this->display('my_navigation.index.html');
     }
@@ -115,7 +115,14 @@ class My_navigationApp extends StoreadminbaseApp
             //上传图片是传给iframe的参数
             $this->assign("id", 0);
             $this->assign("belong", BELONG_ARTICLE);
-            $this->assign('build_editor', $this->_build_editor(array('name' => 'nav_content', 'ext_js' => false,)));
+
+            extract($this->_get_theme());
+            $this->assign('build_editor', $this->_build_editor(array(
+                'name' => 'nav_content',
+                'ext_js' => false,
+                'content_css' => SITE_URL . "/themes/store/{$template_name}/styles/{$style_name}" . '/shop.css', // for preview
+            )));
+            
            /* 编辑器图片批量上传器 */
             $this->assign('editor_upload', $this->_build_upload(array(
                 'obj' => 'EDITOR_SWFU',
@@ -152,6 +159,11 @@ class My_navigationApp extends StoreadminbaseApp
                 $this->pop_warning($model_article->get_error());
 
                 return;
+            }
+            else
+            {
+                /* 清除缓存 */
+                $this->_clear_cache();
             }
 
             /* 附件入库 */
@@ -212,7 +224,14 @@ class My_navigationApp extends StoreadminbaseApp
             ));*/
             $this->_assign_form();
             $this->assign('files_belong_article', $files_belong_article);
-            $this->assign('build_editor', $this->_build_editor(array('name' => 'nav_content', 'ext_js' => false,)));
+            
+            extract($this->_get_theme());
+            $this->assign('build_editor', $this->_build_editor(array(
+                'name' => 'nav_content',
+                'ext_js' => false,
+                'content_css' => SITE_URL . "/themes/store/{$template_name}/styles/{$style_name}" . '/shop.css', // for preview
+            )));
+            
            /* 编辑器图片批量上传器 */
             $this->assign('editor_upload', $this->_build_upload(array(
                 'obj' => 'EDITOR_SWFU',
@@ -241,15 +260,15 @@ class My_navigationApp extends StoreadminbaseApp
             );
 
             $model_article =& m('article');
-            $model_article->edit("article_id = {$nav_id} AND store_id=" . $this->visitor->get('user_id'), $data);
+            $rows = $model_article->edit("article_id = {$nav_id} AND store_id=" . $this->visitor->get('user_id'), $data);
             if ($model_article->has_error())
             {
                 //$this->show_warning($model_article->get_error());
-                $msg = $model_article->get_error();
-                $this->pop_warning($msg['msg']);
+                $this->pop_warning($model_article->get_error());
                 return;
             }
-
+            /* 清除缓存 */
+            $rows && $this->_clear_cache();
             $this->pop_warning('ok', 'my_navigation_edit');
         }
     }
@@ -278,6 +297,11 @@ class My_navigationApp extends StoreadminbaseApp
             $this->show_warning($model_article->get_error());
 
             return;
+        }
+        else
+        {
+            /* 清除缓存 */
+            $this->_clear_cache();
         }
 
         $this->show_message('drop_navigation_successed');
@@ -332,6 +356,14 @@ class My_navigationApp extends StoreadminbaseApp
             return;
         }
     }
+    
+    /* 清除缓存 */
+    function _clear_cache()
+    {        
+        $cache_server =& cache_server();
+        $cache_server->delete('function_get_store_data_' . $this->visitor->get('manage_store'));
+    }
+
 }
 
 ?>

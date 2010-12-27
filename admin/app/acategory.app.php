@@ -222,7 +222,8 @@ class AcategoryApp extends BackendApp
                    return ;
                }
            }
-           if($this->_acategory_mod->edit($id, $data))
+           $this->_acategory_mod->edit($id, $data);
+           if(!$this->_acategory_mod->has_error())
            {
                echo ecm_json_encode(true);
            }

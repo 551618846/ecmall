@@ -47,5 +47,6 @@ return array(
     'postscript' =>'买家附言',
     'groupbuy_detail' => '团购详情',
     'groupbuy' => '团购',
+    'preference' => '优惠了'
 );
 ?>

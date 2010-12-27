@@ -66,7 +66,7 @@ class My_qaApp extends StoreadminbaseApp
         ));
         $this->assign('page_info',$page);
         $this->assign('my_qa_data',$my_qa_data);
-        $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('my_qa'));
+        $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('my_qa'));
         $this->display('my_qa.index.html');
     }
     function reply()
@@ -98,7 +98,7 @@ class My_qaApp extends StoreadminbaseApp
             $this->assign('_curmenu','reply');
             $this->assign('page_info',$page);
             $this->assign('my_qa_data',$my_qa_data);
-            $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('reply'));
+            $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('reply'));
             header('Content-Type:text/html;charset=' . CHARSET);
             $this->display('my_qa.form.html');
         }
@@ -129,11 +129,23 @@ class My_qaApp extends StoreadminbaseApp
                     'if_new' => '1',
                     );
                 if ($this->my_qa_mod->edit($ques_id,$data))
-                {
-                    $this->pop_warning('ok', 'my_qa_reply');
-                    $mail = get_mail('tobuyer_question_replied', array('id' => $goods_id, 'ques_id' => $ques_id, 'goods_name' => $goods_name));
-                    $this->_mailto($email, addslashes($mail['subject']), addslashes($mail['message']));
+                {                    
+                    $url = '';
+                    switch ($type)
+                    {
+                        case 'goods' : $url = SITE_URL . "/index.php?app={$type}&act=qa&id={$item_id}&amp;ques_id={$ques_id}&amp;new=yes";
+                        break;
+                        case 'groupbuy' : $url = SITE_URL . "/index.php?app={$type}&id={$item_id}&amp;ques_id={$ques_id}&amp;new=yes";
+                        break;
+                    }
 
+                    $mail = get_mail('tobuyer_question_replied', array(
+                        'item_name'  => $item_name,
+                        'type'       => Lang::get($type),
+                        'url'        => $url
+                    ));
+                    $this->_mailto($email, addslashes($mail['subject']), addslashes($mail['message']));
+                    $this->pop_warning('ok', 'my_qa_reply');
                 }
                 else
                 {

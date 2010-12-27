@@ -38,7 +38,18 @@ $(function(){
             },
             rules : {
                 store_name : {
-                    required   : true
+                    required   : true,
+                    remote : {
+                        url  : 'index.php?app=apply&act=check_name&ajax=1',
+                        type : 'get',
+                        data : {
+                            store_name : function(){
+                                return $('#store_name').val();
+                            },
+                            store_id : {$store.store_id}
+                        }
+                    },
+                    maxlength: 20
                 },
                 tel      : {
                     required     : true,
@@ -53,7 +64,9 @@ $(function(){
             },
             messages : {
                 store_name  : {
-                    required   : '{$lang.not_empty}'
+                    required   : '{$lang.not_empty}',
+                    remote: '{$lang.name_exist}',
+                    maxlength: '{$lang.note_for_store_name}'
                 },
                 tel      : {
                     required   : '{$lang.not_empty}',
@@ -77,7 +90,7 @@ $(function(){
 });
 function add_uploadedfile(file_data)
 {
-        $('#desc_images').append('<li file_name="'+ file_data.file_name +'" file_path="'+ file_data.file_path +'" ectype="handle_pic" file_id="'+ file_data.file_id +'"><input type="hidden" name="desc_file_id[]" value="'+ file_data.file_id +'"><div class="pic" style="z-index: 2;"><img src="{$site_url}/'+ file_data.file_path +'" width="50" height="50" alt="'+ file_data.file_name +'" /></div><div ectype="handler" class="bg" style="z-index: 3;display:none"><img src="{$site_url}/'+ file_data.file_path +'" width="50" height="50" alt="'+ file_data.file_name +'" /><p class="operation"><a href="###" class="cut_in" ectype="insert_editor" ecm_title="{$lang.insert_editor}"></a><span class="delete" ectype="drop_image" ecm_title="{$lang.drop}"></span></p><p class="name">'+ file_data.file_name +'</p></div></li>');
+        $('#desc_images').append('<li file_name="'+ file_data.file_name +'" file_path="'+ file_data.file_path +'" ectype="handle_pic" file_id="'+ file_data.file_id +'"><input type="hidden" name="desc_file_id[]" value="'+ file_data.file_id +'"><div class="pic" style="z-index: 2;"><img src="{$site_url}/'+ file_data.file_path +'" width="50" height="50" alt="'+ file_data.file_name +'" /></div><div ectype="handler" class="bg" style="z-index: 3;display:none"><img src="{$site_url}/'+ file_data.file_path +'" width="50" height="50" alt="'+ file_data.file_name +'" /><p class="operation"><a href="javascript:void(0);" class="cut_in" ectype="insert_editor" ecm_title="{$lang.insert_editor}"></a><span class="delete" ectype="drop_image" ecm_title="{$lang.drop}"></span></p><p class="name">'+ file_data.file_name +'</p></div></li>');
         trigger_uploader();
         if(EDITOR_SWFU.getStats().files_queued == 0){
                 window.setTimeout(function(){
@@ -151,7 +164,7 @@ function drop_image(file_id)
                             <tr>
                                 <th class="width2">{$lang.store_name}:</th>
                                 <td>
-                                    <p class="td_block"><input type="text" class="text width_normal" name="store_name" value="{$store.store_name|escape}"/><label class="field_notice">{$lang.store_name}</label></p>
+                                    <p class="td_block"><input id="store_name" type="text" class="text width_normal" name="store_name" value="{$store.store_name|escape}"/><label class="field_notice">{$lang.store_name}</label></p>
                                     <b class="padding1">*</b><a href="{url app=store&id=$store.store_id}" target="_blank" class="btn1">{$lang.my_store_index}</a>
                                 </td>
                             </tr>
@@ -237,7 +250,7 @@ function drop_image(file_id)
                                             <div ectype="handler" class="bg">
                                             <img src="{$site_url}/{$file.file_path}" width="50" height="50" alt="{$file.file_name|escape}" title="{$file.file_name|escape}" />
                                                 <p class="operation">
-                                                    <a href="###" class="cut_in" ectype="insert_editor" ecm_title="{$lang.insert_editor}"></a>
+                                                    <a href="javascript:void(0);" class="cut_in" ectype="insert_editor" ecm_title="{$lang.insert_editor}"></a>
                                                     <span class="delete" ectype="drop_image" ecm_title="{$lang.drop}"></span>
                                                 </p>
                                                 <p title="{$file.file_name|escape}" class="name">{$file.file_name|escape}</p>

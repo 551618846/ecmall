@@ -22,7 +22,7 @@ class Seller_orderApp extends StoreadminbaseApp
         $type = (isset($_GET['type']) && $_GET['type'] != '') ? trim($_GET['type']) : 'all_orders';
         $this->_curitem('order_manage');
         $this->_curmenu($type);
-        $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('order_manage'));
+        $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('order_manage'));
         $this->import_resource(array(
             'script' => array(
                 array(
@@ -90,7 +90,7 @@ class Seller_orderApp extends StoreadminbaseApp
 
         /* 当前用户中心菜单 */
         $this->_curitem('order_manage');
-        $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('detail'));
+        $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('detail'));
 
         /* 调用相应的订单类型，获取整个订单详情数据 */
         $order_type =& ot($order_info['extension']);
@@ -146,9 +146,7 @@ class Seller_orderApp extends StoreadminbaseApp
             $model_order->edit(intval($order_id), array('status' => ORDER_ACCEPTED, 'pay_time' => gmtime()));
             if ($model_order->has_error())
             {
-                $_errors = $model_order->get_error();
-                $error = current($_errors);
-                $this->pop_warning(Lang::get($error['msg']));
+                $this->pop_warning($model_order->get_error());
 
                 return;
             }
@@ -212,9 +210,7 @@ class Seller_orderApp extends StoreadminbaseApp
             $model_order->edit($order_id, array('status' => ORDER_ACCEPTED));
             if ($model_order->has_error())
             {
-                $_errors = $model_order->get_error();
-                $error = current($_errors);
-                $this->pop_warning(Lang::get($error['msg']));
+                $this->pop_warning($model_order->get_error());
 
                 return;
             }
@@ -290,7 +286,8 @@ class Seller_orderApp extends StoreadminbaseApp
             }
             $data = array(
                 'goods_amount'  => $goods_amount,    //修改商品总价
-                'order_amount'  => $order_amount     //修改订单实际总金额
+                'order_amount'  => $order_amount,     //修改订单实际总金额
+                'pay_alter' => 1    //支付变更
             );
 
             if ($shipping_fee != $shipping_info['shipping_fee'])
@@ -304,9 +301,7 @@ class Seller_orderApp extends StoreadminbaseApp
 
             if ($model_order->has_error())
             {
-                $_errors = $model_order->get_error();
-                $error = current($_errors);
-                $this->pop_warning(Lang::get($error['msg']));
+                $this->pop_warning($model_order->get_error());
 
                 return;
             }
@@ -377,9 +372,7 @@ class Seller_orderApp extends StoreadminbaseApp
             $model_order->edit(intval($order_id), $edit_data);
             if ($model_order->has_error())
             {
-                $_errors = $model_order->get_error();
-                $error = current($_errors);
-                $this->pop_warning(Lang::get($error['msg']));
+                $this->pop_warning($model_order->get_error());
 
                 return;
             }
@@ -540,9 +533,7 @@ class Seller_orderApp extends StoreadminbaseApp
             $model_order->edit($order_id, array('status' => ORDER_FINISHED, 'pay_time' => $now, 'finished_time' => $now));
             if ($model_order->has_error())
             {
-                $_errors = $model_order->get_error();
-                $error = current($_errors);
-                $this->pop_warning(Lang::get($error['msg']));
+                $this->pop_warning($model_order->get_error());
 
                 return;
             }

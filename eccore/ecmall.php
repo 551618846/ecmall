@@ -21,10 +21,10 @@ define('IN_ECM', true);
 define('PHP_SELF',  htmlentities(isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_NAME']));
 
 /* 当前ECMall程序版本 */
-define('VERSION', '2.2 final');
+define('VERSION', '2.2.1');
 
 /* 当前ECMall程序Release */
-define('RELEASE', '20100108');
+define('RELEASE', '20100928');
 
 /*---------------------以下是PHP在不同版本，不同服务器上的兼容处理-----------------------*/
 
@@ -172,11 +172,34 @@ class Lang
      */
     function &get($key = '')
     {
+        if (Lang::_valid_key($key) == false)
+        {
+            return $key;
+        }
         $vkey = $key ? strtokey("{$key}", '$GLOBALS[\'__ECLANG__\']') : '$GLOBALS[\'__ECLANG__\']';
         $tmp = eval('if(isset(' . $vkey . '))return ' . $vkey . ';else{ return $key; }');
 
         return $tmp;
     }
+
+    /**
+     * 验证key的有效性
+     *
+     * @author Hyber
+     * @param string $key
+     * @return bool
+     */
+    function _valid_key($key)
+    {
+        if (strpos($key, ' ') !== false)
+        {
+            return false;
+        }
+        #todo 暂时只判断是否含有空格
+        return true;
+    }
+
+
     /**
      *    加载指定的语言项至全局语言数据中
      *

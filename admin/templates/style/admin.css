@@ -73,7 +73,7 @@ html,body {padding: 0;margin: 0; overflow-x:hidden; overflow-y:auto;}
         #rightCon {border-top: 1px solid #b0d3ee; padding: 10px 10px 60px; background: #fbfdff; margin-left: 2px; overflow: hidden;}
             #rightCon dt {line-height: 30px; font-size: 14px; color: #09f; font-weight: bold; padding: 10px 40px 0;}
             #rightCon dd {border-bottom: 1px solid #b0d3ee; line-height: 25px; padding: 0 40px 20px;}
-                #rightCon dd th {text-align: left; width: 110px; color: #444;}
+                #rightCon dd th {text-align: left; width: 120px; color: #444;}
                     .td {width: 200px; padding-left: 20px;}
 #page_footer {color: #999; border-top: 1px solid #cbe4f5; text-align: center; padding: 20px 0px;}
 .info {border-top: 1px solid #c1dff3; overflow: hidden; padding-left: 2px;}

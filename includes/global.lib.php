@@ -143,11 +143,12 @@ function portrait($user_id, $portrait, $size = 'small')
  */
 function &env($key, $val = null)
 {
+    !isset($GLOBALS['EC_ENV']) && $GLOBALS['EC_ENV'] = array();
     $vkey = $key ? strtokey("{$key}", '$GLOBALS[\'EC_ENV\']') : '$GLOBALS[\'EC_ENV\']';
     if ($val === null)
     {
         /* 返回该指定环境变量 */
-        $v = eval('return ' . $vkey . ';');
+        $v = eval('return isset(' . $vkey . ') ? ' . $vkey . ' : null;');
 
         return $v;
     }
@@ -288,7 +289,7 @@ function get_msg($msg_tpl, $var = array())
     /* 获取消息模板 */
     $ms = &ms();
     $msg_content = Lang::get($msg_tpl);
-
+    $var['site_url'] = SITE_URL; // 给短消息模板中设置一个site_url变量
     $search = array_keys($var);
     $replace = array_values($var);
 

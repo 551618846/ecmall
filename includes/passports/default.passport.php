@@ -429,6 +429,7 @@ class DefaultPassportPM extends BasePassportPM
      */
     function msg_filter($message)
     {
+        $message = str_replace('&amp;', '&', $message); // 防止URL中的&被重复转义
         $message = htmlspecialchars($message);
         if(strpos($message, '[/url]') !== FALSE)
         {

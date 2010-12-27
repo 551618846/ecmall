@@ -37,7 +37,13 @@ $(function(){
 
     /* 缩小大图片 */
     $('.makesmall').each(function(){
-        makesmall(this, $(this).attr('max_width'), $(this).attr('max_height'));
+        if(this.complete){
+            makesmall(this, $(this).attr('max_width'), $(this).attr('max_height'));
+        }else{
+            $(this).load(function(){
+                makesmall(this, $(this).attr('max_width'), $(this).attr('max_height'));
+            });
+        }
     });
 
     $('.su_btn').click(function(){
@@ -368,7 +374,7 @@ function trigger_uploader(){
         var parents = handler.parents();
         set_zindex(parents, '0');
     });
-    
+
     //短消息代码说明
     $('#msg_instrunction').toggle(function(){
         $(this).next('div').fadeIn("slow")
@@ -407,5 +413,49 @@ function copyToClipboard(txt) {
     if (!clip)
         return false;
     clip.setData(trans,null,clipid.kGlobalClipboard);
+    }
+}
+function makesmall(obj,w,h){
+    srcImage=obj;
+    var srcW=srcImage.width;
+    var srcH=srcImage.height;
+    if (srcW==0)
+    {
+        obj.src=srcImage.src;
+        srcImage.src=obj.src;
+        var srcW=srcImage.width;
+        var srcH=srcImage.height;
+    }
+    if (srcH==0)
+    {
+        obj.src=srcImage.src;
+        srcImage.src=obj.src;
+        var srcW=srcImage.width;
+        var srcH=srcImage.height;
+    }
+
+    if(srcW>srcH){
+        if(srcW>w){
+            obj.width=newW=w;
+            obj.height=newH=(w/srcW)*srcH;
+        }else{
+            obj.width=newW=srcW;
+            obj.height=newH=srcH;
+        }
+    }else{
+        if(srcH>h){
+            obj.height=newH=h;
+            obj.width=newW=(h/srcH)*srcW;
+        }else{
+            obj.width=newW=srcW;
+            obj.height=newH=srcH;
+        }
+    }
+    if(newW>w){
+        obj.width=w;
+        obj.height=newH*(w/newW);
+    }else if(newH>h){
+        obj.height=h;
+        obj.width=newW*(h/newH);
     }
 }

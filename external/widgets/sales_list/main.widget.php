@@ -19,10 +19,10 @@ class Sales_listWidget extends BaseWidget
         {
             $goods_mod =& m('goods');
             $data = $goods_mod->find(array(
-                'conditions' => "if_show = 1 AND closed = 0",
+                'conditions' => "if_show = 1 AND closed = 0 AND s.state =" . STORE_OPEN,
                 'order' => 'sales',
                 'fields' => 'g.goods_id, g.goods_name',
-                'join' => 'has_goodsstatistics',
+                'join' => 'has_goodsstatistics, belongs_to_store',
                 'limit' => 10,
             ));
             $cache_server->set($key, $data, $this->_ttl);

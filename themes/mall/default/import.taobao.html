@@ -20,6 +20,44 @@ function add_uploadedfile(file_data)
 {
     $('label.right').show();
 }
+function uploadSuccess(file, serverData) {
+    try {
+        eval('serverData = '+serverData);
+        var errorMsg = '';
+        var progress = new FileProgress(file,  this.customSettings);
+        if (serverData.done) {
+            serverData.retval.file_name = file.name;
+            add_uploadedfile(serverData.retval);
+            progress.setStatus(lang.finish);
+            progress.setComplete();
+            progress.toggleCancel(false);
+        } else {
+            //addImage(SITE_URL + "/includes/libraries/javascript/swfupload/images/error.gif");
+            progress.setStatus(lang.error);
+            progress.toggleCancel(false);
+            if(typeof(serverData.msg) == 'object'){
+                $.each(serverData.msg, function(i, val){
+                    errorMsg += lang.get(val.msg) + '[' + val.obj + ']\n';
+                });
+            } else {
+                errorMsg += lang.get(serverData.msg);
+            }
+            if(errorMsg != ''){
+                swfupload_error(errorMsg);
+            }
+        }
+
+
+    } catch (ex) {
+        this.debug(ex);
+    }
+}
+
+function swfupload_error(str)
+{
+    $('#warning').append('<label class="error">' + str + '</label>');
+    $('#warning').show();
+}
 $(function(){
         gcategoryInit("gcategory");
 });
@@ -39,7 +77,7 @@ $(function(){
           <ul{if $step eq 2} style="display:none"{/if}>
           <table class="table_text word_spacing5" style="margin-top:15px">
             <tr>
-              <td valign="top"><p>{$lang.select_file}: </p></th>
+              <td valign="top"><p>{$lang.select_file}: </p></td>
               <td><input type="file" name="csv" id="csv" /> <span class="gray">{$lang.note_for_taobao_file}</span></td>
             </tr>
             <tr>
@@ -51,6 +89,7 @@ $(function(){
                     <option>{$lang.select_pls}</option>
                     {html_options options=$mgcategories}
                   </select>
+                  <span class="gray">{$lang.select_leaf_category}</span>
                 </div>
                 </td>
             </tr>
@@ -78,6 +117,10 @@ $(function(){
               <td valign="top">{$lang.file_format}: </th>
               <td>{$lang.file_format_limit}</td>
             </tr>
+            <tr>
+              <td valign="top"><p>{$lang.import_guide}: </p></td>
+              <td><span class="gray" style="display:block;">{$lang.import_guide_content}</span></td>
+            </tr>
           </table>
           <div class="send_out">
             <input class="sub_btn" type="submit" value="{$lang.import}" />
@@ -100,6 +143,7 @@ $(function(){
                           </div>
                           <div id="divFileProgressContainer"></div>
                       </div>
+                      <div id="warning"></div>
                   </td>
               </tr>
           </table>

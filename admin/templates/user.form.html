@@ -13,8 +13,7 @@ $(function(){
         rules : {
             user_name : {
                 required : true,
-                maxlength: 25,
-                minlength: 3,
+                byteRange: [3,15,'{$charset}'],
                 remote   : {
                     url :'index.php?app=user&act=check_user',
                     type:'get',
@@ -47,8 +46,7 @@ $(function(){
         messages : {
             user_name : {
                 required : '{$lang.user_not_empty}',
-                maxlength: '{$lang.user_length_limit}',
-                minlength: '{$lang.user_length_limit}',
+                byteRange: '{$lang.user_length_limit}',
                 remote   : '{$lang.name_exist}'
             },
             password : {

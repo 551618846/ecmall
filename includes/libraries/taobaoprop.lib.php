@@ -13,15 +13,15 @@ if (!defined('IN_ECM'))
 
 class TaobaoProp extends Object
 {
-    var $_appKey = '12001643';
-    var $_appSecret = 'f01ef1797a187bf7b395330276390ce2';
+    var $_appKey = '';
+    var $_appSecret = '';
     var $_cid = null;
     var $_pvs = null;
     var $_fields = 'cid,pid,prop_name,vid,name,name_alias,is_parent,status,sort_order';
 
     function __construct($cid, $pvs, $appKey='', $appSecret='', $fields='')
     {
-        $this->TaobaoProp($cid, $pvs, $appKey='', $appSecret='', $fields='');
+        $this->TaobaoProp($cid, $pvs, $appKey, $appSecret, $fields);
     }
 
     function TaobaoProp($cid, $pvs, $appKey='', $appSecret='', $fields='')
@@ -49,7 +49,7 @@ class TaobaoProp extends Object
             'app_key' => $this->_appKey,
             'method' => 'taobao.itempropvalues.get',
             'format' => 'json',
-            'v' => '1.0',
+            'v' => '2.0',
             'timestamp' => date('Y-m-d H:i:s'),
             'fields' => $this->_fields,
             'pvs' => $this->_pvs,
@@ -64,8 +64,13 @@ class TaobaoProp extends Object
         $strParam .= 'sign='.$sign;
 
         //访问服务
-        $url = 'http://gw.api.taobao.com/router/rest?'.$strParam;
-        $result = @file_get_contents($url);
+        $url = 'http://gw.api.taobao.com/router/rest?'.$strParam;//vdump('ok',file_get_contents($url));
+        $result = _at('file_get_contents', $url);
+        if (!$result)
+        {
+            $this->_error('api_data_fail');
+            return false;
+        }
         $result = $this->_getJsonData($result);
 
         if (isset($result['msg']))
@@ -73,7 +78,7 @@ class TaobaoProp extends Object
             $this->_error($result['msg']);
             return false;
         }
-        return $result;
+        return $result['prop_value']['prop_value'];
     }
 
     //签名函数

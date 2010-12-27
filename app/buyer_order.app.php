@@ -21,7 +21,7 @@ class Buyer_orderApp extends MemberbaseApp
         /* 当前用户中心菜单 */
         $this->_curitem('my_order');
         $this->_curmenu('order_list');
-        $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('my_order'));
+        $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('my_order'));
         $this->import_resource(array(
             'script' => array(
                 array(
@@ -60,7 +60,7 @@ class Buyer_orderApp extends MemberbaseApp
         $model_order =& m('order');
         //$order_info  = $model_order->get("order_id={$order_id} AND buyer_id=" . $this->visitor->get('user_id'));
         $order_info = $model_order->get(array(
-            //'fields'        => "",
+            'fields'        => "*, order.add_time as order_add_time",
             'conditions'    => "order_id={$order_id} AND buyer_id=" . $this->visitor->get('user_id'),
             'join'          => 'belongs_to_store',
             ));
@@ -91,7 +91,7 @@ class Buyer_orderApp extends MemberbaseApp
         /* 当前用户中心菜单 */
         $this->_curitem('my_order');
 
-        $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('order_detail'));
+        $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('order_detail'));
 
         /* 调用相应的订单类型，获取整个订单详情数据 */
         $order_type =& ot($order_info['extension']);
@@ -140,9 +140,7 @@ class Buyer_orderApp extends MemberbaseApp
             $model_order->edit($order_id, array('status' => ORDER_CANCELED));
             if ($model_order->has_error())
             {
-                $_errors = $model_order->get_error();
-                $error = current($_errors);
-                $this->pop_warning(Lang::get($error['msg']));
+                $this->pop_warning($model_order->get_error());
 
                 return;
             }
@@ -212,9 +210,7 @@ class Buyer_orderApp extends MemberbaseApp
             $model_order->edit($order_id, array('status' => ORDER_FINISHED, 'finished_time' => gmtime()));
             if ($model_order->has_error())
             {
-                $_errors = $model_order->get_error();
-                $error = current($_errors);
-                $this->pop_warning(Lang::get($error['msg']));
+                $this->pop_warning($model_order->get_error());
 
                 return;
             }
@@ -312,7 +308,7 @@ class Buyer_orderApp extends MemberbaseApp
             $this->assign('goods_list', $goods_list);
             $this->assign('order', $order_info);
 
-            $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('credit_evaluate'));
+            $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('credit_evaluate'));
             $this->display('buyer_order.evaluate.html');
         }
         else

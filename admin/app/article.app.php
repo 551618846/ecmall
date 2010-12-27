@@ -108,7 +108,14 @@ class ArticleApp extends BackendApp
             $this->assign('article', $article);
             $this->assign('files_belong_article', $files_belong_article);
             $this->assign('parents', $this->_get_options()); //分类树
-            $this->assign('build_editor', $this->_build_editor(array('name' => 'content')));
+            
+            $template_name = $this->_get_template_name();
+            $style_name    = $this->_get_style_name();
+            $this->assign('build_editor', $this->_build_editor(array(
+                'name' => 'content',
+                'content_css' => SITE_URL . "/themes/mall/{$template_name}/styles/{$style_name}/css/ecmall.css"
+            )));
+            
             $this->assign('build_upload', $this->_build_upload(array('belong' => BELONG_ARTICLE, 'item_id' => 0))); // 构建swfupload上传组件
             $this->display('article.form.html');
         }
@@ -182,7 +189,14 @@ class ArticleApp extends BackendApp
             $this->assign('parents', $this->_get_options());
             $this->assign('files_belong_article', $files_belong_article);
             $this->assign('article', $article);
-            $this->assign('build_editor', $this->_build_editor(array('name' => 'content')));
+            
+            $template_name = $this->_get_template_name();
+            $style_name    = $this->_get_style_name();
+            $this->assign('build_editor', $this->_build_editor(array(
+                'name' => 'content',
+                'content_css' => SITE_URL . "/themes/mall/{$template_name}/styles/{$style_name}/css/ecmall.css"
+            )));
+            
             $this->assign('build_upload', $this->_build_upload(array('belong' => BELONG_ARTICLE, 'item_id' => $article_id))); // 构建swfupload上传组件
             $this->display('article.form.html');
         }
@@ -224,7 +238,8 @@ class ArticleApp extends BackendApp
        if (in_array($column ,array('if_show', 'sort_order')))
        {
            $data[$column] = $value;
-           if($this->_article_mod->edit($id, $data))
+           $this->_article_mod->edit($id, $data);
+           if(!$this->_article_mod->has_error())
            {
                echo ecm_json_encode(true);
            }

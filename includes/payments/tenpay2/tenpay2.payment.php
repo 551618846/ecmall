@@ -97,12 +97,13 @@ class Tenpay2Payment extends BasePayment
         $mch_returl = $this->_create_notify_url($order_info['order_id']);
         $show_url   = $this->_create_return_url($order_info['order_id']);
         //$attach = $rand_num;
+        $spbill_create_ip =  real_ip();
 
         /* 数字签名 */
         $sign_text = "cmdno=" . $cmd_no . "&date=" . $today . "&bargainor_id=" . $seller .
           "&transaction_id=" . $transaction_id . "&sp_billno=" . $mch_vno .
           "&total_fee=" . $mch_price . "&fee_type=" . $fee_type . "&return_url=" . $mch_returl .
-          "&attach=" . $attach . "&key=" . $this->_config['tenpay_key'];
+          "&attach=" . $attach . "&spbill_create_ip=" . $spbill_create_ip . "&key=" . $this->_config['tenpay_key'];
         $sign = strtoupper(md5($sign_text));
 
         /* 交易参数 */
@@ -120,7 +121,8 @@ class Tenpay2Payment extends BasePayment
             'return_url'        => $mch_returl,
             'attach'            => $attach,
             'sign'              => $sign,                      // MD5签名
-            'sys_id'            => '542554970'                  //ECMall C账号 不参与签名
+            'sys_id'            => '542554970',                  //ECMall C账号 不参与签名
+            'spbill_create_ip'  => $spbill_create_ip   //财付通风险防范参数
         );
 
         return $this->_create_payform('GET', $parameter);
@@ -207,6 +209,57 @@ class Tenpay2Payment extends BasePayment
                 '&sp_billno=' . $_GET['sp_billno'] . '&total_fee=' . $_GET['total_fee'] . '&fee_type=' . $_GET['fee_type'] . '&attach=' . $_GET['attach'] . '&sign=' . $_GET['sign'];
             echo "<meta name='TENCENT_ONLINE_PAYMENT' content='China TENCENT'><html><script language=javascript>window.location.href='". $back_url ."';</script></html>";
         }
+    }
+    
+    /**
+     *    获取外部交易号 覆盖基类
+     *
+     *    @author    huibiaoli
+     *    @param     array $order_info
+     *    @return    string
+     */
+    function _get_trade_sn($order_info)
+    {
+        if (!$order_info['out_trade_sn'] || $order_info['pay_alter'])
+        {
+            $out_trade_sn = $this->_gen_trade_sn();
+        }
+        else
+        {
+            $out_trade_sn = $order_info['out_trade_sn'];
+        }
+        
+        /* 将此数据写入订单中 */
+        $model_order =& m('order');
+        $model_order->edit(intval($order_info['order_id']), array('out_trade_sn' => $out_trade_sn, 'pay_alter' => 0));
+        return $out_trade_sn;
+    }
+    
+    /**
+     *    生成外部交易号
+     *
+     *    @author    huibiaoli
+     *    @return    string
+     */
+    function _gen_trade_sn()
+    {
+        /* 选择一个随机的方案 */
+        mt_srand((double) microtime() * 1000000);
+        $timestamp = gmtime();
+        $y = date('y', $timestamp);
+        $z = date('z', $timestamp);
+        $out_trade_sn = $y . str_pad($z, 3, '0', STR_PAD_LEFT) . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT);
+
+        $model_order =& m('order');
+        $orders = $model_order->find('out_trade_sn=' . $out_trade_sn);
+        if (empty($orders))
+        {
+            /* 否则就使用这个交易号 */
+            return $out_trade_sn;
+        }
+
+        /* 如果有重复的，则重新生成 */
+        return $this->_gen_trade_sn();
     }
 }
 

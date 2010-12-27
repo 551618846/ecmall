@@ -348,7 +348,7 @@ class StoreModel extends BaseModel
         {
             return true;
         }
-        if (!eregi('^[a-z0-9]+$', $subdomain))
+        if (!preg_match("/^[a-z0-9]+$/i", $subdomain))
         {
             $this->_error('domain_format_error');
 

@@ -545,6 +545,7 @@ body { font-size: 12px; font-family: Arial, Verdana, sans-serif; }
 .table1 .bgcolor { background: #f8f8f8; height: 24px; }
 .table1 .table_user { float: left; color: #333; }
 .table1 .time { color: #c1c1c1; }
+.table1 .reply{ color:#919191; }
 
 .table1 .position1 { float: left; padding-top: 5px; }
 .table1 .position2 { float: right; padding-top: 4px; }
@@ -704,7 +705,7 @@ body { font-size: 12px; font-family: Arial, Verdana, sans-serif; }
 .information .shop b { color: #ff4d00; font-family: "宋体"; padding-right: 5px; float: left; }
 .information .shop a { color: #3968d2; }
 .information .shop a:hover { color: red; }
-.information .shop .btn1 { display: block; float: left; color: #3d3f3e; text-decoration: none; width: 78px; height: 24px; line-height: 20px; text-align: center; background: url(../images/member/btn.gif) 0 -590px; }
+.information .shop .btn1 { display: block; float: right; margin-right:150px; color: #3d3f3e; text-decoration: none; width: 78px; height: 24px; line-height: 20px; text-align: center; background: url(../images/member/btn.gif) 0 -590px; }
 .information .shop .btn1:hover { color: #333; }
 .information .shop .btn2 { display: block; float: left; color: #3d3f3e; text-decoration: none; width: 116px; height: 28px; line-height: 26px; font-weight: bold; text-align: center; background: url(../images/member/btn.gif) 0 -632px; }
 .information .shop .btn2:hover { color: #333; }
@@ -941,7 +942,7 @@ body { font-size: 12px; font-family: Arial, Verdana, sans-serif; }
 .select_div { float: right; padding: 10px 0; }
 .select_div .select1 { padding: 2px; width: 100px; }
 .select_div .select2 { padding: 2px; width: 76px; }
-.select_div .text_normal { padding: 1px; font-family: Arial, Helvetica, sans-serif; }
+.select_div .text_normal { padding: 1px; font-family: Arial, Helvetica, sans-serif; width: 80px; }
 .select_div .btn { border: 0; width: 61px; height: 22px; background: url(../images/member/btn.gif) no-repeat 0 -305px; }
 
 .scarch_order { padding: 20px 0 0 20px; }

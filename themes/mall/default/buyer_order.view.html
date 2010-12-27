@@ -6,7 +6,7 @@
             <div class="box">
                 <div class="state">{$lang.order_status}&nbsp;:&nbsp;<strong>{$order.status|modifier:order_status}</strong></div>
                 <div class="num">{$lang.order_sn}&nbsp;:&nbsp;{$order.order_sn}</div>
-                <div class="time">{$lang.add_time}&nbsp;:&nbsp;{$order.add_time|date}</div>
+                <div class="time">{$lang.add_time}&nbsp;:&nbsp;{$order.order_add_time|date:complete}</div>
 
             </div>
             <h3>{$lang.order_info}</h3>
@@ -48,7 +48,7 @@
                         <!--{if $order.pay_message}-->
                         <li>{$lang.pay_message}&nbsp;:&nbsp;{$order.pay_message|escape}</li>
                         <!--{/if}-->
-                        <li>{$lang.add_time}&nbsp;:&nbsp;{$order.add_time|date:complete}</li>
+                        <li>{$lang.add_time}&nbsp;:&nbsp;{$order.order_add_time|date:complete}</li>
                         <!--{if $order.pay_time}-->
                         <li>{$lang.pay_time}&nbsp;:&nbsp;{$order.pay_time|date:complete}</li>
                         <!--{/if}-->

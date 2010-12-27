@@ -187,7 +187,8 @@ class ScategoryApp extends BackendApp
                    return ;
                }
            }
-           if($this->_scategory_mod->edit($id, $data))
+           $this->_scategory_mod->edit($id, $data);
+           if(!$this->_scategory_mod->has_error())
            {
                echo ecm_json_encode(true);
            }
@@ -282,6 +283,11 @@ class ScategoryApp extends BackendApp
             if ($file['error'] != UPLOAD_ERR_OK)
             {
                 $this->show_warning('select_file');
+                return;
+            }
+            if ($file['name'] == basename($file['name'],'.csv'))
+            {
+                $this->show_warning('not_csv_file');
                 return;
             }
 

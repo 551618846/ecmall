@@ -51,6 +51,7 @@ return array(
     'refuse_message' => '您拒绝了拷贝操作',
     'copy_ok' => '复制成功。您可以粘贴到支持UBB代码的地方进行宣传',
     'copy_fail' => '复制失败。请手动复制文本框内的内容',
+    'follow_spec_price_invalid' => '以下规格价格未填写或格式有误:'
 
 );
 

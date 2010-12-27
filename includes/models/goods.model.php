@@ -354,6 +354,9 @@ class GoodsModel extends BaseModel
         {
             $this->clear_cache($goods['goods_id']);
         }
+        /* 清除店铺商品数缓存 */
+        $cache_server =& cache_server();
+        $cache_server->delete('goods_count_of_store');
 
         return parent::drop($conditions, $fields);
     }
@@ -422,6 +425,10 @@ class GoodsBModel extends GoodsModel
         $stat_mod->add(array(
             'goods_id' => $id
         ));
+        
+        /* 清除店铺商品数缓存 */
+        $cache_server =& cache_server();
+        $cache_server->delete('goods_count_of_store');
 
         return $id;
     }

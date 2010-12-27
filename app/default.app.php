@@ -10,7 +10,9 @@ class DefaultApp extends MallbaseApp
         /* 热门搜素 */
         $this->assign('hot_keywords', $this->_get_hot_keywords());
 
-        $this->assign('page_title', Conf::get('site_title'));
+        $this->_config_seo(array(
+            'title' => Lang::get('mall_index') . ' - ' . Conf::get('site_title'),
+        ));
         $this->assign('page_description', Conf::get('site_description'));
         $this->assign('page_keywords', Conf::get('site_keywords'));
         $this->display('index.html');

@@ -35,7 +35,7 @@ class CouponApp extends StoreadminbaseApp
 
         $this->_curitem('coupon');
         $this->_curmenu('coupons_list');
-        $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('coupon'));
+        $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('coupon'));
         $this->assign('coupons', $coupon);
         $this->import_resource(array(
             'script' => array(
@@ -313,7 +313,7 @@ class CouponApp extends StoreadminbaseApp
             'end_time' => local_date("Y-m-d", $coupon['end_time']),
             'coupon_sn' => $val['coupon']['coupon_sn'],
             'min_amount' => $coupon['min_amount'],
-            'url' => SITE_URL.'/index.php?app=store&id='.$coupon['store_id'],
+            'url' => SITE_URL . '/' . url('app=store&id=' . $coupon['store_id']),
             'store_name' => $coupon['store_name'],
             ));
             $msg_id = $ms->pm->send(MSG_SYSTEM, $val['user_id'], '',$content);

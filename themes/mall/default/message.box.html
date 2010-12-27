@@ -13,7 +13,7 @@
             <div class="public table">
                 <table class="table_head_line">
                     <!--{if $messages}-->
-                    
+
                     <tr class="line_bold">
                     <!--{if $smarty.get.act neq 'announcepm'}-->
                         <th class="width1"><input type="checkbox" id="all" class="checkall"/></th>
@@ -26,7 +26,7 @@
                         <th colspan="5"></th>
                     <!--{/if}-->
                     </tr>
-                    
+
                     <tr class="line tr_color">
                         <th></th>
                         <th class="align1">{$lang.user_name}</th>
@@ -38,7 +38,7 @@
                     <!--{foreach from=$messages item=message name=v}-->
                     <tr <!--{if $smarty.foreach.v.last}-->class="line_bold"<!--{else}-->class="line"<!--{/if}-->>
                         <td class="align2"><!--{if $smarty.get.act neq 'announcepm'}--><input type="checkbox" class="checkitem" value="{$message.msg_id}"/><!--{/if}--></td>
-                        <td class="width13"><img src="{$message.user_info.portrait}" /><span class="user_name">{$message.user_info.user_name}</span></td>
+                        <td class="width13"><img class="makesmall" max_width="48" max_height="48" src="{$message.user_info.portrait}" /><span class="user_name">{$message.user_info.user_name}</span></td>
                         <td <!--{if $message.new eq 1}-->class="link2 font_bold"<!--{else}-->class="link2"<!--{/if}-->>{$message.content|truncate:110}</td>
                         <td class="align2 color1 width8">{$message.last_update|date:Y-m-d H:i}</td>
                         <td class="width8">
@@ -56,7 +56,7 @@
                     <!--{if $smarty.get.act neq 'announcepm'}-->
                     <tr>
                         <th class="width1"><input id="all2" type="checkbox" class="checkall" /></th>
-                        <th class="align1"><label for="all2"><span class="all">{$lang.checkall}</span></label><a href="###" class="delete" uri="index.php?app=message&act=drop" name="msg_id" presubmit="confirm('{$lang.drop_confirm}')" ectype="batchbutton">{$lang.drop}</a></th>
+                        <th class="align1"><label for="all2"><span class="all">{$lang.checkall}</span></label><a href="javascript:void(0);" class="delete" uri="index.php?app=message&act=drop" name="msg_id" presubmit="confirm('{$lang.drop_confirm}')" ectype="batchbutton">{$lang.drop}</a></th>
                         <td colspan="3">
                            <p class="position2">
                                 {include file=member.page.bottom.html}
@@ -70,7 +70,7 @@
                                 {include file=member.page.bottom.html}
                             </p>
                         </td>
-                    </tr>                    
+                    </tr>
                     <!--{/if}-->
                     <!--{/if}-->
                 </table>

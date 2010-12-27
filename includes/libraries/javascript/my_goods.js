@@ -212,6 +212,7 @@ function spec_editor(){
         /* 保存规格项 */
         var arr_spec_name = new Array(); // 累积规格项名称。检查重复
         var spec_duplicate = new Array(); // 重复的规格项
+        var price_error = new Array();
         var complate = true; // 是否完成
         SPEC.specs = [];
         $('#dialog_object_spec_editor').find('*[ectype="data"]').each(function(){
@@ -221,6 +222,8 @@ function spec_editor(){
             var stock = $.trim($(this).find('*[item="stock"]').val());
             var sku = $.trim($(this).find('*[item="sku"]').val());
             var spec_id = $.trim($(this).find('*[item="spec_id"]').val());
+
+            var valid = (spec_1 || spec_2) ? true : false; // 该行数据是否有效
 
             if(SPEC.spec_qty == 1){ // 一个规格
                 var spec_pos = SPEC.spec_name_1 ? 1 : 2;
@@ -232,6 +235,7 @@ function spec_editor(){
                     complate = false;
                 }
             }
+
             var item = [spec_1,spec_2].join(';');
             if($.inArray(item, arr_spec_name) > -1){
                 if($.inArray(item, spec_duplicate) == -1){
@@ -239,6 +243,10 @@ function spec_editor(){
                 }
             }else{
                 item != ';' && arr_spec_name.push(item);
+            }
+            /* 判断价格非法 */
+            if(isNaN(price) || price <0 || !price){
+                valid && price_error.push(item);
             }
             item != ';' && SPEC.specs.push({
                 'spec_1':spec_1,
@@ -265,6 +273,18 @@ function spec_editor(){
             });
 
             alert(lang.duplicate_spec + '\n' + spec_msg);
+            SPEC = {};
+            SPEC = bak_spec; // 还原备份
+            return;
+        }
+        /* 判断价格 */
+        if(price_error.length>0){
+            var msg = lang.follow_spec_price_invalid + '\n';
+            $.each(price_error,function(i,val){
+                msg += val + '\n';
+            });
+
+            alert(msg);
             SPEC = {};
             SPEC = bak_spec; // 还原备份
             return;

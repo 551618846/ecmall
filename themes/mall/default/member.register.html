@@ -15,7 +15,7 @@ $(function(){
         rules : {
             user_name : {
                 required : true,
-                byteRange: [3,25,'{$charset}'],
+                byteRange: [3,15,'{$charset}'],
                 remote   : {
                     url :'index.php?app=member&act=check_user&ajax=1',
                     type:'get',
@@ -164,5 +164,5 @@ $(function(){
         </div>
     </div>
 </div>
-                
+
 {include file="footer.html"}

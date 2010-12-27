@@ -34,9 +34,11 @@ $(function(){
                     data : {
                         store_name : function(){
                             return $('#store_name').val();
-                        }
+                        },
+                        store_id : '{$store.store_id}'
                     }
-                }
+                },
+                maxlength: 20
             },
             tel: {
                 required: true,
@@ -62,7 +64,8 @@ $(function(){
             },
             store_name: {
                 required: '{$lang.input_store_name}',
-                remote: '{$lang.name_exist}'
+                remote: '{$lang.name_exist}',
+                maxlength: '{$lang.note_for_store_name}'
             },
             tel: {
                 required: '{$lang.input_tel}',
@@ -104,17 +107,17 @@ $(function(){
                         <table>
                             <tr>
                                 <th>{$lang.owner_name}: </th>
-                                <td class="width7"><input type="text" class="text width7" name="owner_name"/></td>
+                                <td class="width7"><input type="text" class="text width7" name="owner_name" value="{$store.owner_name|escape}"/></td>
                                 <td class="padding3"><span class="fontColor3">*</span> <span class="field_notice">{$lang.note_for_owner_name}</span></td>
                             </tr>
                             <tr>
                                 <th>{$lang.owner_card}: </th>
-                                <td><input type="text" class="text width7" name="owner_card"/></td>
+                                <td><input type="text" class="text width7" name="owner_card"/ value="{$store.owner_card|escape}"></td>
                                 <td class="padding3"> <span class="field_notice">{$lang.note_for_owner_card}</span></td>
                             </tr>
                             <tr>
                                 <th>{$lang.store_name}: </th>
-                                <td><input type="text" class="text width7" name="store_name" id="store_name"/></td>
+                                <td><input type="text" class="text width7" name="store_name" id="store_name" value="{$store.store_name|escape}"/></td>
                                 <td class="padding3"><span class="fontColor3">*</span> <span class="field_notice">{$lang.note_for_store_name}</span></td>
                             </tr>
                             <tr>
@@ -122,7 +125,7 @@ $(function(){
                                 <td>
                                     <div class="select_add"><select name="cate_id">
                                     <option value="0">{$lang.select_pls}</option>
-                                    {html_options options=$scategories}
+                                    {html_options options=$scategories selected=$scategory.cate_id}
                                     </select>
                                     </div>
                                 </td>
@@ -132,9 +135,13 @@ $(function(){
                                 <th>{$lang.region}: </th>
                                 <td>
                                 <div class="select_add" id="region" style="width:500px;border:1px solide red;">
-                                    <input type="hidden" name="region_id" value="0" class="mls_id" />
-                                    <input type="hidden" name="region_name" value="" class="mls_names" />
-                                    <select class="d_inline">
+                                    <input type="hidden" name="region_id" value="{$store.region_id}" class="mls_id" />
+                                    <input type="hidden" name="region_name" value="{$store.region_name}" class="mls_names" />
+                                    {if $store.region_name}
+                                    <span>{$store.region_name|escape}</span>
+                                    <input type="button" value="{$lang.edit}" class="edit_region" />
+                                    {/if}
+                                    <select class="d_inline"{if $store.region_name} style="display:none;"{/if}>
                                     <option value="0">{$lang.select_pls}</option>
                                     {html_options options=$regions}
                                     </select>
@@ -144,33 +151,37 @@ $(function(){
                             </tr>
                             <tr>
                                 <th>{$lang.address}: </th>
-                                <td><input type="text" class="text width7" name="address"/></td>
+                                <td><input type="text" class="text width7" name="address" value="{$store.address|escape}"/></td>
                                 <td></td>
                             </tr>
                             <tr>
                                 <th>{$lang.zipcode}: </th>
-                                <td><input type="text" class="text width7" name="zipcode"/></td>
+                                <td><input type="text" class="text width7" name="zipcode" value="{$store.zipcode|escape}"/></td>
                                 <td></td>
                             </tr>
                             <tr>
                                 <th>{$lang.tel}: </th>
                                 <td>
-                                    <input type="text" class="text width7" name="tel" />
+                                    <input type="text" class="text width7" name="tel"  value="{$store.tel|escape}"/>
                                 </td>
                                 <td class="padding3"><span class="fontColor3">*</span> <span class="field_notice">{$lang.input_tel}</span></td>
                             </tr>
                             <tr>
                                 <th>{$lang.upload_image}: </th>
-                                <td><input type="file" name="image_1" /></td>
+                                <td><input type="file" name="image_1" />
+                                {if $store.image_1}<p style="display:inline;"><a href="{$site_url}/{$store.image_1}" target="_blank">{$lang.view}</a></p>{/if}
+                                </td>
                                 <td class="padding3"><span class="field_notice">{$lang.note_for_image}</span></td>
                             </tr>
                             <tr>
                                 <th>{$lang.upload_permit}: </th>
-                                <td><input type="file" name="image_2" /></td>
+                                <td><input type="file" name="image_2" />
+                                {if $store.image_2}<p style="display:inline;"><a href="{$site_url}/{$store.image_2}" target="_blank">{$lang.view}</a></p>{/if}
+                                </td>
                                 <td class="padding3"><span class="field_notice">{$lang.note_for_image}</span></td>
                             </tr>
                             <tr>
-                                <td colspan="2"><p class="padding4"><input type="checkbox" name="notice" value="1" id="warning" /> <label for="warning">{$lang.notice}</label></p></td>
+                                <td colspan="2"><p class="padding4"><input type="checkbox"{if $store} checked="checked"{/if} name="notice" value="1" id="warning" /> <label for="warning">{$lang.notice}</label></p></td>
                                 <td></td>
                             </tr>
                             <tr>

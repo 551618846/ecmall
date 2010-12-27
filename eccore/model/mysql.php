@@ -9,7 +9,7 @@
  * 这不是一个自由软件！您只能在不用于商业目的的前提下对程序代码进行修改和使用；
  * 不允许对程序代码以任何形式任何目的的再发布。
  * ============================================================================
- * $Id: mysql.php 7634 2009-04-30 03:25:46Z yelin $
+ * $Id: mysql.php 12009 2010-09-03 09:28:21Z huibiaoli $
  */
 
 if (!defined('IN_ECM'))
@@ -59,6 +59,7 @@ class cls_mysql
             $this->ErrorMsg('Have not define DB_PREFIX');
         }
         $this->cache_dir = ROOT_PATH . '/temp/query_caches/';
+        $this->root_path = ROOT_PATH . '/';
     }
 
     /**

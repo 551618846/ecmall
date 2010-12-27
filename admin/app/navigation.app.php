@@ -143,7 +143,7 @@ class NavigationApp extends BackendApp
                 return;
             }
             $navigation    =   current($find_data);
-            //$navigation['link'] = eregi('^http(s)?://', $navigation['link']) === false ? SITE_URL . '/' . $navigation['link'] : $navigation['link'];
+            //$navigation['link'] = !preg_match("/^http(s)?:\/\//i", $navigation['link']) ? SITE_URL . '/' . $navigation['link'] : $navigation['link'];
             $this->_assign_form();
             $this->assign('gcategory_options', $this->_get_gcategory_options()); //商品分类树
             $this->assign('acategory_options', $this->_get_acategory_options()); //文章分类树
@@ -190,7 +190,8 @@ class NavigationApp extends BackendApp
        if (in_array($column ,array('title', 'sort_order')))
        {
            $data[$column] = $value;
-           if($this->_navi_mod->edit($id, $data))
+           $this->_navi_mod->edit($id, $data);
+           if(!$this->_navi_mod->has_error())
            {
                $this->_clear_cache();
                echo ecm_json_encode(true);

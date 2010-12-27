@@ -281,7 +281,8 @@ class GcategoryApp extends BackendApp
                    return ;
                }
            }
-           if($this->_gcategory_mod->edit($id, $data))
+           $this->_gcategory_mod->edit($id, $data);
+           if(!$this->_gcategory_mod->has_error())
            {
                echo ecm_json_encode(true);
            }
@@ -404,6 +405,11 @@ class GcategoryApp extends BackendApp
             if ($file['error'] != UPLOAD_ERR_OK)
             {
                 $this->show_warning('select_file');
+                return;
+            }
+            if ($file['name'] == basename($file['name'],'.csv'))
+            {
+                $this->show_warning('not_csv_file');
                 return;
             }
 

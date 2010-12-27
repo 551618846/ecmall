@@ -70,8 +70,8 @@ class MailtemplateApp extends BackendApp
                 'subject'   => $_POST['subject'],
                 'content'   => $_POST['content'],
             ));
-            $this->_m_noticetemplate->_filename = $this->_m_noticetemplate->_mail_user_dir . $code . '.php';
-            $this->_m_noticetemplate->setAll($data);
+            $this->_m->_filename = $this->_m->_mail_user_dir . $code . '.php';
+            $this->_m->setAll($data);
             $this->show_message('update_noticetemplate_successed',
                 'back_list',        'index.php?app=mailtemplate' . '&type=' . $this->_type,
                 'edit_again',    'index.php?app=mailtemplate&amp;act=mail&amp;code=' . $code . '&type=' . $this->_type);

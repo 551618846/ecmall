@@ -67,11 +67,14 @@ $(function(){
                 minlength: '{$lang.phone_mob_error}. ',
                 digits : '{$lang.phone_mob_error}. '
             }
+        },
+        groups:{
+            phone:'phone_tel phone_mob'
         }
     });
 });
 function check_phone(){
-    return ($('#phone_tel').val() == '' && $('#phone_mob').val() == '');
+    return ($('[name="phone_tel"]').val() == '' && $('[name="phone_mob"]').val() == '');
 }
 function hide_error(){
     $('#region').find('.error').hide();
@@ -79,7 +82,7 @@ function hide_error(){
 //]]>
 </script>
 <ul class="tab">
-    <li class="active">{$lang.add_address}</li>
+    <li class="active"><!--{if $smarty.get.act eq edit}-->{$lang.edit_address}<!--{else}-->{$lang.add_address}<!--{/if}--></li>
 </ul>
 <div class="eject_con">
 <div class="add">
@@ -121,11 +124,11 @@ function hide_error(){
         </li>
         <li>
             <h3>{$lang.phone_tel}:</h3>
-            <p><input type="text" class="text width_normal" name="phone_mob" value="{$address.phone_mob}"/><label class="field_message"><span class="field_notice">{$lang.phone_required}</span></label></p>
+            <p><input type="text" class="text width_normal"  name="phone_tel" value="{$address.phone_mob}"/><label class="field_message"><span class="field_notice">{$lang.phone_format}</span></label></p>
         </li>
         <li>
             <h3>{$lang.phone_mob}:</h3>
-            <p><input type="text" class="text width_normal" name="phone_tel" value="{$address.phone_tel}"/><label class="field_message"><span class="field_notice">{$lang.phone_mob}</span></label></p>
+            <p><input type="text" class="text width_normal" name="phone_mob" value="{$address.phone_tel}"/><label class="field_message"><span class="field_notice">{$lang.phone_mob}</span></label></p>
         </li>
     </ul>
     <div class="submit"><input type="submit" class="btn" value="<!--{if $address.addr_id}-->{$lang.edit_address}<!--{else}-->{$lang.add_address}<!--{/if}-->" /></div>

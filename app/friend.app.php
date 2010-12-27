@@ -46,7 +46,7 @@ class FriendApp extends MemberbaseApp
         $this->_format_page($page);
         $this->assign('page_info', $page);          //将分页信息传递给视图，用于形成分页条
         $this->assign('friends', $friends);
-        $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('friend'));
+        $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('friend'));
         $this->display('friend.index.html');
     }
 
@@ -90,11 +90,10 @@ class FriendApp extends MemberbaseApp
             }
 
             $ms =& ms();
-            $result = $ms->friend->add($this->visitor->get('user_id'), $friend_ids);
-            if (!$result)
+            $ms->friend->add($this->visitor->get('user_id'), $friend_ids);
+            if ($ms->has_error())
             {
-                $msg = current($ms->friend->get_error());
-                $this->pop_warning($msg['msg']);
+                $this->pop_warning($ms->friend->get_error());
 
                 return;
             }

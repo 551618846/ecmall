@@ -33,7 +33,7 @@ class Find_passwordApp extends MallbaseApp
            $addr = $_SERVER['HTTP_REFERER'];
            if (empty($_POST['username']) || empty($_POST['email']) || empty($_POST['captcha']))
            {
-               $this->show_message("unsettled_required",
+               $this->show_warning("unsettled_required",
                    'go_back', $addr);
                return ;
            }
@@ -51,7 +51,7 @@ class Find_passwordApp extends MallbaseApp
            $info = $ms->user->get($username, true);
            if (empty($info) || $info['email'] != $email)
            {
-               $this->show_message('not_exist',
+               $this->show_warning('not_exist',
                    'go_back', $addr);
 
                return;
@@ -97,7 +97,7 @@ class Find_passwordApp extends MallbaseApp
             $res = $this->_password_mod->get_info($id);
             if (md5($activation) != $res['activation'])
             {
-                $this->show_message("invalid_link",
+                $this->show_warning("invalid_link",
                     'back_index', 'index.php');
                 return ;
             }

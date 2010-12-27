@@ -33,6 +33,12 @@ class CashierApp extends ShoppingbaseApp
 
             return;
         }
+        /* 订单有效性判断 */
+        if ($order_info['payment_code'] != 'cod' && $order_info['status'] != ORDER_PENDING)
+        {
+            $this->show_warning('no_such_order');
+            return;
+        }
         $payment_model =& m('payment');
         if (!$order_info['payment_id'])
         {
@@ -105,7 +111,7 @@ class CashierApp extends ShoppingbaseApp
                 LANG::get('cashier')
             );
 
-            $this->assign('page_title', Lang::get('confirm_payment') . ' - ' . Conf::get('site_title'));
+            $this->_config_seo('title', Lang::get('confirm_payment') . ' - ' . Conf::get('site_title'));
             $this->display('cashier.payment.html');
         }
         else
@@ -152,7 +158,7 @@ class CashierApp extends ShoppingbaseApp
             }
 
             /* 跳转到真实收银台 */
-            $this->assign('page_title', Lang::get('cashier'));
+            $this->_config_seo('title', Lang::get('cashier'));
             $this->assign('payform', $payment_form);
             $this->assign('payment', $payment_info);
             $this->assign('order', $order_info);

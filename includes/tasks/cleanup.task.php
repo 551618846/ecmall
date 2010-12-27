@@ -314,7 +314,7 @@ class CleanupTask extends BaseTask
                 $to_id = array_unique($to_id);
             }
             
-            $content = get_msg('tobuyer_group_auto_cancel_notify', array('cancel_days' => GROUP_CANCEL_INTERVAL, 'url' => url("app=groupbuy&id=" . $group['group_id'])));
+            $content = get_msg('tobuyer_group_auto_cancel_notify', array('cancel_days' => GROUP_CANCEL_INTERVAL, 'url' => SITE_URL . '/' . url("app=groupbuy&id=" . $group['group_id'])));
             $ms->pm->send(
                 MSG_SYSTEM,
                 $to_id,

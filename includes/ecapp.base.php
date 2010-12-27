@@ -7,7 +7,7 @@ define('SIZE_STORE_LOGO', '20480');      // 店铺LOGO大小限制2OK
 define('SIZE_STORE_BANNER', '1048576');  // 店铺BANNER大小限制1M
 define('SIZE_STORE_CERT', '409600');     // 店铺证件执照大小限制400K
 define('SIZE_STORE_PARTNER', '102400');  // 店铺合作伙伴图片大小限制100K
-define('SIZE_CSV_TAOBAO', '409600');     // 淘宝助理CSV大小限制400K
+define('SIZE_CSV_TAOBAO', '2097152');     // 淘宝助理CSV大小限制2M
 
 /* 店铺状态 */
 define('STORE_APPLYING', 0); // 申请中
@@ -386,6 +386,65 @@ EOT;
 
         return $headtag;
     }
+    
+    /**
+     * 配置seo信息
+     *
+     * @param array/string $seo_info
+     * @return void
+     */
+    function _config_seo($seo_info, $ext_info = null)
+    {
+        if (is_string($seo_info))
+        {
+            $this->_assign_seo($seo_info, $ext_info);
+        }
+        elseif (is_array($seo_info))
+        {
+            foreach ($seo_info as $type => $info)
+            {
+                $this->_assign_seo($type, $info);
+            }
+        }
+    }
+    
+    function _assign_seo($type, $info)
+    {
+        $this->_init_view();
+        $_seo_info = $this->_view->get_template_vars('_seo_info');
+        if (is_array($_seo_info))
+        {
+            $_seo_info[$type] = $info;
+        }
+        else
+        {
+            $_seo_info = array($type => $info);
+        }
+        $this->assign('_seo_info', $_seo_info);
+        $this->assign('page_seo', $this->_get_seo_code($_seo_info));
+    }
+    
+    function _get_seo_code($_seo_info)
+    {
+        $html = '';
+        foreach ($_seo_info as $type => $info)
+        {
+            $info = trim(htmlspecialchars($info));
+            switch ($type)
+            {
+                case 'title' :
+                    $html .= "<{$type}>{$info}</{$type}>";
+                    break;
+                case 'description' :
+                case 'keywords' :
+                default :
+                    $html .= "<meta name=\"{$type}\" content=\"{$info}\" />";
+                    break;
+            }
+            $html .= "\r\n";
+        }        
+        return $html;
+    }
 
     /**
      *    获取资源数据
@@ -484,6 +543,7 @@ EOT;
             return;
         }
         $this->assign('site_url', SITE_URL);
+        $this->assign('ecmall_version', VERSION);
         $this->assign('random_number', rand());
 
         /* 语言项 */
@@ -712,10 +772,31 @@ EOT;
         }
 
         $page['page_links'] = array();
+        $page['first_link'] = ''; // 首页链接        
+        $page['first_suspen'] = ''; // 首页省略号
+        $page['last_link'] = ''; // 尾页链接
+        $page['last_suspen'] = ''; // 尾页省略号
         for ($i = $from; $i <= $to; $i++)
         {
             $page['page_links'][$i] = url("{$url_format}&page={$i}");
         }
+        if (($page['curr_page'] - $from) < ($page['curr_page'] -1) && $page['page_count'] > $num)
+        {
+            $page['first_link'] = url("{$url_format}&page=1");
+            if (($page['curr_page'] -1) - ($page['curr_page'] - $from) != 1)
+            {
+                $page['first_suspen'] = '..';
+            }
+        }
+        if (($to - $page['curr_page']) < ($page['page_count'] - $page['curr_page']) && $page['page_count'] > $num)
+        {
+            $page['last_link'] = url("{$url_format}&page=" . $page['page_count']);
+            if (($page['page_count'] - $page['curr_page']) - ($to - $page['curr_page']) != 1)
+            {
+                $page['last_suspen'] = '..';
+            }
+        }
+
         $page['prev_link'] = $page['curr_page'] > $from ? url("{$url_format}&page=" . ($page['curr_page'] - 1)) : "";
         $page['next_link'] = $page['curr_page'] < $to ? url("{$url_format}&page=" . ($page['curr_page'] + 1)) : "";
     }
@@ -782,6 +863,7 @@ EOT;
         $name = isset($params['name']) ?  $params['name'] : null;
         $theme = isset($params['theme']) ?  $params['theme'] : 'normal';
         $ext_js = isset($params['ext_js']) ? $params['ext_js'] : true;
+        $content_css = isset($params['content_css']) ? 'content_css:"' . $params['content_css'] . '",' : null;
         $if_media = false;
         $visit = $this->visitor->get('manage_store');
         $store_id = isset($visit) ? intval($visit) : 0;
@@ -830,7 +912,7 @@ EOT;
         $themes = array(
             'normal'    =>  'plugins:"inlinepopups,preview,fullscreen,paste'.($if_media ? ',media' : '' ).'",
             theme:"advanced",
-            theme_advanced_buttons1:"code,fullscreen,preview,removeformat,|,bold,italic,underline,strikethrough,|," +
+            theme_advanced_buttons1:"code,fullscreen'.($content_css ? ',preview' : '' ).',removeformat,|,bold,italic,underline,strikethrough,|," +
                 "formatselect,fontsizeselect,|,forecolor,backcolor",
             theme_advanced_buttons2:"bullist,numlist,|,outdent,indent,blockquote,|,justifyleft,justifycenter," +
                 "justifyright,justifyfull,|,link,unlink,charmap,image,|,pastetext,pasteword,|,undo,redo,|,media",
@@ -874,7 +956,9 @@ $include_js
     tinyMCE.init({
         {$mode}
         {$theme_config}
+        {$content_css}
         language:"{$lang}",
+        convert_urls : false,
         relative_urls : false,
         remove_script_host : false,
         theme_advanced_toolbar_location:"top",
@@ -1054,7 +1138,7 @@ EOT;
         $user_id = $this->visitor->get('user_id');
         if(empty($user_id))
         {
-            return '';    
+            return '';
         }
         $ms =& ms();
         return $ms->pm->check_new($user_id);
@@ -1198,7 +1282,7 @@ class BaseVisitor extends Object
         $member_info = $model_member->findAll(array(
             'conditions'    => "member.user_id = '{$this->info['user_id']}'",
             'join'          => 'has_store',                 //关联查找看看是否有店铺
-            'fields'        => 'email, password, real_name, logins, ugrade, portrait, store_id, state, feed_config',
+            'fields'        => 'email, password, real_name, logins, ugrade, portrait, store_id, state, sgrade , feed_config',
             'include'       => array(                       //找出所有该用户管理的店铺
                 'manage_store'  =>  array(
                     'fields'    =>  'user_priv.privs, store.store_name',

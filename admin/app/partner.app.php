@@ -174,7 +174,8 @@ class PartnerApp extends BackendApp
        if (in_array($column ,array('title', 'sort_order')))
        {
            $data[$column] = $value;
-           if($this->_partner_mod->edit($id, $data))
+           $this->_partner_mod->edit($id, $data);
+           if(!$this->_partner_mod->has_error())
            {
                echo ecm_json_encode(true);
            }

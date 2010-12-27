@@ -102,7 +102,7 @@ class ComuploadApp extends StoreadminbaseApp
                 }
                 elseif ($this->belong == BELONG_ARTICLE)
                 {
-                    $dirname = 'data/files/mall/store_' . $this->visitor->get('manage_store').'/article';
+                    $dirname = 'data/files/store_' . $this->visitor->get('manage_store').'/article';
                 }
 
                 $filename  = $uploader->random_filename();
@@ -240,7 +240,7 @@ class ComuploadApp extends StoreadminbaseApp
                 }
                 elseif ($this->belong == BELONG_ARTICLE)
                 {
-                    $dirname = 'data/files/mall/store_' . $this->visitor->get('manage_store').'/article';
+                    $dirname = 'data/files/store_' . $this->visitor->get('manage_store').'/article';
                 }
                 $filename  = $uploader->random_filename();
                 $new_url = $dirname . '/' . $filename . '.' . substr($remote_url, strrpos($remote_url, '.')+1);

@@ -20,7 +20,7 @@ class MailqueueModel extends BaseModel
      */
     function clear()
     {
-        return $this->drop("err_num > 3 OR add_time < " . gmtime() - 259200);
+        return $this->drop("err_num > 3 OR add_time < " . (gmtime() - 259200));
     }
 
     /**

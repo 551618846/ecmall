@@ -143,7 +143,7 @@ class My_favoriteApp extends MemberbaseApp
 
         $this->_curmenu('collect_goods');
         $this->assign('page_info', $page);          //将分页信息传递给视图，用于形成分页条
-        $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('collect_goods'));
+        $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('collect_goods'));
         $this->display('my_favorite.goods.index.html');
     }
 
@@ -213,7 +213,7 @@ class My_favoriteApp extends MemberbaseApp
         $this->_curmenu('collect_store');
         $this->assign('page_info', $page);          //将分页信息传递给视图，用于形成分页条
         $this->assign('filtered', $conditions? 1 : 0); //是否有查询条件
-        $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('collect_store'));
+        $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('collect_store'));
         $this->display('my_favorite.store.index.html');
     }
 

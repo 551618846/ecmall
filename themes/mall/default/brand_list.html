@@ -38,7 +38,7 @@
                     <td class="padding2">{$brand.brand_name}</td>
                     <td class="padding2"><img src="{$brand.brand_logo}" height="30" /></td>
                     <td class="padding2">{$brand.tag}</td>
-                    <td class="align2"><!--{if !$brand.if_show}--><a class="edit1" href="#" ectype="dialog" dialog_title="{$lang.brand_edit}" dialog_id="my_goods_brand_edit" dialog_width="480" uri="index.php?app=my_goods&act=brand_edit&id={$brand.brand_id}">{$lang.edit}</a> <a class="delete" href="javascript:drop_confirm('{$lang.drop_confirm}', 'index.php?app=my_goods&act=brand_drop&id={$brand.brand_id}');">{$lang.drop}</a><!--{/if}--></td>
+                    <td class="align2"><!--{if !$brand.if_show}--><a class="edit1" href="javascript:void(0);" ectype="dialog" dialog_title="{$lang.brand_edit}" dialog_id="my_goods_brand_edit" dialog_width="480" uri="index.php?app=my_goods&act=brand_edit&id={$brand.brand_id}">{$lang.edit}</a> <a class="delete" href="javascript:drop_confirm('{$lang.drop_confirm}', 'index.php?app=my_goods&act=brand_drop&id={$brand.brand_id}');">{$lang.drop}</a><!--{/if}--></td>
                 </tr>
                 <!-- {foreachelse} -->
                 <tr>

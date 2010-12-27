@@ -109,6 +109,12 @@ class NormalOrder extends BaseOrder
         //订单总实际总金额，可能还会在此减去折扣等费用
         $base_info['order_amount']  =   $base_info['goods_amount'] + $consignee_info['shipping_fee'] - $base_info['discount'];
         
+        /* 如果优惠金额大于商品总额和运费的总和 */
+        if ($base_info['order_amount'] < 0)
+        {
+            $base_info['order_amount'] = 0;
+            $base_info['discount'] = $base_info['goods_amount'] + $consignee_info['shipping_fee'];
+        }
         $order_model =& m('order');
         $order_id    = $order_model->add($base_info);
 

@@ -26,7 +26,7 @@ class UserApp extends BackendApp
             ),
         ));
         //更新排序
-        if (isset($_GET['sort']) && isset($_GET['order']))
+        if (isset($_GET['sort']) && !empty($_GET['order']))
         {
             $sort  = strtolower(trim($_GET['sort']));
             $order = strtolower(trim($_GET['order']));
@@ -38,8 +38,16 @@ class UserApp extends BackendApp
         }
         else
         {
-            $sort  = 'user_id';
-            $order = 'asc';
+            if (isset($_GET['sort']) && empty($_GET['order']))
+            {
+                $sort  = strtolower(trim($_GET['sort']));
+                $order = "";
+            }
+            else
+            {
+                $sort  = 'user_id';
+                $order = 'asc';
+            }
         }
         $page = $this->_get_page();
         $users = $this->_user_mod->find(array(

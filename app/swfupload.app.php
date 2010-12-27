@@ -104,13 +104,13 @@ class SwfuploadApp extends StoreadminbaseApp
             exit();
         }
 
-        $file['filename'] = substr($file['name'], 0, strrpos($file['name'], '.'));
+        $file['filename'] = substr($file['name'], 0, strpos($file['name'], '.'));
 
         /* 取得商品信息检查是否有该图片的记录 */
 
         //$find_goods = $this->mod_goods->get("default_image='{$file['filename']}'");
         $find_goods = $this->mod_goods->find(array(
-            'conditions' => "default_image='" . $file['filename'] . "' AND store_id=" . $this->store_id,
+            'conditions' => "default_image LIKE '%" . $file['filename'] . ";%' AND store_id=" . $this->store_id,
         ));
 
         if (!$find_goods)
@@ -215,10 +215,14 @@ class SwfuploadApp extends StoreadminbaseApp
             }
 
             /* 更新商品默认图片 */
-            if (!$this->mod_goods->edit($goods['goods_id'],array('default_image'=>$thumbnail)))
+            $remain_image = str_replace($file['filename'] . ';', '', $goods['default_image']);
+            if ($remain_image) // default_image字段中有超过一张图片
             {
-                $this->json_error($this->mod_goods->get_error());
-                return false;
+                $this->mod_goods->edit($goods['goods_id'], array('default_image' => $remain_image));
+            }
+            else
+            {
+                $this->mod_goods->edit($goods['goods_id'], array('default_image' => $thumbnail));
             }
         }
         /* 返回客户端 */

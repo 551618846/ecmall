@@ -3,7 +3,7 @@ return array(
     'goods_list' => '商品列表',
     'goods_add' => '新增商品',
     'goods_name_empty'=> '商品名称不能为空',
-    'number_only' => '次项仅能为数字',
+    'number_only' => '此项仅能为数字',
     'goods_edit' => '编辑商品',
     'recommended' => '推荐',
     'closed' => '禁售',
@@ -91,7 +91,7 @@ return array(
     'charset' => '字符编码',
     'import_taobao_csv' => '第一步：导入CSV文件',
     'upload_taobao_image' => '第二步：上传商品图片',
-    'note_for_taobao_file' => '导入程序默认从第二行执行导入，请保留CSV文件第一行的标题行',
+    'note_for_taobao_file' => '导入程序默认从第二行执行导入，请保留CSV文件第一行的标题行，最大2M',
     'add_scategory' => '新增分类',
     'upload_goods_image' => '上传商品图片',
     'set_cover' => '设为封面',
@@ -130,5 +130,13 @@ return array(
     'export_ubbcode' => '导出UBB',
     'buy_now' => '立即购买',
     'goods_tags_note' => '多个标签请用逗号","格开',
+    'price_empty' => '价格不能为空',
+    'price_ge_0' => '价格必须大于或等于零',
+    'csv_fields_error' => '需要导入的字段与CSV文件中的名称不相符，请仔细阅读导入说明。',
+    'import_guide' => '导入说明',
+    'import_guide_content' => '1.如果修改CSV文件请务必使用微软excel软件，且必须保证第一行表头名称含有如下项目：<br />宝贝名称、宝贝类目、宝贝价格、宝贝数量、放入仓库、橱窗推荐、宝贝描述、新图片、销售属性组合、销售属性别名。<br />2.如果因为淘宝助理版本差异表头名称有出入，请先修改成上述的名称方可导入。<br />3.如果CSV文件超过2M请通过excel软件编辑拆成多个文件进行导入<br />4.每个商品最多支持导入7张图片',
+    'truncate' => '清空结果',
+    'truncate_confirm' => '确定要删除检索到的%s条结果吗？删除商品后不可恢复！',
+    'truncate_ok' => '清空完成,共有%s条记录被删除'
 );
 ?>

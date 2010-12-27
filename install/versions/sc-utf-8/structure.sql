@@ -583,6 +583,7 @@ CREATE TABLE `ecm_order` (
   `evaluation_time` int(10) unsigned NOT NULL default '0',
   `anonymous` tinyint(3) unsigned NOT NULL default '0',
   `postscript` varchar(255) NOT NULL default '',
+  `pay_alter` tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (`order_id`),
   KEY `order_sn` (`order_sn`,`seller_id`),
   KEY `seller_name` (`seller_name`),

@@ -49,7 +49,7 @@ class My_addressApp extends MemberbaseApp
             ),
             'style' =>  'jquery.ui/themes/ui-lightness/jquery.ui.css',
         ));
-        $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('my_address'));
+        $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('my_address'));
         $this->display('my_address.index.html');
     }
 

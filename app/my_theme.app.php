@@ -48,7 +48,7 @@ class My_themeApp extends StoreadminbaseApp
             ),
             'style' =>  'jquery.ui/themes/ui-lightness/jquery.ui.css',
         ));
-        $this->assign('page_title', Lang::get('member_center') . ' - ' . Lang::get('my_theme'));
+        $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('my_theme'));
         $this->display('my_theme.index.html');
     }
     function set()

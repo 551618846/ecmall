@@ -116,7 +116,8 @@ class AdminApp extends BackendApp
                     'store_id' => '0',
                     'privs' => $priv,
                );
-            if(!$this->_admin_mod->edit($id, $data))
+            $this->_admin_mod->edit($id, $data);
+            if($this->_admin_mod->has_error())
             {
                  $this->show_warning($this->_admin_mod->get_error());
                  return;

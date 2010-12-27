@@ -32,7 +32,7 @@
                     <td class="align2"><!--{if $shipping.enabled}-->{$lang.yes}<!--{else}-->{$lang.no}<!--{/if}--></td>
                     <td>
                         <div class="padding1">
-                            <a href="#" uri="index.php?app=my_shipping&amp;act=edit&shipping_id={$shipping.shipping_id}" ectype="dialog" dialog_id="my_shipping_edit" dialog_width="600" dialog_title="{$lang.edit}" class="edit1">{$lang.edit}</a><a href="javascript:drop_confirm('{$lang.drop_confirm}', 'index.php?app=my_shipping&amp;act=drop&shipping_id={$shipping.shipping_id}');" class="delete">{$lang.drop}</a>
+                            <a href="javascript:void(0);" uri="index.php?app=my_shipping&amp;act=edit&shipping_id={$shipping.shipping_id}" ectype="dialog" dialog_id="my_shipping_edit" dialog_width="600" dialog_title="{$lang.edit}" class="edit1">{$lang.edit}</a><a href="javascript:drop_confirm('{$lang.drop_confirm}', 'index.php?app=my_shipping&amp;act=drop&shipping_id={$shipping.shipping_id}');" class="delete">{$lang.drop}</a>
                         </div>
                     </td>
                 </tr>

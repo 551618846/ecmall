@@ -117,7 +117,8 @@ class GroupbuyApp extends BackendApp
        if (in_array($column ,array('recommended')))
        {
            $data[$column] = $value;
-           if($this->_groupbuy_mod->edit("group_id = " . $id . " AND state = " . GROUP_ON, $data))
+           $this->_groupbuy_mod->edit("group_id = " . $id . " AND state = " . GROUP_ON, $data);
+           if(!$this->_groupbuy_mod->has_error())
            {
                echo ecm_json_encode(true);
            }

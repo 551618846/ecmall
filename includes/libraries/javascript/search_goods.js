@@ -4,19 +4,19 @@ $(function(){
         $("ul[ectype='ul_category'] li").show();
         $(this).hide();
     });
-    
+
     /* 显示全部品牌 */
     $("#show_brand").click(function(){
         $("ul[ectype='ul_brand'] li").show();
         $(this).hide();
     });
-    
+
     /* 自定义价格区间 */
     $("#set_price_interval").click(function(){
         $("ul[ectype='ul_price'] li").show();
         $(this).hide();
     });
-    
+
     /* 显示全部地区 */
     $("#show_region").click(function(){
         $("ul[ectype='ul_region'] li").show();
@@ -29,7 +29,7 @@ $(function(){
         return false;
     });
     $("ul[ectype='ul_brand'] a").click(function(){
-        replaceParam('brand', this.title);
+        replaceParam('brand', this.id);
         return false;
     });
     $("ul[ectype='ul_price'] a").click(function(){
@@ -41,7 +41,7 @@ $(function(){
         return false;
     });
     $("ul[ectype='ul_region'] a").click(function(){
-        replaceParam('region_id', this.title);
+        replaceParam('region_id', this.id);
         return false;
     });
     $("li[ectype='li_filter'] img").click(function(){
@@ -52,7 +52,7 @@ $(function(){
         replaceParam('order', this.value);
         return false;
     });
-    
+
     /* 下拉过滤器 */
     $("li[ectype='dropdown_filter_title'] a").click(function(){
         var jq_li = $(this).parents("li[ectype='dropdown_filter_title']");
