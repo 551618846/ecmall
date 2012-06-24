@@ -5,9 +5,9 @@ $(function(){
     $('#truncate').click(function(){
         var goods_ids = '{$goods_ids}';
         if(goods_ids && confirm('{sprintf lang=truncate_confirm var1=page_info.item_count}')){
-            $('#my_goods_form').append('<input type="hidden" name="act" value="truncate" />');
-            $('#my_goods_form').append('<input type="hidden" name="goods_ids" value="' + goods_ids + '" />');
-            $('#my_goods_form').submit();
+            $('#truncate_form').append('<input type="hidden" name="act" value="truncate" />');
+            $('#truncate_form').append('<input type="hidden" name="goods_ids" value="' + goods_ids + '" />');
+            $('#truncate_form').submit();
             return false;
         }
     });
@@ -32,15 +32,19 @@ $(function(){
 
                     <tr class="line_bold">
                         <th class="width1"><input type="checkbox" id="all" class="checkall"/></th>
-                        <th class="align1" colspan="2">
+                        <th class="align1" colspan="3">
                             <span class="all"><label for="all">{$lang.checkall}</label></span>
                             <a href="javascript:void(0);" class="edit" ectype="batchbutton" uri="index.php?app=my_goods&act=batch_edit" name="id">{$lang.edit}</a>
                             <a href="javascript:void(0);" class="delete" ectype="batchbutton" uri="index.php?app=my_goods&act=drop" name="id" presubmit="confirm('{$lang.drop_confirm}')">{$lang.drop}</a>
                         </th>
                         <th colspan="8">
                             <div class="select_div">
+                            <form id="truncate_form" method="post">
+                            </form>
+                            
                             <form id="my_goods_form" method="get">
                             <a id="truncate" class="detlink" style="float:right" href="javascript:;">{$lang.truncate}</a>
+                            
                             <!--{if $filtered}-->
                             <a class="detlink" style="float:right" href="{url app=my_goods}">{$lang.cancel_query}</a>
                             <!--{/if}-->
@@ -63,6 +67,9 @@ $(function(){
                     <tr class="gray"  ectype="table_header">
                         <th width="30"></th>
                         <th width="55"></th>
+                        {if $store.enable_radar}
+                        <th width="50">{$lang.radar_title}</th>
+                        {/if}
                         <th width="165" coltype="editable" column="goods_name" checker="check_required" inputwidth="90%" title="{$lang.sort_order}"  class="cursor_pointer"><span ectype="order_by">{$lang.goods_name}</span></th>
                         <th width="70" column="cate_id" title="{$lang.sort_order}"  class="cursor_pointer"><span ectype="order_by">{$lang.gcategory}</span></th>
                         <th width="55" coltype="editable" column="brand" checker="check_required" inputwidth="55px" title="{$lang.sort_order}"  class="cursor_pointer"><span ectype="order_by">{$lang.brand}</span></th>
@@ -78,6 +85,9 @@ $(function(){
                     <tr class="line<!--{if $smarty.foreach._goods_f.last}--> last_line<!--{/if}-->" ectype="table_item" idvalue="{$goods.goods_id}">
                         <td width="25" class="align2"><input type="checkbox" class="checkitem" value="{$goods.goods_id}"/></td>
                         <td width="50" class="align2"><a href="{url app=goods&id=$goods.goods_id}" target="_blank"><img src="{$site_url}/{$goods.default_image}" width="50" height="50"  /></a></td>
+                        {if $store.enable_radar}
+                        <td width="50"  align="center"><span id="r{$goods.goods_id}" class="radar_product_point" radar_price="{$goods.price}" radar_product_id='{$goods.goods_id}' radar_brand="{$goods.brand}"  radar_catname="{$goods.cat_name}" radar_sn="{$goods.goods_sn}" radar_keyword="" radar_name="{$goods.goods_name}"></span></td>
+                        {/if}
                         <td width="160" align="align2">
                           <p class="ware_text"><span class="color2" ectype="editobj">{$goods.goods_name|escape}</span></p>
                         </td>
@@ -126,5 +136,16 @@ $(function(){
     </div>
     <div class="clear"></div>
 </div>
+
+
 <iframe name="iframe_post" id="iframe_post" width="0" height="0"></iframe>
 {include file=footer.html}
+{if $store.enable_radar}
+<input type="hidden" id="radar_lincense_id" value="" />
+<input type="hidden" id="radar_product_key" value="ecmall" />
+<input type="hidden" id="radar_sign_key" value="" />
+<script type="text/javascript" src="http://js.sradar.cn/radarForGoodsList.js"></script>
+<script>
+radar_point_extract();
+</script>
+{/if}

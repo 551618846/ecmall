@@ -24,13 +24,17 @@ ENABLED_GZIP    :   GZIP开关,开启GZIP后将提升用户的访问速度, 相�
 
 DEBUG_MODE      :   0: 生成缓存文件,不强制编译模板.1: 不生成缓存文件,不强制编译模板. 2: 生成缓存文件, 强制编译模板. 3: 不生成缓存文件, 强制编译模版. 4: 生成缓存, 编译模版但不生成编译文件. 5: 不生成缓存, 编译模版但不生成编译文件.
 
-CACHE_SERVER    :   数据缓存服务器,可以是default(php文件缓存),也可以是memcache
+CACHE_SERVER    :   数据缓存服务器,可以是default(php文件缓存),也可以是memcached
+CACHE_MEMCACHED : 存储缓存数据的memcached服务器(服务器地址1:端口1)
 
 MEMBER_TYPE     :   可选值: default(使用内置的用户系统),uc(使用UCenter做为用户系统), 也可以是任意的第三方系统, 前提是您做好了相关的扩展程序:)
 
 ENABLED_SUBDOMAIN : 二级域名功能开关,0为关闭,1为开启,开启时必须配置SUBDOMAIN_SUFFIX.二级域名功能开启方法请查看安装包中docs目录下的二级域名配置相关文档.
 
 SUBDOMAIN_SUFFIX : 二级域名后缀,例如:用户的二级域名将是"test.mall.example.com", 则您只需要在此填写"mall.example.com".
+
+SESSION_TYPE     : session数据存储类型，目前可选择session和mysql
+SESSION_MEMCACHED : 存储session数据的memcached服务器(服务器地址1:端口1|服务器地址2:端口2)
 */
 
 return {%CONFIG_ARRAY%};

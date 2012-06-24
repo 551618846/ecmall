@@ -10,7 +10,7 @@ $(function(){
     d.setContents('loading', {'text' : 'loading...'});
     d.setWidth(270);
     d.show('center');
-    $.get('admin/index.php?app=template&act=get_editor_panel', function(data){
+    $.get(REAL_BACKEND_URL + '/index.php?app=template&act=get_editor_panel', function(data){
         /* 在最开头插入面板 */
         $(document.body).prepend(data);
 
@@ -125,7 +125,7 @@ function save_page()
     create_save_form();
 
     /* 信息POST到处理脚本并显示结果*/
-    $.post('admin/index.php?app=template&act=save&page=' + __PAGE__, $('#_edit_page_form_').serialize(), function(rzt){
+    $.post(REAL_BACKEND_URL + '/index.php?app=template&act=save&page=' + __PAGE__, $('#_edit_page_form_').serialize(), function(rzt){
         d.setTitle(lang.save_successed);
         d.setContents('message', {text:rzt.msg});
     }, 'json');
@@ -200,8 +200,8 @@ function config_widget(widget)
     d.setContents('loading', {text:'loading...'});
     d.setWidth(400);
     d.show('center');
-    $.get('admin/index.php?app=template&act=get_widget_config_form&id=' + _id + '&name=' + _name + '&page=' + __PAGE__, function(rzt){
-        var _form = '<div class="widget_config_form"><form enctype="multipart/form-data" method="POST" action="admin/index.php?app=template&act=config_widget&id='+_id+'&name='+_name+'&page='+__PAGE__+'" target="_config_post_iframe_" id="_config_widget_form_"><div class="widget_config_form_body">' + rzt + '</div><div class="dialog_buttons_bar" style="margin-top:20px;"><input type="submit" class="btn1" value="' + lang.submit + '" /><input type="reset" class="btn2" value="' + lang.reset + '" /></div></form></div>';
+    $.get(REAL_BACKEND_URL + '/index.php?app=template&act=get_widget_config_form&id=' + _id + '&name=' + _name + '&page=' + __PAGE__, function(rzt){
+        var _form = '<div class="widget_config_form"><form enctype="multipart/form-data" method="POST" action="' + REAL_BACKEND_URL + '/index.php?app=template&act=config_widget&id='+_id+'&name='+_name+'&page='+__PAGE__+'" target="_config_post_iframe_" id="_config_widget_form_"><div class="widget_config_form_body">' + rzt + '</div><div class="dialog_buttons_bar" style="margin-top:20px;"><input type="submit" class="btn1" value="' + lang.submit + '" /><input type="reset" class="btn2" value="' + lang.reset + '" /></div></form></div>';
         d.setTitle(lang.config_widget);
         d.setContents($(_form));
         $('#_config_widget_form_').submit(function(){
@@ -233,7 +233,7 @@ function add_widget(){
     d.setTitle(lang.loading);
     d.setContents('loading', {text: 'loading...'});
     d.show('center');
-    $.getJSON('admin/index.php?app=template&act=add_widget&name='+$(this).attr('widget_name')+'&page=' + __PAGE__, function(rzt){
+    $.getJSON(REAL_BACKEND_URL + '/index.php?app=template&act=add_widget&name='+$(this).attr('widget_name')+'&page=' + __PAGE__, function(rzt){
         if (rzt.done)
         {
             var widget_id = rzt.retval.widget_id;

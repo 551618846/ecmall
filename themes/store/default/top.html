@@ -9,7 +9,7 @@
 
     <ul>
         <li><a class="{if $smarty.get.app eq 'store' and $smarty.get.act eq 'index'}active{else}normal{/if}" href="{url app=store&id=$store.store_id}"><span>{$lang.store_index}</span></a></li>
-        {if $store.functions.groupbuy}
+        {if $store.functions.groupbuy and $store.enable_groupbuy}
         <li><a class="{if $smarty.get.app eq 'groupbuy' or $smarty.get.act eq 'groupbuy'}active{else}normal{/if}" href="{url app=store&act=groupbuy&id=$store.store_id}"><span>{$lang.nav_groupbuy}</span></a></li>
         {/if}
         <!--{foreach from=$store.store_navs item=store_nav}-->

@@ -294,7 +294,8 @@ class TemplateApp extends BackendApp
      */
     function _make_editable($page, $html)
     {
-        $editmode = '<script type="text/javascript" src="admin/index.php?act=jslang"></script><script type="text/javascript">__PAGE__ = "' . $page . '";</script><script type="text/javascript" src="' . SITE_URL . '/includes/libraries/javascript/jquery.ui/jquery.ui.js"></script><script type="text/javascript" charset="utf-8" src="' . SITE_URL . '/includes/libraries/javascript/jquery.ui/i18n/' . i18n_code() . '.js"></script><script id="dialog_js" type="text/javascript" src="' . SITE_URL . '/includes/libraries/javascript/dialog/dialog.js"></script><script id="template_editor_js" type="text/javascript" src="' . SITE_URL . '/admin/includes/javascript/template_panel.js"></script><link id="template_editor_css" href="' . SITE_URL . '/admin/templates/style/template_panel.css" rel="stylesheet" type="text/css" /><link rel="stylesheet" href="' . SITE_URL . '/includes/libraries/javascript/jquery.ui/themes/ui-lightness/jquery.ui.css" type="text/css" media="screen" /><link rel="stylesheet" href="' . SITE_URL . '/includes/libraries/javascript/hack.css" type="text/css" media="screen" />';
+        $real_backend_url = site_url();
+        $editmode = '<script type="text/javascript" src="' . $real_backend_url . '/index.php?act=jslang"></script><script type="text/javascript">__PAGE__ = "' . $page . '"; REAL_BACKEND_URL = "' . $real_backend_url . '";</script><script type="text/javascript" src="' . SITE_URL . '/includes/libraries/javascript/jquery.ui/jquery.ui.js"></script><script type="text/javascript" charset="utf-8" src="' . SITE_URL . '/includes/libraries/javascript/jquery.ui/i18n/' . i18n_code() . '.js"></script><script id="dialog_js" type="text/javascript" src="' . SITE_URL . '/includes/libraries/javascript/dialog/dialog.js"></script><script id="template_editor_js" type="text/javascript" src="' . $real_backend_url . '/includes/javascript/template_panel.js"></script><link id="template_editor_css" href="' . $real_backend_url . '/templates/style/template_panel.css" rel="stylesheet" type="text/css" /><link rel="stylesheet" href="' . SITE_URL . '/includes/libraries/javascript/jquery.ui/themes/ui-lightness/jquery.ui.css" type="text/css" media="screen" /><link rel="stylesheet" href="' . SITE_URL . '/includes/libraries/javascript/hack.css" type="text/css" media="screen" />';
 
         return str_replace('<!--<editmode></editmode>-->', $editmode, $html);
     }
@@ -308,9 +309,10 @@ class TemplateApp extends BackendApp
      */
     function _get_editable_pages()
     {
+        $real_site_url = dirname(site_url());
         return array(
-            'index' => SITE_URL . '/index.php',
-            'gcategory' => SITE_URL . '/index.php?app=category',
+            'index' => $real_site_url . '/index.php',
+            'gcategory' => $real_site_url . '/index.php?app=category',
         );
     }
 }

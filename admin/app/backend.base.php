@@ -202,6 +202,12 @@ class BackendApp extends ECBaseApp
         $cache_server =& cache_server();
         $cache_server->clear();
     }
+    
+    function display($tpl)
+    {
+        $this->assign('real_backend_url', site_url());
+        parent::display($tpl);
+    }
 }
 
 /**

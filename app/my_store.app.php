@@ -25,8 +25,9 @@ class My_storeApp extends StoreadminbaseApp
             'join'       => 'belongs_to_sgrade',
             'fields'     => 'domain, functions',
         ));
+        $functions = $tmp_info['functions'] ? explode(',', $tmp_info['functions']) : array();
         $subdomain_enable = false;
-        if (ENABLED_SUBDOMAIN && in_array('subdomain', explode(',', $tmp_info['functions'])))
+        if (ENABLED_SUBDOMAIN && in_array('subdomain', $functions))
         {
             $subdomain_enable = true;
         }
@@ -37,6 +38,11 @@ class My_storeApp extends StoreadminbaseApp
             $this->assign('id', $this->_store_id);
 
             $store = $this->_store_mod->get_info($this->_store_id);
+            foreach ($functions as $k => $v)
+            {
+                $store['functions'][$v] = $v;
+            }
+
             $this->assign('store', $store);
             $this->assign('editor_upload', $this->_build_upload(array(
                 'obj' => 'EDITOR_SWFU',
@@ -131,6 +137,8 @@ class My_storeApp extends StoreadminbaseApp
                 'im_qq'      => $_POST['im_qq'],
                 'im_ww'      => $_POST['im_ww'],
                 'domain'     => $subdomain,
+                'enable_groupbuy'   => $_POST['enable_groupbuy'],
+                'enable_radar'      => $_POST['enable_radar'],
             ));
             $this->_store_mod->edit($this->_store_id, $data);
 

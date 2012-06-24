@@ -304,6 +304,8 @@ class SgradeApp extends BackendApp
             $arr[] = 'editor_multimedia';
             $arr[] = 'coupon';
             $arr[] = 'groupbuy';
+            $arr[] = 'enable_radar';
+
         return $arr;
     }
 }

@@ -906,6 +906,8 @@ CREATE TABLE `ecm_store` (
   `im_qq` varchar(60) NOT NULL default '',
   `im_ww` varchar(60) NOT NULL default '',
   `im_msn` varchar(60) NOT NULL default '',
+  `enable_groupbuy` tinyint(1) UNSIGNED NOT NULL default '0',
+  `enable_radar` tinyint(1) UNSIGNED NOT NULL default '1',
   PRIMARY KEY  (`store_id`),
   KEY `store_name` (`store_name`),
   KEY `owner_name` (`owner_name`),

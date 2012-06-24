@@ -210,6 +210,30 @@ function drop_image(file_id)
                                   <th>{$lang.im_msn}:</th>
                                   <td>{if $store.im_msn}{$store.im_msn|escape} <a target="_blank" href="{url app=my_store&act=drop_im_msn}">{$lang.disable_msn}</a>{else}<a target="_blank" href="{$msn_active_url}">{$lang.active_msn}</a><span class="padding1">{$lang.msn_info}</span>{/if}</td>
                              </tr>
+                             {if $store.functions.groupbuy}
+							 <tr>
+                                  <th>{$lang.enable_groupbuy}:</th>
+                                  <td>
+								      <input id="enable_groupbuy_0" type="radio" name="enable_groupbuy" {if !$store.enable_groupbuy}checked{/if} value="0" />
+                                      <label for="enable_groupbuy_0">{$lang.no}</label>
+                                      <input id="enable_groupbuy_1" type="radio" name="enable_groupbuy" {if $store.enable_groupbuy}checked{/if} value="1" />
+                                      <label for="enable_groupbuy_1">{$lang.yes}</label>
+                                  </td>
+                             </tr>
+                             {/if}
+                             {if $store.functions.enable_radar}
+                             <!-- goods radar  -->
+                             <tr>
+                                  <th>{$lang.enable_radar}:</th>
+                                  <td><label>
+					                 <input type="radio" name="enable_radar" value="1" {if $store.enable_radar}checked="checked"{/if} />
+					                {$lang.yes}</label>
+					                <label>
+					                <input type="radio" name="enable_radar" value="0" {if !$store.enable_radar}checked="checked"{/if} />
+					                {$lang.no}</label></td>
+                             </tr>
+                             <!-- goods radar -->
+                             {/if}
                              <tr>
                                 <th class="align3">{$lang.description}:</th>
                                 <td><div class="editor"><div>

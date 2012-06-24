@@ -18,7 +18,7 @@ if ($subdomain === false)
 /* 二级域名功能未开启，不解析 */
 if (!ENABLED_SUBDOMAIN)
 {
-    header('Location:' . SITE_URL);
+    //header('Location:' . SITE_URL);
     return;
 }
 
@@ -27,7 +27,7 @@ $store_id = get_subdomain_store_id($subdomain);
 if ($store_id === false)
 {
     /* 无效的二级域名 */
-    header('Location:' . SITE_URL);
+    //header('Location:' . SITE_URL);
     return;
 }
 

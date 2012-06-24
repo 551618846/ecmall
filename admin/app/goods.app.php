@@ -86,6 +86,7 @@ class GoodsApp extends BackendApp
         $cate_mod =& bm('gcategory', array('_store_id' => 0));
         $this->assign('gcategories', $cate_mod->get_options(0, true));
         $this->import_resource(array('script' => 'mlselection.js,inline_edit.js'));
+        $this->assign('enable_radar', Conf::get('enable_radar'));
         $this->display('goods.index.html');
     }
 

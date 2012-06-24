@@ -9,9 +9,10 @@ function &cache_server()
         switch (CACHE_SERVER)
         {
             case 'memcached':
+                list($host, $port) = explode(':', CACHE_MEMCACHED);
                 $CS = new MemcacheServer(array(
-                    'host'  => MEMCACHE_HOST,
-                    'port'  => MEMCACHE_PORT,
+                    'host'  => $host,
+                    'port'  => $port,
                 ));
             break;
             default:

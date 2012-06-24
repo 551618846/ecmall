@@ -9,7 +9,7 @@
  * 这不是一个自由软件！您只能在不用于商业目的的前提下对程序代码进行修改和使用；
  * 不允许对程序代码以任何形式任何目的的再发布。
  * ============================================================================
- * $Id: template.php 10231 2009-12-08 02:20:25Z huibiaoli $
+ * $Id: template.php 12151 2010-12-02 03:52:36Z huibiaoli $
  */
 
 class ecsTemplate
@@ -1203,6 +1203,11 @@ class ecsTemplate
 
             case 'session':
                 $compiled_ref = '$_SESSION';
+                break;
+
+            case 'const':
+                array_shift($indexes);
+                $compiled_ref = '@constant("' . strtoupper($indexes[0]) . '")';
                 break;
 
             default:

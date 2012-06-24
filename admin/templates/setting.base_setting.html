@@ -18,6 +18,26 @@ $(function(){
     $('#sitemap_enabled').click(function(){
         $('#sitemap_frequency_setting').show();
     });
+
+    {if $setting.session_type eq 'memcached'}
+    $('#session_memcached').show();
+    {/if}
+    $('#mysql').click(function(){
+        $('#session_memcached').hide();
+    });
+    $('#memcached').click(function(){
+        $('#session_memcached').show();
+    });
+
+    {if $setting.cache_server eq 'memcached'}
+    $('#cache_memcached').show();
+    {/if}
+    $('#c_default').click(function(){
+        $('#cache_memcached').hide();
+    });
+    $('#c_memcached').click(function(){
+        $('#cache_memcached').show();
+    });
 });
 //]]>
 </script>
@@ -144,10 +164,59 @@ $(function(){
       </tr>
       <tr id="sitemap_frequency_setting" style="display:none">
         <th class="paddingT15">
-            {$lang.sitemap_frequency}
+            {$lang.sitemap_frequency}:
         </th>
         <td class="paddingT15">
             <input type="text" name="sitemap_frequency" value="{$setting.sitemap_frequency}" />
+        </td>
+      </tr>
+      <tr>
+        <th class="paddingT15">{$lang.session_type}:</th>
+        <td class="paddingT15"><input id="mysql" type="radio" name="session_type" {if $setting.session_type eq 'mysql'}checked{/if} value="mysql" />
+          <label for="mysql">Mysql</label>
+          <input type="radio" id="memcached" name="session_type" {if $setting.session_type eq 'memcached'}checked{/if} value="memcached" />
+          <label for="memcached">Memcahced</label>&nbsp;&nbsp;&nbsp;&nbsp;
+          <span class="grey">{$lang.session_type_note}</span>
+        </td>
+      </tr>
+      <tr id="session_memcached" style="display:none">
+        <th class="paddingT15">
+            {$lang.session_memcached}:
+        </th>
+        <td class="paddingT15">
+            <input type="text" name="session_memcached" value="{$setting.session_memcached}" />
+            <span class="grey">{$lang.session_memcached_note}</span>
+        </td>
+      </tr>
+
+
+      <tr>
+        <th class="paddingT15">{$lang.cache_server}:</th>
+        <td class="paddingT15"><input id="c_default" type="radio" name="cache_server" {if $setting.cache_server eq 'default'}checked{/if} value="default" />
+          <label for="c_default">File</label>
+          <input type="radio" id="c_memcached" name="cache_server" {if $setting.cache_server eq 'memcached'}checked{/if} value="memcached" />
+          <label for="c_memcached">Memcahce</label>&nbsp;&nbsp;&nbsp;&nbsp;
+          <span class="grey">{$lang.cache_server_note}</span>
+        </td>
+      </tr>
+      <tr id="cache_memcached" style="display:none">
+        <th class="paddingT15">
+            {$lang.cache_memcached}:
+        </th>
+        <td class="paddingT15">
+            <input type="text" name="cache_memcached" value="{$setting.cache_memcached}" />
+            <span class="grey">{$lang.cache_memcached_note}</span>
+        </td>
+      </tr>
+
+
+      <tr>
+        <th class="paddingT15">{$lang.enable_radar}:</th>
+        <td class="paddingT15"><input id="radar_disabled" type="radio" name="enable_radar" {if !$setting.enable_radar}checked{/if} value="0" />
+          <label for="radar_disabled">{$lang.no}</label>
+          <input type="radio" id="enable_radar" name="enable_radar" {if $setting.enable_radar}checked{/if} value="1" />
+          <label for="enable_radar">{$lang.yes}</label>&nbsp;&nbsp;&nbsp;&nbsp;
+          <span class="grey">{$lang.enable_radar_note}</span>
         </td>
       </tr>
       <tr>

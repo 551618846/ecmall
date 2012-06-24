@@ -50,7 +50,8 @@ $(function(){
   <table width="100%" cellspacing="0" class="dataTable">
     <!--{if $goods_list}-->
     <tr class="tatr1">
-      <td width="20" class="firstCell"><input type="checkbox" class="checkall" /></td>
+      <td width="10%" class="firstCell"><input type="checkbox" class="checkall" /></td>
+	  {if $enable_radar}<td width="10%">{$lang.enable_radar}</td>{/if}
       <td width="30%"><span ectype="order_by" fieldname="goods_name">{$lang.goods_name}</span></td>
       <td width="10%"><span ectype="order_by" fieldname="store_name">{$lang.store_name}</span></td>
       <td><span ectype="order_by" fieldname="brand">{$lang.brand}</span></td>
@@ -64,6 +65,9 @@ $(function(){
     <!--{foreach from=$goods_list item=goods}-->
     <tr class="tatr2">
       <td class="firstCell"><input type="checkbox" class="checkitem" value="{$goods.goods_id}"/></td>
+    {if $enable_radar}
+    <td><span id="r{$goods.goods_id}"class="radar_product_point" radar_price="{$goods.shop_price}" radar_product_id='{$goods.goods_id}' radar_brand="{$goods.brand_name}"  radar_catname="{$goods.cat_name}" radar_sn="{$goods.goods_sn}" radar_keyword="" radar_name="{$goods.goods_name|escape:html}"></span></td>
+    {/if}
       <td><span ectype="inline_edit" fieldname="goods_name" fieldid="{$goods.goods_id}" required="1" class="editable" title="{$lang.editable}">{$goods.goods_name|escape}</span></td>
       <td>{$goods.store_name|escape}</td>
       <td>{$goods.brand|escape}</td>
@@ -92,4 +96,12 @@ $(function(){
   </div>
   <div class="clear"></div>
 </div>
-{include file="footer.html"}
+{include file="footer.html"}{if $enable_radar}
+<input type="hidden" id="radar_lincense_id" value="" />
+<input type="hidden" id="radar_product_key" value="ecmall" />
+<input type="hidden" id="radar_sign_key" value="" />
+<script type="text/javascript" src="http://js.sradar.cn/radarForGoodsList.js"></script>
+<script>
+radar_point_extract();
+</script>
+{/if}

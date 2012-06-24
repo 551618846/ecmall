@@ -109,6 +109,14 @@ return array(
     'guest_comment' => '允许游客咨询',
     'guest_comment_note' => '',
     'default_feed_config' => '默认个人动态设置',
+    'session_type' => 'Session服务',
+    'session_type_note' => 'Session服务类型，如果选择Memcached，则您的系统需安装配置好Memcached服务，且您的PHP环境需要支持Memcahce扩展',
+    'session_memcached' => 'Memcached服务(for session)',
+    'session_memcached_note' => '存储Session数据的Memcached服务器(如127.0.0.1:11211)',
+	'cache_server' => '缓存服务',
+    'cache_server_note' => '缓存服务类型，如果选择Memcached，则您的系统需安装配置好Memcached服务，且您的PHP环境需要支持Memcahce扩展',
+    'cache_memcached' => 'Memcached服务(for cache)',
+    'cache_memcached_note' => '存储缓存数据的Memcached服务器(如127.0.0.1:11212)'
 );
 
 ?>

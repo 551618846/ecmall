@@ -134,10 +134,22 @@ class ECBaseApp extends BaseApp
     function _init_session()
     {
         import('session.lib');
-        $this->_session =& new SessionProcessor(db(), '`ecm_sessions`', '`ecm_sessions_data`', 'ECM_ID');
+        if (SESSION_TYPE == 'mysql' || defined('IN_BACKEND'))
+        {
+            $this->_session =& new SessionProcessor(db(), '`ecm_sessions`', '`ecm_sessions_data`', 'ECM_ID');
+            /* 清理超时的购物车项目 */
+            $this->_session->add_related_table('`ecm_cart`', 'cart', 'session_id', 'user_id=0');
+        }
+        else if (SESSION_TYPE == 'memcached')
+        {
+            $this->_session =& new MemcacheSession(SESSION_MEMCACHED, 'ECM_ID');
+        }
+        else
+        {
+            exit('Unkown session type.');
+        }
         define('SESS_ID', $this->_session->get_session_id());
-        /* 清理超时的购物车项目 */
-        $this->_session->add_related_table('`ecm_cart`', 'cart', 'session_id', 'user_id=0');
+
         $this->_session->my_session_start();
         env('session', $this->_session);
     }
@@ -195,7 +207,7 @@ class ECBaseApp extends BaseApp
 
     function run_module()
     {
-        $module_name = empty($_REQUEST['module']) ? false : strtolower(trim(str_replace('/', '', $_REQUEST['module'])));
+        $module_name = empty($_REQUEST['module']) ? false : strtolower(preg_replace('/(\W+)/', '', $_REQUEST['module']));
         if (!$module_name)
         {
             $this->show_warning('no_such_module');
@@ -321,7 +333,6 @@ EOT;
             $stop_flow = $this->_run_plugin($plugin);
             $plugin = null;
             $this->outcall = false;
-
             /* 停止原控制器流程 */
             if ($stop_flow)
             {
@@ -339,7 +350,7 @@ EOT;
      */
     function _run_plugin(&$plugin)
     {
-        $plugin->execute();
+        return $plugin->execute();
     }
 
     /**
@@ -543,6 +554,7 @@ EOT;
             return;
         }
         $this->assign('site_url', SITE_URL);
+        $this->assign('real_site_url', defined('IN_BACKEND') ? dirname(site_url()) : site_url());
         $this->assign('ecmall_version', VERSION);
         $this->assign('random_number', rand());
 
@@ -552,8 +564,7 @@ EOT;
         /* 用户信息 */
         $this->assign('visitor', isset($this->visitor) ? $this->visitor->info : array());
 
-        /* 新消息 */
-        $this->assign('new_message', isset($this->visitor) ? $this->_get_new_message() : '');
+        
         $this->assign('charset', CHARSET);
         $this->assign('price_format', Conf::get('price_format'));
         $this->assign('async_sendmail', $this->_async_sendmail());

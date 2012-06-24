@@ -37,7 +37,7 @@ class DefaultApp extends BackendApp
         $this->assign('admin', $this->visitor->get());
 
         $ms =& ms();
-        $this->assign('new', $ms->pm->check_new($this->visitor->get('user_id')));
+        //$this->assign('new', $ms->pm->check_new($this->visitor->get('user_id')));
 
         // 一周动态
         $this->assign('news_in_a_week', $this->_get_news_in_a_week());
@@ -116,6 +116,7 @@ class DefaultApp extends BackendApp
             'goods_qty' => $user_mod->getOne("SELECT COUNT(*) FROM " . DB_PREFIX . "goods WHERE if_show = 1 AND closed = 0"),
             'order_qty' => $user_mod->getOne("SELECT COUNT(*) FROM " . DB_PREFIX . "order WHERE status = '" . ORDER_FINISHED . "'"),
             'order_amount' => $user_mod->getOne("SELECT SUM(order_amount) FROM " . DB_PREFIX . "order WHERE status = '" . ORDER_FINISHED . "'"),
+            'admin_email' => $user_mod->getOne("SELECT email FROM " . DB_PREFIX . "member WHERE user_id = '1'"),
         );
     }
 
@@ -163,7 +164,8 @@ class DefaultApp extends BackendApp
             $stat_info['store_count']  = $stats['store_qty'];
             $stat_info['member_count'] = $stats['user_qty']; // differ from 1.1
             $stat_info['goods_count']  = $stats['goods_qty']; // differ from 1.1
-            $stat_info['admin_last_login_time'] = date('Y-m-d H:i:s');
+            $stat_info['admin_last_login_time'] = local_date('Y-m-d H:i:s');
+            $stat_info['admin_email'] = $stats['admin_email'];
             foreach($stat_info AS $key => $value)
             {
                 $update[$key] = $value;

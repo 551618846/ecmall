@@ -51,6 +51,13 @@ class SettingApp extends BackendApp
         {
             $time_zone  = $model_setting->_get_time_zone();
             $this->assign('time_zone', $time_zone);
+            /* Config */
+            $config_file = ROOT_PATH . '/data/config.inc.php';
+            $config = include($config_file);
+            $setting['session_type'] = $config['SESSION_TYPE'];
+            $setting['session_memcached'] = $config['SESSION_MEMCACHED'];
+            $setting['cache_server'] = $config['CACHE_SERVER'];
+            $setting['cache_memcached'] = $config['CACHE_MEMCACHED'];
             $this->assign('setting', $setting);
             if ($feed_enabled)
             {
@@ -87,6 +94,7 @@ class SettingApp extends BackendApp
             $data['sitemap_frequency']          = ($_POST['sitemap_frequency'] > 0 ? intval($_POST['sitemap_frequency']) : 1);
             $data['rewrite_enabled']            = ($_POST['rewrite_enabled'] == '1');
             $data['guest_comment']          = ($_POST['guest_comment'] == '1');
+            $data['enable_radar']          = ($_POST['enable_radar'] == '1');//goods_radar
             if ($feed_enabled)
             {
                 $_default_feed_list = array();
@@ -97,6 +105,26 @@ class SettingApp extends BackendApp
                 $data['default_feed_config']    = array_merge($_default_feed_list, (array)$_POST['default_feed_config']);
             }
             $model_setting->setAll($data);
+            
+            /* config info */
+            /* 初始化 */
+            $session_type      = $_POST['session_type'];
+            $session_memcached  = trim($_POST['session_memcached']);
+            $cache_server      = $_POST['cache_server'];
+            $cache_memcached      = trim($_POST['cache_memcached']);
+
+            /* Config */
+            $config_file = ROOT_PATH . '/data/config.inc.php';
+            $config = include($config_file);
+            $config['SESSION_TYPE'] = $session_type;
+            $config['SESSION_MEMCACHED']  = $session_memcached;
+            $config['CACHE_SERVER']  = $cache_server;
+            $config['CACHE_MEMCACHED']  = $cache_memcached;
+            $new_config = var_export($config, true);
+
+            /* 写入 */
+            file_put_contents($config_file, "<?php\r\n\r\nreturn {$new_config};\r\n\r\n?>");
+            
             $this->show_message('edit_base_setting_successed');
         }
     }

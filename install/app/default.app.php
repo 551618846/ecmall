@@ -9,7 +9,7 @@
  * 这不是一个自由软件！您只能在不用于商业目的的前提下对程序代码进行修改和使用；
  * 不允许对程序代码以任何形式任何目的的再发布。
  * ============================================================================
- * $Id: default.app.php 12059 2010-09-19 05:40:21Z huibiaoli $
+ * $Id: default.app.php 12132M 2012-06-22 11:44:02Z (local) $
  */
 
 class DefaultApp extends InstallerApp
@@ -355,6 +355,9 @@ class DefaultApp extends InstallerApp
             'MEMBER_TYPE'  => 'default',
             'ENABLED_SUBDOMAIN' => 0,
             'SUBDOMAIN_SUFFIX'  => '',
+            'SESSION_TYPE' => 'mysql',
+            'SESSION_MEMCACHED' => 'localhost:11211',
+            'CACHE_MEMCACHED' => 'localhost:11211',
         ));
         /* 写入系统信息 */
         save_system_info(array(

@@ -90,12 +90,16 @@ class My_goodsApp extends StoreadminbaseApp
         //$this->import_resource(array('script' => 'utils.js'));
         $this->_config_seo('title', Lang::get('member_center') . ' - ' . Lang::get('my_goods'));
         $this->assign('goods_ids', implode(',', array_keys($all_goods)));
+        
+        $store_mod  =& m('store');
+        $store = $store_mod->get_info($this->_store_id);
+        $this->assign('store', $store);
         $this->display('my_goods.index.html');
     }
     
     function truncate()
     {
-        $id = isset($_GET['goods_ids']) ? trim($_GET['goods_ids']) : '';
+        $id = isset($_POST['goods_ids']) ? trim($_POST['goods_ids']) : '';
         if (!$id)
         {
             $this->show_warning('no_goods_to_drop');

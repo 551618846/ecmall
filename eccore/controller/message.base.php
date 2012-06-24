@@ -9,7 +9,7 @@
  * 这不是一个自由软件！您只能在不用于商业目的的前提下对程序代码进行修改和使用；
  * 不允许对程序代码以任何形式任何目的的再发布。
  * ============================================================================
- * $Id: message.base.php 12100 2010-09-28 05:48:17Z huibiaoli $
+ * $Id: message.base.php 12127 2010-10-18 09:58:37Z huibiaoli $
  */
 if (!defined('IN_ECM'))
 {
@@ -115,8 +115,11 @@ function _message($msg, $type)
  */
 function exception_handler($errno, $errstr, $errfile, $errline)
 {
-    if ($errno == 2048)
+
+    if ($errno == 2048 || (($errno & error_reporting()) != $errno))
     {
+        //不再需要通过_at方法来抵制错误
+        //错误被屏蔽时就不抛出异常，该处理就允许你在代码中照常使用error_reporting来控制错误报告
         return true;
     }
 

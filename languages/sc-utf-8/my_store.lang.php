@@ -30,6 +30,8 @@ return array(
     'msn_info' => '激活后将显示在店铺信息栏里',
     'uploadedfile' => '上传图片',
     'note_for_store_name' => '请控制在20个字以内',
-    'name_exist' => '店铺名称已经存在，请换一个'
+    'name_exist' => '店铺名称已经存在，请换一个',
+    'enable_groupbuy' => '开启团购',
+    'enable_radar' => '启用商品雷达',
 );
 ?>

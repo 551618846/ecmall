@@ -21,10 +21,10 @@ define('IN_ECM', true);
 define('PHP_SELF',  htmlentities(isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_NAME']));
 
 /* 当前ECMall程序版本 */
-define('VERSION', '2.2.1');
+define('VERSION', '2.3.0 beta1');
 
 /* 当前ECMall程序Release */
-define('RELEASE', '20100928');
+define('RELEASE', '20120625');
 
 /*---------------------以下是PHP在不同版本，不同服务器上的兼容处理-----------------------*/
 
@@ -71,7 +71,7 @@ class ECMall
         $default_app = $config['default_app'] ? $config['default_app'] : 'default';
         $default_act = $config['default_act'] ? $config['default_act'] : 'index';
 
-        $app    = isset($_REQUEST['app']) ? trim($_REQUEST['app']) : $default_app;
+        $app    = isset($_REQUEST['app']) ? preg_replace('/(\W+)/', '', $_REQUEST['app']) : $default_app;
         $act    = isset($_REQUEST['act']) ? trim($_REQUEST['act']) : $default_act;
         $app_file = $config['app_root'] . "/{$app}.app.php";
         if (!is_file($app_file))
@@ -239,7 +239,7 @@ class Lang
      */
     function fetch($lang_file)
     {
-        return include($lang_file);
+        return is_file($lang_file) ? include($lang_file) : array();
     }
 }
 function lang_file($file)
@@ -1733,9 +1733,7 @@ function _at($fun)
 {
     $arg = func_get_args();
     unset($arg[0]);
-    restore_error_handler();
     $ret_val = @call_user_func_array($fun, $arg);
-    reset_error_handler();
 
     return $ret_val;
 }

@@ -362,7 +362,8 @@ return array(
     'kaixinwang' => '开心网',
     'tags' => '标签(TAG)',
     'msg_instruction' => '短消息使用格式?',
-    'not_csv_file' => '您选择的文件不是CSV格式'
+    'not_csv_file' => '您选择的文件不是CSV格式',
+    'radar_title' => '商品雷达'
 );
 
 ?>
