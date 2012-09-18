@@ -2293,7 +2293,7 @@ class My_goodsApp extends StoreadminbaseApp
 
     function brand_edit()
     {
-        $id = $_GET['id'];
+        $id = intval($_GET['id']);
         $brand = $this->_brand_mod->find('store_id = ' . $this->_store_id . ' AND if_show = ' . BRAND_REFUSE . ' AND brand_id = ' . $id);
         $brand = current($brand);
         if (empty($brand))

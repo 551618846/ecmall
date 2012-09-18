@@ -21,10 +21,10 @@ define('IN_ECM', true);
 define('PHP_SELF',  htmlentities(isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_NAME']));
 
 /* 当前ECMall程序版本 */
-define('VERSION', '2.3.0 beta1');
+define('VERSION', '2.3.0');
 
 /* 当前ECMall程序Release */
-define('RELEASE', '20120625');
+define('RELEASE', '20120918');
 
 /*---------------------以下是PHP在不同版本，不同服务器上的兼容处理-----------------------*/
 

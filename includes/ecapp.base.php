@@ -134,6 +134,10 @@ class ECBaseApp extends BaseApp
     function _init_session()
     {
         import('session.lib');
+        if(!defined('SESSION_TYPE'))
+        {
+           define('SESSION_TYPE','mysql');
+        }
         if (SESSION_TYPE == 'mysql' || defined('IN_BACKEND'))
         {
             $this->_session =& new SessionProcessor(db(), '`ecm_sessions`', '`ecm_sessions_data`', 'ECM_ID');

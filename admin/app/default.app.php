@@ -145,7 +145,7 @@ class DefaultApp extends BackendApp
             'charset'   => CHARSET,
             'url'       => SITE_URL,
         );
-
+        $this->assign('uniqueid',base64_encode(MALL_SITE_ID));
         $update_time = 0;
         $update_file = ROOT_PATH . '/data/update_time.lock';
         if (file_exists($update_file))

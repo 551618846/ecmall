@@ -374,7 +374,7 @@ class OrderApp extends ShoppingbaseApp
     function check_coupon()
     {
         $coupon_sn = $_GET['coupon_sn'];
-        $store_id = $_GET['store_id'];
+        $store_id = is_numeric($_GET['store_id']) ? $_GET['store_id'] : 0;
         if (empty($coupon_sn))
         {
             $this->js_result(false);
